@@ -1,3 +1,5 @@
+import SiteFooter from "./components/site-footer";
+
 const carePoints = [
   { icon: "✳", title: "Senior-focused essentials", body: "Thoughtfully selected products for comfort, care, and everyday wellbeing." },
   { icon: "✓", title: "Quality you can trust", body: "A clear, considered way to shop for healthcare essentials." },
@@ -14,12 +16,12 @@ const categories = [
 export default function LandingPage() {
   return (
     <main className="landing-page">
-      <div className="landing-topline"><span>Thoughtful healthcare, made easier</span><span>Need help? <a href="tel:+918999188267">+91 89991 88267</a></span></div>
+     
       <header className="landing-header">
-        <a className="landing-brand" href="/" aria-label="Merabetta home"><span className="landing-brand-mark">✚</span><span>merabetta<span className="landing-brand-period">.</span><small>CARE, WITH DIGNITY</small></span></a>
-        <nav className="landing-links" aria-label="Main navigation"><a className="current" href="/">Home</a><a href="/products">Products</a><a href="/labtest">Lab Tests</a><a href="#about">About</a><a href="#contact">Contact</a></nav>
-        <details className="landing-mobile-menu"><summary aria-label="Open navigation">☰ <span>Menu</span></summary><nav aria-label="Mobile navigation"><a href="/">Home</a><a href="/products">Products</a><a href="/labtest">Lab Tests</a><a href="#about">About</a><a href="#contact">Contact</a></nav></details>
-        <div className="landing-auth-links"><a className="landing-login" href="/products?account=login">Log in</a><a className="landing-signup" href="/products?account=signup">Sign up</a></div>
+        <a className="landing-brand" href="/" aria-label="Merabetta home"><img src="/logo.png" alt="Merabetta" /></a>
+        <nav className="landing-links" aria-label="Main navigation"><a className="current" href="/">Home</a><a href="/products">Products</a><a href="/labtest">Lab Tests</a><a href="/about">About Us</a><a href="#contact">Contact</a></nav>
+        <details className="landing-mobile-menu"><summary aria-label="Open navigation">☰ <span>Menu</span></summary><nav aria-label="Mobile navigation"><a href="/">Home</a><a href="/products">Products</a><a href="/labtest">Lab Tests</a><a href="/about">About Us</a><a href="#contact">Contact</a></nav></details>
+        <div className="landing-auth-links"><a className="landing-login" href="/products?account=login">Log in</a></div>
       </header>
 
       <section className="landing-hero">
@@ -42,7 +44,7 @@ export default function LandingPage() {
 
       <section className="landing-final-cta" id="contact"><div><span className="landing-kicker">A little care goes a long way</span><h2>Let’s make everyday healthcare simpler.</h2><p>Start with trusted essentials, or find a lab test that fits your needs.</p></div><div className="landing-final-actions"><a className="landing-button primary" href="/products">Shop products <span>→</span></a><a className="landing-button secondary" href="/labtest">Book a lab test <span>→</span></a></div></section>
 
-      <footer className="landing-footer"><div className="landing-footer-main"><div className="landing-footer-brand"><a className="landing-brand" href="/" aria-label="Merabetta home"><span className="landing-brand-mark">✚</span><span>merabetta<span className="landing-brand-period">.</span><small>CARE, WITH DIGNITY</small></span></a><p>Supporting senior health with trusted essentials and thoughtful care.</p><a href="mailto:support@merabetta.com">support@merabetta.com</a></div><div className="landing-footer-col"><h2>Explore</h2><a href="/">Home</a><a href="/products">Products</a><a href="/labtest">Lab Tests</a><a href="#about">About us</a></div><div className="landing-footer-col"><h2>Care &amp; support</h2><a href="mailto:support@merabetta.com">Contact the care team</a><a href="tel:+918999188267">+91 89991 88267</a><a href="/products">Healthcare essentials</a></div></div><div className="landing-footer-bottom"><span>© 2026 Merabetta. All rights reserved.</span><span>Thoughtful care, for every day.</span></div></footer>
+      <SiteFooter />
     </main>
   );
 }

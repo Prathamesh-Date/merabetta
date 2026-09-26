@@ -1,6 +1,7 @@
 "use client";
 
 import { FormEvent, useMemo, useState } from "react";
+import SiteFooter from "../components/site-footer";
 
 type LabTest = {
   name: string;
@@ -59,12 +60,12 @@ export default function LabTestPage() {
 
   return (
     <main className="labshop-page">
-      <div className="top-note"><span>Thoughtful care for every day</span><span className="top-note-right">Need help? <a href="mailto:support@merabetta.com">Talk to us</a></span></div>
+     
       <header className="site-header labshop-header">
-        <a className="brand" href="/" aria-label="Merabetta home"><span className="brand-mark">✚</span><span>merabetta<span className="brand-dot">.</span><small>CARE MADE SIMPLE</small></span></a>
+        <a className="brand brand-logo" href="/" aria-label="Merabetta home"><img src="/logo.png" alt="Merabetta" /></a>
         <label className="search-box labshop-search"><span aria-hidden="true">⌕</span><input aria-label="Search lab tests" placeholder="Search lab tests..." value={query} onChange={(event) => setQuery(event.target.value)}/></label>
-        <nav className="main-nav labshop-nav" aria-label="Main navigation"><a href="/">Home</a><a href="/products">Products</a><a className="nav-current" href="/labtest">Lab Tests</a></nav>
-        <div className="labshop-account"><a className="account-button" href="/products?account=login">Log in</a><a className="account-signup" href="/products?account=signup">Sign up</a></div>
+        <nav className="main-nav labshop-nav" aria-label="Main navigation"><a href="/">Home</a><a href="/products">Products</a><a className="nav-current" href="/labtest">Lab Tests</a><a href="/about">About Us</a></nav>
+        <div className="labshop-account"><a className="account-button" href="/products?account=login">Log in</a></div>
       </header>
 
       <div className="labshop-wrap">
@@ -82,7 +83,7 @@ export default function LabTestPage() {
 
         <section className="labshop-help"><div><span className="section-kicker">Need a hand?</span><h2>We can help you find the next step.</h2><p>For questions about a test or its preparation, contact the Merabetta care team.</p></div><a className="button button-primary" href="mailto:support@merabetta.com">Talk to our care team <span>→</span></a></section>
         <p className="labshop-disclaimer">This page is a booking-request preview. A healthcare professional can advise which tests are appropriate for you. Test availability and preparation requirements should be confirmed with the care team.</p>
-        <footer className="labshop-footer"><a className="brand" href="/" aria-label="Merabetta home"><span className="brand-mark">✚</span><span>merabetta<span className="brand-dot">.</span><small>CARE MADE SIMPLE</small></span></a><span>© 2026 Merabetta · Thoughtful care, for every day.</span><a href="mailto:support@merabetta.com">Contact support</a></footer>
+        <SiteFooter />
       </div>
 
       {selectedTest && <div className="dialog-backdrop" role="presentation" onClick={closeBooking}><section className="lab-booking-dialog" role="dialog" aria-modal="true" aria-labelledby="lab-booking-title" onClick={(event) => event.stopPropagation()}><button className="dialog-close" aria-label="Close test details" onClick={closeBooking}>×</button>{requestSent ? <div className="lab-request-success"><span>✓</span><span className="section-kicker">Request preview</span><h2 id="lab-booking-title">Thanks, we have your request.</h2><p>Your request for <strong>{selectedTest.name}</strong> is saved in this preview. The care team would confirm availability and collection details with you.</p><button className="button button-primary" onClick={closeBooking}>Done</button></div> : <><span className="section-kicker">{selectedTest.category}</span><h2 id="lab-booking-title">{selectedTest.name}</h2><p className="lab-modal-description">{selectedTest.details}</p><div className="lab-modal-facts"><span><small>Sample</small><strong>{selectedTest.sample}</strong></span><span><small>Estimated report</small><strong>{selectedTest.report}</strong></span><span><small>Price</small><strong>₹{selectedTest.price.toLocaleString("en-IN")}</strong></span></div><form className="lab-booking-form" onSubmit={submitRequest}><h3>Request home collection</h3><div className="lab-form-row"><label>Full name<input name="name" autoComplete="name" placeholder="Your full name" required/></label><label>Mobile number<input name="phone" autoComplete="tel" type="tel" pattern="[0-9+() -]{8,18}" placeholder="Your mobile number" required/></label></div><label>Address<input name="address" autoComplete="street-address" placeholder="House number, street, area" required/></label><div className="lab-form-row"><label>PIN code<input name="postalCode" autoComplete="postal-code" inputMode="numeric" pattern="[0-9]{6}" placeholder="6-digit PIN code" required/></label><label>Preferred date<input name="date" type="date" min={new Date().toISOString().slice(0, 10)} required/></label></div><label>Preferred time<select name="time" defaultValue="morning"><option value="morning">Morning (7 AM – 11 AM)</option><option value="afternoon">Afternoon (11 AM – 3 PM)</option><option value="evening">Evening (3 PM – 7 PM)</option></select></label><button className="button button-primary labtest-book" type="submit">Continue request <span>→</span></button><small className="lab-preview-note">Preview only: this form does not submit a real booking.</small></form></>}</section></div>}
