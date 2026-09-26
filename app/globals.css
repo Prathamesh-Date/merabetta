@@ -363,3 +363,13 @@ h1,h2,h3,h4,.landing-hero h1,.landing-section-head h2,.landing-about-copy h2,.la
 .main-nav{gap:clamp(14px,1.35vw,20px)}
 @media(max-width:1080px){.landing-links{gap:16px}.main-nav{gap:12px}}
 @media(max-width:650px){.labshop-header .labshop-nav{gap:0}.main-nav.open{gap:2px}}
+
+/* Slightly compact the shared footer without changing its overall layout. */
+.reference-footer{padding-top:50px;padding-bottom:25px}
+.reference-footer-grid{gap:36px}
+.reference-footer-logo{width:142px;height:104px;margin-bottom:12px}
+.reference-footer-brand p,.reference-footer-contact p{margin-bottom:12px}
+.reference-footer-column h2,.reference-footer-contact h2{margin-bottom:12px}
+.reference-footer-bottom{margin-top:36px;padding-top:14px}
+@media(max-width:900px){.reference-footer{padding-top:41px;padding-bottom:22px}.reference-footer-grid{gap:27px 22px}}
+@media(max-width:650px){.reference-footer{padding-top:31px;padding-bottom:18px}.reference-footer-grid{gap:23px 17px}.reference-footer-logo{width:124px;height:94px}.reference-footer-bottom{margin-top:24px;padding-top:13px}}
