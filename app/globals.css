@@ -463,3 +463,11 @@ h1,h2,h3,h4,.landing-hero h1,.landing-section-head h2,.landing-about-copy h2,.la
   .product-buy .add-button{width:100%;min-height:36px}
   .labtest-book{min-height:36px;padding:0 8px;font-size:11px;gap:6px}
 }
+
+@media(max-width:700px){
+  .product-page-backdrop .related-card{display:flex;flex-direction:column}
+  .product-page-backdrop .related-name{flex:1}
+  .product-page-backdrop .related-card-bottom{gap:4px;margin-top:auto}
+  .product-page-backdrop .related-card-bottom strong{font-size:13px}
+  .product-page-backdrop .related-card-bottom .add-button{flex:0 0 auto;white-space:nowrap}
+}

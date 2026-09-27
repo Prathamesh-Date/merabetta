@@ -77,6 +77,18 @@ export default function Home() {
     }
   }, []);
 
+  useEffect(() => {
+    function handleProductHistory() {
+      const productName = window.location.hash.startsWith("#product=")
+        ? decodeURIComponent(window.location.hash.slice("#product=".length))
+        : null;
+      setActiveProduct(products.find((product) => product.name === productName) ?? null);
+    }
+
+    window.addEventListener("popstate", handleProductHistory);
+    return () => window.removeEventListener("popstate", handleProductHistory);
+  }, []);
+
   const visibleProducts = useMemo(() => products.filter((product) => {
     const matchesQuery = `${product.name} ${product.category}`.toLowerCase().includes(query.toLowerCase());
     return matchesQuery && (activeCategory === "All products" || product.category === activeCategory);
@@ -89,9 +101,23 @@ export default function Home() {
   }
 
   function showProduct(product: Product) {
+    const detailUrl = `${window.location.pathname}${window.location.search}#product=${encodeURIComponent(product.name)}`;
+    if (window.location.hash.startsWith("#product=")) {
+      window.history.replaceState(null, "", detailUrl);
+    } else {
+      window.history.pushState(null, "", detailUrl);
+    }
     setActiveProduct(product);
     setDetailQuantity(1);
     setDetailTab("description");
+  }
+
+  function closeProduct() {
+    if (window.location.hash.startsWith("#product=")) {
+      window.history.back();
+    } else {
+      setActiveProduct(null);
+    }
   }
 
   function submitAccount(event: FormEvent<HTMLFormElement>) {
@@ -160,13 +186,13 @@ export default function Home() {
 
       {cartOpen && <div className="drawer-backdrop" role="presentation" onClick={() => setCartOpen(false)}><aside className="cart-drawer" role="dialog" aria-modal="true" aria-labelledby="cart-title" onClick={(event) => event.stopPropagation()}><div className="drawer-heading"><div><div className="section-kicker">Your care, collected</div><h2 id="cart-title">Your cart <span>({cartCount})</span></h2></div><button className="icon-button close-drawer" aria-label="Close cart" onClick={() => setCartOpen(false)}>×</button></div>{cartCount === 0 ? <div className="cart-empty"><span>♡</span><h3>Your cart is taking a little rest</h3><p>Add a few essentials and they’ll be waiting here.</p><button className="button button-primary" onClick={() => setCartOpen(false)}>Browse products</button></div> : <><div className="cart-items">{products.filter((product) => cart[product.name]).map((product) => <div className="cart-line" key={product.name}><ProductArtwork icon={product.icon} tone={product.tone} name={product.name}/><div className="cart-line-copy"><strong>{product.name}</strong><small>₹{product.price.toLocaleString("en-IN")}</small><div className="quantity"><button aria-label={`Remove one ${product.name}`} onClick={() => setCart((current) => ({ ...current, [product.name]: current[product.name] <= 1 ? 0 : current[product.name] - 1 }))}>−</button><span>{cart[product.name]}</span><button aria-label={`Add one ${product.name}`} onClick={() => addToCart(product.name)}>+</button></div></div><button className="remove-item" aria-label={`Remove ${product.name}`} onClick={() => setCart((current) => ({ ...current, [product.name]: 0 }))}>×</button></div>)}</div><div className="cart-summary"><div><span>Subtotal</span><strong>₹{cartTotal.toLocaleString("en-IN")}</strong></div><small>Delivery details are confirmed at checkout.</small><button className="button button-primary checkout-button" onClick={() => setCartOpen(false)}>Continue to checkout <Icon name="arrow"/></button></div></>}</aside></div>}
 
-      {activeProduct && <div className="dialog-backdrop product-page-backdrop" role="presentation" onClick={() => setActiveProduct(null)}><section className="product-dialog" role="dialog" aria-modal="true" aria-labelledby="detail-title" onClick={(event) => event.stopPropagation()}>
-        <button className="product-back" onClick={() => setActiveProduct(null)}>← Back to products</button>
-        <button className="dialog-close" aria-label="Close product details" onClick={() => setActiveProduct(null)}>×</button>
-        <div className="product-breadcrumb"><a href="/">Home</a><span>/</span><a href="#products" onClick={() => { setActiveCategory(activeProduct.category); setActiveProduct(null); }}>{activeProduct.category}</a><span>/</span><span>{activeProduct.name}</span></div>
+      {activeProduct && <div className="dialog-backdrop product-page-backdrop" role="presentation" onClick={closeProduct}><section className="product-dialog" role="dialog" aria-modal="true" aria-labelledby="detail-title" onClick={(event) => event.stopPropagation()}>
+        <button className="product-back" onClick={closeProduct}>← Back to products</button>
+        <button className="dialog-close" aria-label="Close product details" onClick={closeProduct}>×</button>
+        <div className="product-breadcrumb"><a href="/">Home</a><span>/</span><a href="#products" onClick={(event) => { event.preventDefault(); setActiveCategory(activeProduct.category); closeProduct(); }}>{activeProduct.category}</a><span>/</span><span>{activeProduct.name}</span></div>
         <div className="product-detail-top">
           <div className="detail-art"><ProductArtwork icon={activeProduct.icon} tone={activeProduct.tone} name={activeProduct.name}/></div>
-          <div className="detail-copy"><div className="product-category">{activeProduct.category}</div><h2 id="detail-title">{activeProduct.name}</h2><div className="rating"><span>★</span> {activeProduct.rating}</div><div className="detail-price"><strong>₹{activeProduct.price.toLocaleString("en-IN")}</strong><del>₹{activeProduct.was.toLocaleString("en-IN")}</del></div><span className="delivery-note"><Icon name="truck"/> Delivery options shown at checkout</span><p>{activeProduct.description}</p><div className="detail-purchase-row"><div className="detail-quantity" aria-label="Product quantity"><button aria-label="Decrease quantity" onClick={() => setDetailQuantity((quantity) => Math.max(1, quantity - 1))}>−</button><span>{detailQuantity}</span><button aria-label="Increase quantity" onClick={() => setDetailQuantity((quantity) => quantity + 1)}>+</button></div><button className="button button-primary detail-add" onClick={() => { for (let index = 0; index < detailQuantity; index += 1) addToCart(activeProduct.name); setActiveProduct(null); setCartOpen(true); }}>Add to cart <Icon name="bag"/></button></div><a className="detail-category-link" href="#products" onClick={() => { setActiveCategory(activeProduct.category); setActiveProduct(null); }}>Category: {activeProduct.category}</a><div className="checkout-note"><Icon name="shield"/><span><strong>Checkout details</strong><small>Review delivery and payment options at checkout.</small></span></div></div>
+          <div className="detail-copy"><div className="product-category">{activeProduct.category}</div><h2 id="detail-title">{activeProduct.name}</h2><div className="rating"><span>★</span> {activeProduct.rating}</div><div className="detail-price"><strong>₹{activeProduct.price.toLocaleString("en-IN")}</strong><del>₹{activeProduct.was.toLocaleString("en-IN")}</del></div><span className="delivery-note"><Icon name="truck"/> Delivery options shown at checkout</span><p>{activeProduct.description}</p><div className="detail-purchase-row"><div className="detail-quantity" aria-label="Product quantity"><button aria-label="Decrease quantity" onClick={() => setDetailQuantity((quantity) => Math.max(1, quantity - 1))}>−</button><span>{detailQuantity}</span><button aria-label="Increase quantity" onClick={() => setDetailQuantity((quantity) => quantity + 1)}>+</button></div><button className="button button-primary detail-add" onClick={() => { for (let index = 0; index < detailQuantity; index += 1) addToCart(activeProduct.name); closeProduct(); setCartOpen(true); }}>Add to cart <Icon name="bag"/></button></div><a className="detail-category-link" href="#products" onClick={(event) => { event.preventDefault(); setActiveCategory(activeProduct.category); closeProduct(); }}>Category: {activeProduct.category}</a><div className="checkout-note"><Icon name="shield"/><span><strong>Checkout details</strong><small>Review delivery and payment options at checkout.</small></span></div></div>
         </div>
         <div className="detail-tabs" role="tablist" aria-label="Product information"><button role="tab" aria-selected={detailTab === "description"} className={detailTab === "description" ? "selected" : ""} onClick={() => setDetailTab("description")}>Description</button><button role="tab" aria-selected={detailTab === "reviews"} className={detailTab === "reviews" ? "selected" : ""} onClick={() => setDetailTab("reviews")}>Reviews (0)</button></div>
         <div className="detail-tab-content" role="tabpanel">{detailTab === "description" ? <><h3>About this product</h3><p>{activeProduct.description}</p><p>{activeProduct.detail}. Selected to make everyday healthcare shopping straightforward for you and your family.</p><ul>{activeProduct.features.map((feature) => <li key={feature}>{feature}</li>)}</ul></> : <div className="no-reviews"><span>☆</span><h3>No reviews yet</h3><p>Customer reviews will appear here when they are available.</p></div>}</div>
