@@ -445,3 +445,19 @@ h1,h2,h3,h4,.landing-hero h1,.landing-section-head h2,.landing-about-copy h2,.la
   .site-header>.main-nav.open{top:74px;right:14px;left:14px;width:auto;max-width:none}
   .labshop-account .account-button{min-width:71px;padding-right:14px;padding-left:14px}
 }
+
+/* Keep mobile card actions aligned across each product and test row. */
+@media(max-width:900px){
+  .product-grid,.labtest-grid{align-items:stretch}
+  .product-card,.labtest-card{display:flex;height:100%;flex-direction:column}
+  .product-info,.labtest-card-body{display:flex;flex:1;flex-direction:column}
+  .product-buy{align-items:center;margin-top:auto}
+  .product-buy .add-button{flex:0 0 auto;white-space:nowrap}
+  .labtest-book{display:flex;flex-wrap:nowrap;justify-content:space-between;gap:8px;margin-top:auto;white-space:nowrap}
+}
+@media(max-width:650px){
+  .product-buy{display:grid;grid-template-columns:minmax(0,1fr);gap:7px}
+  .product-buy>div{justify-content:space-between}
+  .product-buy .add-button{width:100%;min-height:36px}
+  .labtest-book{min-height:36px;padding:0 8px;font-size:11px;gap:6px}
+}
