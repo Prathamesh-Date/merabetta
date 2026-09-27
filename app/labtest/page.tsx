@@ -1,6 +1,6 @@
 "use client";
 
-import { FormEvent, useMemo, useState } from "react";
+import { FormEvent, useEffect, useMemo, useState } from "react";
 import SiteFooter from "../components/site-footer";
 
 type LabTest = {
@@ -43,6 +43,19 @@ export default function LabTestPage() {
   const [selectedTest, setSelectedTest] = useState<LabTest | null>(null);
   const [requestSent, setRequestSent] = useState(false);
 
+  useEffect(() => {
+    function handleBookingHistory() {
+      const testName = window.location.hash.startsWith("#booking=")
+        ? decodeURIComponent(window.location.hash.slice("#booking=".length))
+        : null;
+      setSelectedTest(tests.find((test) => test.name === testName) ?? null);
+      setRequestSent(false);
+    }
+
+    window.addEventListener("popstate", handleBookingHistory);
+    return () => window.removeEventListener("popstate", handleBookingHistory);
+  }, []);
+
   const visibleTests = useMemo(() => tests.filter((test) => {
     const matchesQuery = `${test.name} ${test.category} ${test.summary}`.toLowerCase().includes(query.toLowerCase());
     return matchesQuery && (category === "All categories" || test.category === category) && (testType === "All types" || test.type === testType);
@@ -53,9 +66,24 @@ export default function LabTestPage() {
     setRequestSent(true);
   }
 
-  function closeBooking() {
-    setSelectedTest(null);
+  function openBooking(test: LabTest) {
+    const bookingUrl = `${window.location.pathname}${window.location.search}#booking=${encodeURIComponent(test.name)}`;
+    if (window.location.hash.startsWith("#booking=")) {
+      window.history.replaceState(null, "", bookingUrl);
+    } else {
+      window.history.pushState(null, "", bookingUrl);
+    }
+    setSelectedTest(test);
     setRequestSent(false);
+  }
+
+  function closeBooking() {
+    if (window.location.hash.startsWith("#booking=")) {
+      window.history.back();
+    } else {
+      setSelectedTest(null);
+      setRequestSent(false);
+    }
   }
 
   return (
@@ -84,7 +112,7 @@ export default function LabTestPage() {
 
         <section className="labshop-tests" id="tests"><div className="labshop-heading"><div><span className="section-kicker">Choose what you need</span><h2>Explore lab tests</h2><p>Browse test details and request a convenient collection.</p></div><span className="labshop-result-count">{visibleTests.length} tests</span></div>
           <div className="labshop-catalog-tools"><div className="labshop-filters" aria-label="Filter tests by category">{categories.map((item) => <button key={item} className={category === item ? "selected" : ""} onClick={() => setCategory(item)}>{item}</button>)}</div><div className="labshop-sort-row"><div className="labshop-type-filters" aria-label="Filter by test type">{["All types", "Test", "Profile", "Package"].map((item) => <button key={item} className={testType === item ? "selected" : ""} onClick={() => setTestType(item)}>{item}</button>)}</div><label>Sort by <select aria-label="Sort lab tests" value={sortOrder} onChange={(event) => setSortOrder(event.target.value)}><option value="featured">Recommended</option><option value="price-low">Price: low to high</option><option value="price-high">Price: high to low</option></select></label></div></div>
-          {visibleTests.length ? <div className="labtest-grid">{visibleTests.map((test) => <article className="labtest-card" key={test.name}><div className={`labtest-art ${test.tone}`}><span className="labtest-icon">{test.icon}</span><span className="labtest-art-label">MERABETTA<br/>DIAGNOSTICS</span><span className="labtest-art-leaf">✳</span><span className="labtest-type-tag">{test.type}</span></div><div className="labtest-card-body"><span className="labtest-category">{test.category}</span><h3>{test.name}</h3><p>{test.summary}</p><div className="labtest-meta"><span>{test.sample}</span><span>Report: {test.report}</span></div><div className="labtest-price-row"><strong>₹{test.price.toLocaleString("en-IN")}</strong><button className="labtest-detail" onClick={() => { setRequestSent(false); setSelectedTest(test); }}>Details</button></div><button className="button button-primary labtest-book" onClick={() => { setRequestSent(false); setSelectedTest(test); }}>Book appointment <span>→</span></button></div></article>)}</div> : <div className="labshop-empty"><span>⌕</span><h3>No tests match that search</h3><p>Try another name or choose a different category.</p></div>}
+          {visibleTests.length ? <div className="labtest-grid">{visibleTests.map((test) => <article className="labtest-card" key={test.name}><div className={`labtest-art ${test.tone}`}><span className="labtest-icon">{test.icon}</span><span className="labtest-art-label">MERABETTA<br/>DIAGNOSTICS</span><span className="labtest-art-leaf">✳</span><span className="labtest-type-tag">{test.type}</span></div><div className="labtest-card-body"><span className="labtest-category">{test.category}</span><h3>{test.name}</h3><p>{test.summary}</p><div className="labtest-meta"><span>{test.sample}</span><span>Report: {test.report}</span></div><div className="labtest-price-row"><strong>₹{test.price.toLocaleString("en-IN")}</strong><button className="labtest-detail" onClick={() => openBooking(test)}>Details</button></div><button className="button button-primary labtest-book" onClick={() => openBooking(test)}>Book appointment <span>→</span></button></div></article>)}</div> : <div className="labshop-empty"><span>⌕</span><h3>No tests match that search</h3><p>Try another name or choose a different category.</p></div>}
         </section>
 
         <section className="labshop-help"><div><span className="section-kicker">Need a hand?</span><h2>We can help you find the next step.</h2><p>For questions about a test or its preparation, contact the Merabetta care team.</p></div><a className="button button-primary" href="mailto:support@merabetta.com">Talk to our care team <span>→</span></a></section>
