@@ -120,11 +120,11 @@ export default function Home() {
         <div className="location"><Icon name="pin"/><span><strong>Deliver to</strong><b>Bengaluru</b></span><span className="chevron">⌄</span></div>
         <label className="search-box"><Icon name="search"/><input aria-label="Search products" placeholder="Search medicines, health products..." value={query} onChange={(event) => setQuery(event.target.value)}/><kbd>⌘ K</kbd></label>
         <nav className={`main-nav ${menuOpen ? "open" : ""}`} aria-label="Main navigation">
-          <a href="/" onClick={() => setMenuOpen(false)}>Home</a><a className="nav-current" href="#products" onClick={() => setMenuOpen(false)}>Products</a><a href="/labtest" onClick={() => setMenuOpen(false)}>Lab Tests</a><a href="/about" onClick={() => setMenuOpen(false)}>About Us</a>
+          <a href="/" onClick={() => setMenuOpen(false)}>Home</a><a className="nav-current" href="#products" onClick={() => setMenuOpen(false)}>Products</a><a href="/labtest" onClick={() => setMenuOpen(false)}>Lab Tests</a><a href="/about" onClick={() => setMenuOpen(false)}>About Us</a><button className="cart-button" onClick={() => { setMenuOpen(false); setCartOpen(true); }} aria-label={`Open cart, ${cartCount} items`}><Icon name="bag"/><span>Cart</span><b>{cartCount}</b></button>
         </nav>
-        <button className="icon-button mobile-menu" aria-label={menuOpen ? "Close menu" : "Open menu"} aria-expanded={menuOpen} onClick={() => setMenuOpen(!menuOpen)}><span>{menuOpen ? "×" : "☰"}</span></button>
+        <button className="icon-button mobile-menu" aria-label={menuOpen ? "Close menu" : "Open menu"} aria-expanded={menuOpen} onClick={() => setMenuOpen(!menuOpen)}><span className="menu-symbol">{menuOpen ? "×" : "☰"}</span><span>Menu</span></button>
         <button className="account-button" onClick={() => openAuth("login")}>{accountName ? `Hi, ${accountName.split(" ")[0]}` : "Log in"}</button>
-        <button className="cart-button" onClick={() => setCartOpen(true)} aria-label={`Open cart, ${cartCount} items`}><Icon name="bag"/><span>Cart</span><b>{cartCount}</b></button>
+        <button className="cart-button mobile-cart-button" onClick={() => setCartOpen(true)} aria-label={`Open cart, ${cartCount} items`}><Icon name="bag"/><b>{cartCount}</b></button>
       </header>
 
       <div id="top" className="content-wrap">

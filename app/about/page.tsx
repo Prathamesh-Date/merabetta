@@ -35,7 +35,7 @@ export default function AboutPage() {
           <a href="/products">Products</a>
           <a href="/labtest">Lab Tests</a>
           <a className="current" href="/about">About Us</a>
-          <a href="/#contact">Contact</a>
+          <a href="#contact">Contact</a>
         </nav>
         <details className="landing-mobile-menu">
           <summary aria-label="Open navigation">☰ <span>Menu</span></summary>
@@ -44,7 +44,7 @@ export default function AboutPage() {
             <a href="/products">Products</a>
             <a href="/labtest">Lab Tests</a>
             <a href="/about">About Us</a>
-            <a href="/#contact">Contact</a>
+            <a href="#contact">Contact</a>
           </nav>
         </details>
         <div className="landing-auth-links">

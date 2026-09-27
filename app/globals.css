@@ -359,9 +359,9 @@ h1,h2,h3,h4,.landing-hero h1,.landing-section-head h2,.landing-about-copy h2,.la
 @media(max-width:1080px){.landing-links,.main-nav{font-size:13px}}
 @media(max-width:650px){.landing-links,.main-nav{font-size:13px}}
 @media(prefers-reduced-motion:reduce){.landing-links a,.main-nav a,.landing-links a::after,.main-nav a::after{transition:none}}
-.landing-links{gap:clamp(17px,1.8vw,24px)}
+.landing-links{gap:clamp(14px,1.35vw,20px)}
 .main-nav{gap:clamp(14px,1.35vw,20px)}
-@media(max-width:1080px){.landing-links{gap:16px}.main-nav{gap:12px}}
+@media(max-width:1080px){.landing-links,.main-nav{gap:12px}}
 @media(max-width:650px){.labshop-header .labshop-nav{gap:0}.main-nav.open{gap:2px}}
 
 /* Slightly compact the shared footer without changing its overall layout. */
@@ -373,3 +373,75 @@ h1,h2,h3,h4,.landing-hero h1,.landing-section-head h2,.landing-about-copy h2,.la
 .reference-footer-bottom{margin-top:36px;padding-top:14px}
 @media(max-width:900px){.reference-footer{padding-top:41px;padding-bottom:22px}.reference-footer-grid{gap:27px 22px}}
 @media(max-width:650px){.reference-footer{padding-top:31px;padding-bottom:18px}.reference-footer-grid{gap:23px 17px}.reference-footer-logo{width:124px;height:94px}.reference-footer-bottom{margin-top:24px;padding-top:13px}}
+
+/* Keep the same header frame, link baseline, and mobile menu across every route. */
+.landing-header,.site-header{
+  width:min(100%,1280px);
+  min-height:78px;
+  padding-top:14px;
+  padding-bottom:14px;
+  align-items:center;
+}
+.landing-links,.main-nav{align-items:center;align-self:center;margin-top:0;margin-bottom:0}
+.landing-links{margin-left:auto}
+.main-nav{margin-left:auto}
+.labshop-header .labshop-nav{margin-left:auto}
+.landing-header .landing-auth-links,.site-header .labshop-account{align-self:center}
+.landing-mobile-menu.labshop-mobile-menu{display:none}
+.site-header .main-nav>.cart-button{position:relative;display:inline-flex;align-items:center;justify-content:center;width:52px;min-width:52px;min-height:38px;margin:0;padding:0;border:0;border-radius:9px;background:transparent;color:#302543;font-size:13px;font-weight:600}
+.site-header .main-nav>.cart-button>svg{width:20px;height:20px}
+.site-header .main-nav>.cart-button>span{display:none}
+.site-header .main-nav>.cart-button>b{position:absolute;top:0;right:2px;height:16px;min-width:16px;padding:0 3px;border:1px solid #fff;font-size:9px}
+.site-header .main-nav>.cart-button:hover{background:#f3eafa;color:#7045a3}
+.site-header>.mobile-cart-button{display:none}
+@media(max-width:900px){
+  .landing-header,.site-header{min-height:0;flex-wrap:wrap;gap:10px 12px;padding:12px 22px}
+  .landing-header>.landing-brand,.site-header>.brand{order:1}
+  .landing-header>.landing-links,.site-header>.main-nav,.labshop-header>.labshop-nav{display:none}
+  .landing-header>.landing-mobile-menu,.site-header>.mobile-menu,.landing-mobile-menu.labshop-mobile-menu{display:block;order:2;margin-left:auto}
+  .landing-header>.landing-auth-links,.site-header>.account-button,.labshop-header>.labshop-account{order:3;margin-left:0}
+  .site-header>.mobile-cart-button{display:inline-flex;order:4;align-items:center;justify-content:center;position:relative;width:38px;min-width:38px;height:38px;min-height:38px;margin-left:0;padding:0;border:1px solid #e6e1ea;border-radius:9px;background:#fff;color:#302543}
+  .site-header>.mobile-cart-button>svg{width:19px;height:19px}
+  .site-header>.mobile-cart-button>b{position:absolute;top:-4px;right:-5px;height:16px;min-width:16px;padding:0 3px;border:1px solid #fff;font-size:9px}
+  .site-header>.location{display:none}
+  .site-header>.search-box,.labshop-header>.labshop-search{order:5;flex:1 0 100%;width:100%;max-width:none;margin:0}
+  .site-header>.cart-button{order:4;margin-left:0}
+  .site-header>.mobile-menu{display:inline-flex;align-items:center;justify-content:center;gap:5px;width:auto;min-width:80px;height:38px;padding:0 11px;border:1px solid #e1e6e5;border-radius:9px;background:#fff;color:#302543;font-size:12px;font-weight:700;white-space:nowrap}
+  .site-header>.mobile-menu .menu-symbol{font-size:18px;font-weight:400;line-height:1}
+  .site-header>.main-nav.open{position:absolute;z-index:40;top:74px;right:14px;left:14px;display:flex;width:auto;max-width:none;padding:8px;flex-direction:column;align-items:stretch;gap:3px;border:1px solid #e8e1ed;border-radius:13px;background:#fff;box-shadow:0 12px 34px #3025431c}
+  .site-header>.main-nav.open a{display:flex;align-items:center;min-height:40px;padding:0 12px;border-radius:8px;line-height:1.4}
+  .site-header>.main-nav.open a::after{display:none}
+  .site-header>.main-nav.open>.cart-button{display:none}
+  .landing-mobile-menu>nav{min-width:220px}
+  .landing-mobile-menu>nav a{display:flex;align-items:center;min-height:40px;padding:0 12px;color:#302543;font-size:13px;font-weight:500;line-height:1.4}
+  .landing-mobile-menu>nav a::after{display:none}
+  .landing-mobile-menu>nav a:hover,.landing-mobile-menu>nav a:focus-visible{background:#f3eafa;color:#7045a3}
+  .landing-mobile-menu summary{min-width:80px;min-height:38px;padding:0 11px;border-color:#e6e1ea;border-radius:9px;color:#302543;font-size:12px}
+}
+@media(max-width:650px){
+  .landing-header,.site-header{padding:10px 14px;gap:8px}
+  .landing-mobile-menu summary,.site-header>.mobile-menu{min-height:34px;height:34px}
+  .landing-header .landing-login,.site-header .account-button,.labshop-account .account-button{min-height:34px;padding:0 10px;font-size:11px}
+  .site-header>.cart-button{min-height:34px;padding:6px 8px;font-size:11px}
+  .site-header>.mobile-cart-button{width:34px;min-width:34px;height:34px;min-height:34px;padding:0}
+  .landing-mobile-menu>nav{min-width:min(230px,calc(100vw - 28px))}
+  .site-header>.main-nav.open{right:12px;width:min(230px,calc(100vw - 24px))}
+}
+@media(min-width:901px){
+  .site-header>.brand{order:1}
+  .site-header>.location{order:2}
+  .site-header>.search-box{order:3}
+  .site-header>.cart-button{order:4}
+  .site-header>.main-nav{order:5}
+  .site-header>.account-button,.site-header>.labshop-account{order:6}
+}
+@media(max-width:900px){
+  .landing-mobile-menu{position:static}
+  .landing-header>.landing-mobile-menu,.site-header>.mobile-menu,.landing-mobile-menu.labshop-mobile-menu{margin-left:12px}
+  .landing-header>.landing-auth-links,.labshop-header>.labshop-account{margin-left:auto}
+  .site-header>.mobile-cart-button{order:3;margin-left:auto}
+  .site-header>.account-button{order:4;margin-left:0}
+  .landing-mobile-menu>nav{position:absolute;top:74px;right:14px;left:14px;width:auto;min-width:0;display:grid;gap:3px;padding:8px;border:1px solid #e8e1ed;border-radius:13px;background:#fff;box-shadow:0 12px 34px #3025431c}
+  .site-header>.main-nav.open{top:74px;right:14px;left:14px;width:auto;max-width:none}
+  .labshop-account .account-button{min-width:71px;padding-right:14px;padding-left:14px}
+}

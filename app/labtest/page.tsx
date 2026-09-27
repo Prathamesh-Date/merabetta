@@ -64,7 +64,13 @@ export default function LabTestPage() {
       <header className="site-header labshop-header">
         <a className="brand brand-logo" href="/" aria-label="Merabetta home"><img src="/logo.png" alt="Merabetta" /></a>
         <label className="search-box labshop-search"><span aria-hidden="true">⌕</span><input aria-label="Search lab tests" placeholder="Search lab tests..." value={query} onChange={(event) => setQuery(event.target.value)}/></label>
-        <nav className="main-nav labshop-nav" aria-label="Main navigation"><a href="/">Home</a><a href="/products">Products</a><a className="nav-current" href="/labtest">Lab Tests</a><a href="/about">About Us</a></nav>
+        <nav className="main-nav labshop-nav" aria-label="Main navigation"><a href="/">Home</a><a href="/products">Products</a><a className="nav-current" href="/labtest">Lab Tests</a><a href="/about">About Us</a><a href="/about#contact">Contact</a></nav>
+        <details className="landing-mobile-menu labshop-mobile-menu">
+          <summary aria-label="Open navigation">☰ <span>Menu</span></summary>
+          <nav aria-label="Mobile navigation">
+            <a href="/">Home</a><a href="/products">Products</a><a href="/labtest">Lab Tests</a><a href="/about">About Us</a><a href="/about#contact">Contact</a>
+          </nav>
+        </details>
         <div className="labshop-account"><a className="account-button" href="/products?account=login">Log in</a></div>
       </header>
 
