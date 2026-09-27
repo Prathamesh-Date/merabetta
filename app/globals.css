@@ -453,7 +453,8 @@ h1,h2,h3,h4,.landing-hero h1,.landing-section-head h2,.landing-about-copy h2,.la
   .product-info,.labtest-card-body{display:flex;flex:1;flex-direction:column}
   .product-buy{align-items:center;margin-top:auto}
   .product-buy .add-button{flex:0 0 auto;white-space:nowrap}
-  .labtest-book{display:flex;flex-wrap:nowrap;justify-content:space-between;gap:8px;margin-top:auto;white-space:nowrap}
+  .labtest-price-row{margin-top:auto}
+  .labtest-book{display:flex;flex-wrap:nowrap;justify-content:space-between;gap:8px;margin-top:0;white-space:nowrap}
 }
 @media(max-width:650px){
   .product-buy{display:grid;grid-template-columns:minmax(0,1fr);gap:7px}
