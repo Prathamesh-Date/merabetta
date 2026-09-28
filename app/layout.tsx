@@ -1,5 +1,7 @@
 import type { Metadata } from "next";
 import "./globals.css";
+import "./care.css";
+import { CareProvider } from "./components/care-store";
 
 export const metadata: Metadata = {
   title: "Merabetta | Healthcare You Can Trust, Delivered with Care",
@@ -14,8 +16,8 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang="en">
-      <body>{children}</body>
+    <html lang="en" data-scroll-behavior="smooth">
+      <body><CareProvider>{children}</CareProvider></body>
     </html>
   );
 }

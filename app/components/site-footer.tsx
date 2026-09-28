@@ -35,8 +35,8 @@ export default function SiteFooter() {
           <a href="/">Home</a>
           <a href="/about">About Us</a>
           <a href="/products">Products</a>
-          <a href="/#about">Community</a>
-          <a href="/#contact">Contact</a>
+          <a href="/about">Community</a>
+          <a href="/#support">Contact</a>
         </nav>
 
         <nav className="reference-footer-column" aria-label="Follow Us">
