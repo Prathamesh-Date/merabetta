@@ -2,9 +2,9 @@
 
 import Link from "next/link";
 import { useState } from "react";
-import { asset, categories, demoDescription, labs, labListings, money, products, tests, type Product } from "../data/catalog";
+import { asset, categories, demoDescription, labListings, money, products, tests, type Product } from "../data/catalog";
 import CareIcon from "./care-icon";
-import CareShell, { EmptyState, PageHeading } from "./care-shell";
+import CareShell, { PageHeading } from "./care-shell";
 import { useCare } from "./care-store";
 
 export function ProductCard({ product }: { product: Product }) {
@@ -16,7 +16,7 @@ function SectionTitle({ title, href, label = "View all" }: { title: string; href
   return <div className="ca-section-title"><h2>{title}</h2>{href && <Link href={href}>{label} <CareIcon name="arrow" size={17}/></Link>}</div>;
 }
 function CategoryGrid() {
-  return <div className="ca-categories">{categories.map(category => <Link key={category.id} href={`/products?category=${category.id}`}><span><img src={asset(category.image)} alt="" loading="lazy"/></span><strong>{category.name}</strong></Link>)}</div>;
+  return <div className="ca-categories ca-category-tiles">{categories.map(category => <Link key={category.id} href={`/products?category=${category.id}`}><span><CareIcon name={category.icon} size={40}/></span><strong>{category.name}</strong></Link>)}<Link href="/products"><span><CareIcon name="grid" size={40}/></span><strong>More</strong></Link></div>;
 }
 export function HomeScreen() {
   return <CareShell>
@@ -38,22 +38,6 @@ export function ProductsScreen({ initialCategory = "", initialQuery = "" }: { in
   return <CareShell><PageHeading eyebrow="Your everyday essentials" title="A little care, all in one place." text="Explore medicines, wellness and essentials for the people you love."/><div className="ca-toolbar"><label className="ca-search"><CareIcon name="search"/><input value={query} onChange={e => setQuery(e.target.value)} placeholder="Search products, brands, health solutions..." aria-label="Search products"/>{query && <button onClick={() => setQuery("")} aria-label="Clear search"><CareIcon name="close" size={17}/></button>}</label><select aria-label="Sort products" value={sort} onChange={e => setSort(e.target.value)}><option value="featured">Featured products</option><option value="low">Price: low to high</option><option value="high">Price: high to low</option></select></div><div className="ca-chips" aria-label="Product categories"><button className={!category ? "active" : ""} onClick={() => setCategory("")}>All products</button>{categories.map(c => <button key={c.id} className={category === c.id ? "active" : ""} onClick={() => setCategory(c.id)}>{c.name}</button>)}</div><p className="ca-result-count">{visible.length} products · Sample catalog</p>{visible.length ? <div className="ca-product-grid">{visible.map(p => <ProductCard key={p.id} product={p}/>)}</div> : <div className="ca-empty"><h2>No products found</h2><p>Try another search or category.</p><button className="ca-button" onClick={() => { setQuery(""); setCategory(""); }}>Clear filters</button></div>}</CareShell>;
 }
 
-export function ProductScreen({ id }: { id: string }) {
-  const product = products.find(p => p.id === id)!;
-  const { add, ready } = useCare();
-  const [count, setCount] = useState(1);
-  return <CareShell><Link className="ca-back" href="/products"><CareIcon name="back" size={18}/> All products</Link><div className="ca-detail"><img className="ca-detail-image" src={asset(product.image)} alt={product.name}/><div><span className="ca-eyebrow">{categories.find(c => c.id === product.category)?.name}</span><h1>{product.name}</h1><p>{product.subtitle}</p><span className="ca-rating">★ {product.rating} · Sample rating</span><div className="ca-detail-price"><strong>{money(product.price)}</strong> <del>{money(product.mrp)}</del><span className="ca-pill">{Math.round((1 - product.price / product.mrp) * 100)}% off</span></div><h2>About this product</h2><p>A sample product from the Merabetta care collection. Product descriptions, prices and availability are for demonstration.</p><div className="ca-detail-actions"><Quantity value={count} onChange={setCount} name={product.name}/><button className="ca-button" disabled={!ready} onClick={() => add(id, count)}>Add to cart <CareIcon name="cart"/></button></div><div className="ca-info-note"><CareIcon name="truck"/> Free delivery on orders above ₹499</div></div></div><section className="ca-section"><SectionTitle title="More care essentials"/><div className="ca-product-grid">{products.filter(p => p.id !== id).slice(0,4).map(p => <ProductCard key={p.id} product={p}/>)}</div></section></CareShell>;
-}
-
 export function Quantity({ value, onChange, name, allowZero = false }: { value: number; onChange: (n: number) => void; name: string; allowZero?: boolean }) {
   return <div className="ca-quantity"><button aria-label={`Decrease ${name} quantity`} disabled={value <= (allowZero ? 0 : 1)} onClick={() => onChange(value - 1)}>−</button><span aria-label={`${name} quantity`}>{value}</span><button aria-label={`Increase ${name} quantity`} disabled={value >= 99} onClick={() => onChange(value + 1)}>+</button></div>;
-}
-
-export function LabsScreen({ initialTest = "" }: { initialTest?: string }) {
-  const [query, setQuery] = useState("");
-  const [lab, setLab] = useState("");
-  const [testId, setTestId] = useState(initialTest);
-  const { add, ready } = useCare();
-  const listings = labListings.filter(l => (!lab || l.lab === lab) && (!testId || l.test === testId) && tests.find(t => t.id === l.test)!.name.toLowerCase().includes(query.toLowerCase().trim()));
-  return <CareShell><section className="ca-lab-hero"><div><span className="ca-eyebrow">Care for your future.</span><h1>Know your health.<br/><em>Feel more at ease.</em></h1><p>Convenient sample collection at home.<br/>Compare labs and find your health package.</p><span className="ca-pill"><CareIcon name="lab" size={16}/> Your health. Your choice.</span></div><img src={asset("lab")} alt="Lab sample collection tubes and clipboard"/></section><section className="ca-section"><SectionTitle title="Choose a lab"/><div className="ca-lab-options"><button onClick={() => setLab("")} className={!lab ? "active" : ""}><CareIcon name="lab"/><strong>All labs</strong></button>{labs.map(l => <button key={l.id} onClick={() => setLab(l.id)} className={lab === l.id ? "active" : ""}><span style={{ color: l.color, background: l.background }}><CareIcon name="lab"/></span><strong>{l.name}</strong></button>)}</div></section><div className="ca-toolbar"><label className="ca-search"><CareIcon name="search"/><input value={query} onChange={e => setQuery(e.target.value)} aria-label="Search lab tests" placeholder="Search tests and health packages..."/></label><select aria-label="Test category" value={testId} onChange={e => setTestId(e.target.value)}><option value="">All health packages</option>{tests.map(t => <option key={t.id} value={t.id}>{t.name}</option>)}</select></div><p className="ca-result-count">{listings.length} packages · Lab profiles and prices are sample data for this demo.</p><div className="ca-lab-grid">{listings.map(listing => { const test = tests.find(t => t.id === listing.test)!; const provider = labs.find(l => l.id === listing.lab)!; return <article className="ca-lab-card" key={listing.id}><span className="ca-lab-name" style={{ color: provider.color }}><CareIcon name="lab" size={18}/>{provider.name}</span><h2>{test.name}</h2><p>{test.subtitle}</p><div className="ca-lab-facts"><span><CareIcon name="home" size={16}/> Home collection</span><span><CareIcon name="clock" size={16}/> Reports in {listing.hours} hours</span></div><details><summary>Test details & preparation</summary><p>Fasting: {listing.preparation}</p><ul>{test.included.map(item => <li key={item}>{item}</li>)}</ul></details><div className="ca-product-bottom"><div><strong>{money(listing.price)}</strong> <del>{money(listing.mrp)}</del></div><button className="ca-add" disabled={!ready} aria-label={`Add ${test.name} from ${provider.name}`} onClick={() => add(listing.id)}>Add +</button></div></article>; })}</div>{!listings.length && <EmptyState title="No matching tests" text="Try another search or select a different lab." href="/labtest" action="Browse lab tests"/>}</CareShell>;
 }

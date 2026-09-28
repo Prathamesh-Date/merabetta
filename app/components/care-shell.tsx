@@ -10,24 +10,24 @@ import SiteFooter from "./site-footer";
 const navigation = [
   { href: "/", name: "Home", icon: "home" },
   { href: "/products", name: "Products", icon: "grid" },
-  { href: "/labtest", name: "Lab Tests", icon: "lab" },
   { href: "/cart", name: "Cart", icon: "cart" },
+  { href: "/labtest", name: "Lab Tests", icon: "lab" },
   { href: "/profile", name: "Profile", icon: "profile" },
 ];
-export default function CareShell({ children }: { children: ReactNode }) {
+export default function CareShell({ children, focused = false }: { children: ReactNode; focused?: boolean }) {
   const path = usePathname();
   const { state, notice } = useCare();
   const count = Object.values(state.cart).reduce((a, b) => a + b, 0);
-  function links() {
-    return navigation.map(item => <Link key={item.href} href={item.href} className={path === item.href || (item.href !== "/" && path.startsWith(item.href + "/")) ? "active" : ""} aria-current={path === item.href ? "page" : undefined}><span><CareIcon name={item.icon}/>{item.icon === "cart" && count > 0 && <b className="ca-count">{count}</b>}</span>{item.name}</Link>);
+  function links(mobile = false) {
+    return navigation.map(item => <Link key={item.href} href={item.href} className={path === item.href || (item.href !== "/" && path.startsWith(item.href + "/")) ? "active" : ""} aria-current={path === item.href ? "page" : undefined}><span><CareIcon name={item.icon}/>{item.icon === "cart" && count > 0 && <b className="ca-count">{count}</b>}</span>{mobile && item.icon === "grid" ? "Categories" : mobile && item.icon === "lab" ? "Labs" : item.name}</Link>);
   }
-  return <div className="ca-app">
+  return <div className={`ca-app ${focused ? "ca-focused" : ""}`}>
     <a className="ca-skip" href="#main-content">Skip to content</a>
     <div className="ca-topnote">A little care. A healthier tomorrow. <span>Free delivery on orders above ₹499</span></div>
     <header className="ca-header"><Link href="/" aria-label="Merabetta home" className="ca-logo"><img src="/logo.png" alt="Merabetta"/></Link><div className="ca-delivery"><CareIcon name="pin"/><span><small>Care, delivered to your door</small><strong>Welcome to Merabetta</strong></span></div><nav aria-label="Main navigation">{links()}</nav><Link className="ca-mobile-profile" href="/profile" aria-label="Open profile"><CareIcon name="profile"/></Link></header>
     <main id="main-content" className="ca-main">{children}</main>
     <SiteFooter/>
-    <nav className="ca-bottom-nav" aria-label="Mobile navigation">{links()}</nav>
+    <nav className="ca-bottom-nav" aria-label="Mobile navigation">{links(true)}</nav>
     {notice && <div className="ca-toast" role="status"><CareIcon name="check"/>{notice}</div>}
   </div>;
 }

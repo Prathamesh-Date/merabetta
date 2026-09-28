@@ -1,3 +1,4 @@
+import { referenceLabs, referenceTests } from "./lab-reference";
 // Content and sample prices recovered from the supplied app-release.apk.
 export const categories = [
   { id: "category-1", name: "Medicines", image: "medicine", icon: "medical" },
@@ -5,7 +6,7 @@ export const categories = [
   { id: "category-10", name: "Mobility & Accessories", image: "mobility", icon: "walk" },
   { id: "category-11", name: "Senior Furniture", image: "furniture", icon: "chair" },
   { id: "category-2", name: "Health Devices", image: "device", icon: "pulse" },
-  { id: "category-3", name: "Personal Care", image: "skincare", icon: "drop" },
+  { id: "category-3", name: "Personal Care", image: "skincare", icon: "lab" },
   { id: "category-5", name: "Wellness & Nutrition", image: "vitamins", icon: "leaf" },
 ];
 export type Product = { id: string; name: string; subtitle: string; price: number; mrp: number; image: string; rating: string; category: string };
@@ -46,3 +47,24 @@ export const labListings: LabListing[] = listingRows.map(([id, lab, test, price,
 export const money = (value: number) => `₹${value.toLocaleString("en-IN")}`;
 export const asset = (name: string) => `/app/${name}.webp`;
 export const demoDescription = "Merabetta is currently a demonstration app. All products, prices, lab packages and orders are sample data. The app does not provide medical advice, real prescriptions, diagnostic services or live payments.";
+
+// Keep existing listing IDs for saved carts, and restore the earlier lab catalog.
+const testAliases: Record<string, string> = { "Comprehensive Health Check": "test-1" };
+for (const original of referenceTests) {
+  const current = tests.find(test => test.name === original.name || test.id === testAliases[original.name]);
+  if (current) { testAliases[original.name] = current.id; continue; }
+  const id = "reference-" + original.name.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/-$/, "");
+  testAliases[original.name] = id;
+  tests.push({ id, name: original.name, subtitle: original.summary, category: original.category === "Immunity Check" ? "Vitamins" : original.category, image: original.category === "Immunity Check" ? "vitamins" : "lab", parameters: original.name === "Vitamin B12 & D Package" ? 2 : original.type === "Package" ? 97 : original.type === "Profile" ? 3 : 1, included: original.name === "Vitamin B12 & D Package" ? ["Vitamin B12", "Vitamin D"] : [original.name] });
+}
+export const referenceLabIds = referenceLabs.map(lab => lab.id === "orange-health" ? "orange" : lab.id);
+for (const original of referenceLabs) {
+  const id = original.id === "orange-health" ? "orange" : original.id;
+  if (!labs.some(lab => lab.id === id)) labs.push({ id, name: original.name, color: "#8453a7", background: "#f1eaf8" });
+  for (const name of original.testNames) {
+    const testId = testAliases[name];
+    if (labListings.some(listing => listing.lab === id && listing.test === testId)) continue;
+    const test = referenceTests.find(test => test.name === name)!;
+    labListings.push({ id: id + "-" + testId, lab: id, test: testId, price: test.price, mrp: test.price, hours: Number(test.report.match(/\d+/)?.[0] ?? 24), preparation: "Confirm preparation with your selected lab" });
+  }
+}
