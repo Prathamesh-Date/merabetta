@@ -1,0 +1,7 @@
+import CareShell from "../components/care-shell";
+import { asset, demoDescription } from "../data/catalog";
+import Link from "next/link";
+
+export default function AboutPage() {
+  return <CareShell><section className="ca-hero" id="about"><div className="ca-hero-copy"><span className="ca-eyebrow">About Merabetta</span><h1>Care that feels<br/><em>personal.</em></h1><p>Mera Betta is a senior-focused healthcare platform built around trust, comfort, and clarity. We make it easier to explore everyday essentials and care for the people you love.</p><Link href="/products" className="ca-button">Explore essentials →</Link></div><div className="ca-hero-image"><img src={asset("care")} alt="A caregiver supporting a senior at home"/></div></section><section className="ca-section"><div className="ca-section-title"><h2>Care in every detail</h2></div><div className="ca-test-grid">{[["Everyday essentials", "Explore products for senior comfort, personal care, mobility and wellbeing."], ["Care at your doorstep", "Keep products and home sample collection together in one simple journey."], ["For the people you love", "Save family members and their addresses to make your next demo order easier."]].map(([title, text]) => <article key={title} className="ca-panel"><h2>{title}</h2><p>{text}</p></article>)}</div></section><aside className="ca-demo"><p><strong>About this demonstration</strong><br/>{demoDescription}</p></aside></CareShell>;
+}
