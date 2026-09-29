@@ -10,7 +10,7 @@ import HomeHeader from "./care-home-header";
 
 const navigation = [
   { href: "/", name: "Home", icon: "home" },
-  { href: "/products", name: "Categories", icon: "grid" },
+  { href: "/products", name: "Products", icon: "grid" },
   { href: "/cart", name: "Cart", icon: "cart" },
   { href: "/labtest", name: "Lab Tests", icon: "lab" },
   { href: "/profile", name: "Profile", icon: "profile" },
