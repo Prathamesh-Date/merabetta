@@ -22,9 +22,13 @@ export default function CareShell({ children, focused = false }: { children: Rea
   function links(mobile = false) {
     return navigation.map(item => <Link key={item.href} href={item.href} className={path === item.href || (item.href !== "/" && path.startsWith(item.href + "/")) ? "active" : ""} aria-current={path === item.href ? "page" : undefined}><span><CareIcon name={item.icon}/>{item.icon === "cart" && count > 0 && <b className="ca-count">{count}</b>}</span>{mobile && item.icon === "grid" ? "Categories" : mobile && item.icon === "lab" ? "Labs" : item.name}</Link>);
   }
+  function desktopLinks() {
+    const item = (href: string, name: string, icon: string, extra = false) => <Link key={href} href={href} className={`${path === href || (href !== "/" && path.startsWith(href + "/")) ? "active" : ""}${extra ? " ch-secondary-link" : ""}`} aria-current={path === href ? "page" : undefined}><span><CareIcon name={icon}/>{icon === "cart" && count > 0 && <b className="ca-count">{count}</b>}</span>{name}</Link>;
+    return [item("/", "Home", "home"), item("/products", "Products", "grid"), item("/labtest", "Lab Tests", "lab"), item("/cart", "Cart", "cart"), item("/about", "About Us", "heart", true), item("/profile", "Profile", "profile"), item("/profile?tab=support", "Contact", "support", true)];
+  }
   return <div className={`ca-app ${focused ? "ca-focused" : ""}`}>
     <a className="ca-skip" href="#main-content">Skip to content</a>
-    <HomeHeader navigation={links()} showSearch={path === "/"} compact={path !== "/"}/>
+    <HomeHeader navigation={desktopLinks()} showSearch={path === "/"} compact={path !== "/"}/>
     <main id="main-content" className="ca-main">{children}</main>
     <SiteFooter/>
     <nav className="ca-bottom-nav" aria-label="Mobile navigation">{links(true)}</nav>
