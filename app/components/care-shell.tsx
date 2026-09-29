@@ -10,7 +10,7 @@ import HomeHeader from "./care-home-header";
 
 const navigation = [
   { href: "/", name: "Home", icon: "home" },
-  { href: "/products", name: "Products", icon: "grid" },
+  { href: "/products", name: "Categories", icon: "grid" },
   { href: "/cart", name: "Cart", icon: "cart" },
   { href: "/labtest", name: "Lab Tests", icon: "lab" },
   { href: "/profile", name: "Profile", icon: "profile" },
@@ -24,7 +24,7 @@ export default function CareShell({ children, focused = false }: { children: Rea
   }
   return <div className={`ca-app ${focused ? "ca-focused" : ""}`}>
     <a className="ca-skip" href="#main-content">Skip to content</a>
-    <HomeHeader navigation={links()} showSearch={path === "/"}/>
+    {path === "/" && <HomeHeader navigation={links()}/>} 
     <main id="main-content" className="ca-main">{children}</main>
     <SiteFooter/>
     <nav className="ca-bottom-nav" aria-label="Mobile navigation">{links(true)}</nav>
