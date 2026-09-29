@@ -24,7 +24,7 @@ export default function CareShell({ children, focused = false }: { children: Rea
   }
   return <div className={`ca-app ${focused ? "ca-focused" : ""}`}>
     <a className="ca-skip" href="#main-content">Skip to content</a>
-    <HomeHeader navigation={links()}/>
+    <HomeHeader navigation={links()} showSearch={path === "/"}/>
     <main id="main-content" className="ca-main">{children}</main>
     <SiteFooter/>
     <nav className="ca-bottom-nav" aria-label="Mobile navigation">{links(true)}</nav>
