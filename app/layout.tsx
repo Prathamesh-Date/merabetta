@@ -2,7 +2,10 @@ import type { Metadata } from "next";
 import "./globals.css";
 import "./care.css";
 import "./care-details.css";
+<<<<<<< HEAD
 import "./care-home.css";
+=======
+>>>>>>> 2f0d4a40f8a1f9194817256bdd9ddfa3415c3a15
 import { CareProvider } from "./components/care-store";
 
 export const metadata: Metadata = {

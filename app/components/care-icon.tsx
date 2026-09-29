@@ -1,6 +1,9 @@
 export default function CareIcon({ name, size = 22 }: { name: string; size?: number }) {
   const paths: Record<string, React.ReactNode> = {
+<<<<<<< HEAD
     bell: <><path d="M5 9a7 7 0 0 1 5-6V2h4v1a7 7 0 0 1 5 6c0 7 3 8 3 8H2s3-1 3-8ZM9 20a3 3 0 0 0 6 0"/></>,
+=======
+>>>>>>> 2f0d4a40f8a1f9194817256bdd9ddfa3415c3a15
     layers: <><path d="m3 7 9-4 9 4-9 4Zm0 5 9 4 9-4M3 17l9 4 9-4"/></>,
     walk: <><circle cx="13" cy="4" r="2"/><path d="m8 12 2-4h4l2 5 4 2M12 9l-1 7-5 5m5-5 5 5M7 8v7"/></>,
     chair: <><path d="M3 21v-9a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v9M3 17h18M6 10V4h12v6M8 7h8"/></>,
