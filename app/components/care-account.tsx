@@ -19,16 +19,34 @@ export function ProfileScreen({ initialTab = "account" }: { initialTab?: string 
   const [tab, setTab] = useState(initialTab === "account" ? "account" : initialTab);
   const [person, setPerson] = useState<Person>(blankPerson);
   const [deleteOpen, setDeleteOpen] = useState(false);
+  const authDialog = useRef<HTMLDialogElement>(null);
+  const [authMode, setAuthMode] = useState<"login" | "signup">("login");
+  const [authName, setAuthName] = useState("");
+  const [authEmail, setAuthEmail] = useState("");
+  const [authPassword, setAuthPassword] = useState("");
+  const [authConfirmPassword, setAuthConfirmPassword] = useState("");
+  const [authError, setAuthError] = useState("");
   const signedIn = Boolean(state.profile);
   const go = (next: string) => { setTab(next); window.scrollTo({ top: 0, behavior: "smooth" }); };
   const profileName = state.profile?.name || "Your care profile";
   const initial = profileName.charAt(0).toUpperCase();
+  function chooseAuthMode(mode: "login" | "signup") { setAuthMode(mode); setAuthPassword(""); setAuthConfirmPassword(""); setAuthError(""); }
+  function submitProfileAuth(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    if (authMode === "signup" && !authName.trim()) { setAuthError("Please enter your name."); return; }
+    if (authPassword.length < 8) { setAuthError("Password must be at least 8 characters."); return; }
+    if (authMode === "signup" && authPassword !== authConfirmPassword) { setAuthError("Passwords do not match."); return; }
+    const name = authMode === "signup" ? authName.trim() : state.profile?.email === authEmail.trim() ? state.profile.name : authEmail.trim().split("@")[0];
+    update(current => ({ ...current, profile: { name, email: authEmail.trim() } }));
+    authDialog.current?.close();
+    announce(authMode === "signup" ? "Your demo account is ready" : "Logged in to your demo profile");
+  }
 
   if (!ready) return <CareShell><div className="ca-profile-page"><p>Loading your profile…</p></div></CareShell>;
   return <CareShell><div className="ca-profile-page">
     {tab === "account" && <>
       <div className="ca-profile-heading"><h1>Profile</h1><Link href="/profile?tab=wishlist" aria-label="View wishlist"><CareIcon name="heart" size={29}/></Link></div>
-      <section className="ca-profile-card">{signedIn ? <><span className="ca-avatar">{initial}</span><div><h2>{state.profile!.name}</h2><p>{state.profile!.email}</p><small>Your everyday wellness companion</small></div></> : <><span className="ca-avatar"><CareIcon name="profile" size={35}/></span><div><h2>Welcome to Merabetta</h2><p>Sign in to keep your care details together.</p><Link href="/" className="ca-profile-signin">Sign in</Link></div></>}</section>
+      <section className="ca-profile-card">{signedIn ? <><span className="ca-avatar">{initial}</span><div><h2>{state.profile!.name}</h2><p>{state.profile!.email}</p><small>Your everyday wellness companion</small></div></> : <><span className="ca-avatar"><CareIcon name="profile" size={35}/></span><div><h2>Welcome to Merabetta</h2><p>Sign in to keep your care details together.</p><button type="button" onClick={() => { chooseAuthMode("login"); authDialog.current?.showModal(); }} className="ca-profile-signin">Sign in</button></div></>}</section>
       <div className="ca-profile-shortcuts"><button onClick={() => go("orders")}><CareIcon name="bag" size={29}/><span>My Orders</span></button><button onClick={() => go("wishlist")}><CareIcon name="heart" size={29}/><span>Wishlist</span></button><button onClick={() => announce("Offers will be available here soon.")}><CareIcon name="ticket" size={29}/><span>Offers</span></button></div>
       <section className="ca-profile-menu">
         <button onClick={() => go("people")}>Family &amp; Addresses <CareIcon name="chevron"/></button>
@@ -41,6 +59,7 @@ export function ProfileScreen({ initialTab = "account" }: { initialTab?: string 
       </section>
       <button className="ca-profile-signout" disabled={!signedIn} onClick={() => { update(current => ({ ...current, profile: null })); announce("Signed out of your profile"); }}>Sign out <CareIcon name="arrow"/></button>
       {deleteOpen && <div className="ca-profile-modal" role="dialog" aria-modal="true" aria-labelledby="delete-title"><div><h2 id="delete-title">Delete your demo account?</h2><p>Your profile, saved people and addresses, cart, wishlist and order history will be removed from this device.</p><button className="ca-button" onClick={() => { update(() => ({ cart: {}, wishlist: [], people: [], orders: [], profile: null, coupon: false })); setDeleteOpen(false); announce("Demo account and local data deleted"); }}>Delete account &amp; data <CareIcon name="arrow"/></button><button className="ca-profile-cancel" onClick={() => setDeleteOpen(false)}>Keep my account <CareIcon name="arrow"/></button></div></div>}
+      <dialog ref={authDialog} className="ch-auth" aria-labelledby="profile-auth-title" onClose={() => { setAuthError(""); setAuthPassword(""); setAuthConfirmPassword(""); }}><button className="ch-close" aria-label="Close login" onClick={() => authDialog.current?.close()}><CareIcon name="close"/></button><img className="ch-auth-logo" src="/logo.png" alt="Merabetta"/><h2 id="profile-auth-title">{authMode === "signup" ? "Create your account" : "Welcome back"}</h2><p>A little space for your everyday care.</p><div className="ch-auth-tabs" role="tablist" aria-label="Account access"><button role="tab" aria-selected={authMode === "login"} className={authMode === "login" ? "active" : ""} onClick={() => chooseAuthMode("login")}>Log in</button><button role="tab" aria-selected={authMode === "signup"} className={authMode === "signup" ? "active" : ""} onClick={() => chooseAuthMode("signup")}>Sign up</button></div><form onSubmit={submitProfileAuth}>{authMode === "signup" && <label>Full name<input autoComplete="name" value={authName} onChange={e => setAuthName(e.target.value)} maxLength={80} required placeholder="Your full name"/></label>}<label>Email address<input type="email" autoComplete="email" value={authEmail} onChange={e => setAuthEmail(e.target.value)} maxLength={160} required placeholder="you@example.com"/></label><label>Password<input type="password" autoComplete={authMode === "signup" ? "new-password" : "current-password"} value={authPassword} onChange={e => setAuthPassword(e.target.value)} minLength={8} required placeholder="At least 8 characters"/></label>{authMode === "signup" && <label>Confirm password<input type="password" autoComplete="new-password" value={authConfirmPassword} onChange={e => setAuthConfirmPassword(e.target.value)} minLength={8} required placeholder="Enter your password again"/></label>}{authError && <p role="alert" className="ch-auth-error">{authError}</p>}<button type="submit" className="ca-button">{authMode === "signup" ? "Create account" : "Log in"}<CareIcon name="arrow" size={18}/></button></form><p className="ch-auth-note">This demo stores your profile on this device. Passwords are never saved and no email is sent.</p></dialog>
     </>}
     {tab === "orders" && <ProfileSubpage title="My Orders" back={() => go("account")}>{state.orders.length ? <div className="ca-orders">{state.orders.map(order => <article key={order.id} className="ca-panel"><h2>{order.id}</h2><p>{new Date(order.date).toLocaleDateString("en-IN")} · {order.person.name}</p><p>{order.items.map(item => item.name).join(", ")}</p><strong>Total {money(order.total)}</strong></article>)}</div> : <EmptyState title="No orders yet" text="Your care essentials will appear here after checkout."/>}</ProfileSubpage>}
     {tab === "wishlist" && <ProfileSubpage title="Wishlist" back={() => go("account")}>{state.wishlist.length ? <div className="ca-product-grid">{products.filter(p => state.wishlist.includes(p.id)).map(p => <ProductCard key={p.id} product={p}/>)}</div> : <EmptyState title="Keep your favourites close" text="Tap the heart on a product or lab test to save it here."/>}</ProfileSubpage>}
