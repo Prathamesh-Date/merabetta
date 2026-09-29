@@ -43,6 +43,10 @@ function ScreenTitle({ title, back, listing, quiet = false }: { title: string; b
   return <header className={`cl-screen-title ${quiet ? "cl-quiet-title" : ""}`}>{back && <Link href={back} aria-label="Back"><CareIcon name="back" size={25}/></Link>}<h1>{title}</h1>{listing ? <button aria-label={saved ? "Unsave test" : "Save test"} aria-pressed={saved} disabled={!ready} onClick={() => wish(listing.id)} className={saved ? "cl-saved" : ""}><CareIcon name="heart" size={26}/></button> : <Link href="/profile?tab=wishlist" aria-label="View wishlist"><CareIcon name="heart" size={26}/></Link>}</header>;
 }
 
+function Search({ value, change, placeholder }: { value: string; change: (value: string) => void; placeholder: string }) {
+  return <label className="cl-search cl-mobile-page-search"><CareIcon name="search"/><input aria-label={placeholder} placeholder={placeholder} value={value} onChange={e => change(e.target.value)}/>{value && <button onClick={() => change("")} aria-label="Clear search"><CareIcon name="close" size={18}/></button>}</label>;
+}
+
 export default function LabsScreen({ labId = "", testId = "", panel, initialQuery = "" }: { labId?: string; testId?: string; panel?: LabPanel; initialQuery?: string }) {
   const [query, setQuery] = useState(initialQuery);
   const [category, setCategory] = useState("All");
@@ -78,6 +82,7 @@ export default function LabsScreen({ labId = "", testId = "", panel, initialQuer
     <ScreenTitle title={title} back={back} listing={listing} quiet={!lab && !listing && !panel}/>
     {!lab ? <>
       <section className="cl-banner"><CareIcon name="lab" size={42}/><div><h2>Your health. Your choice.</h2><p>{chosenTest ? `Choose a lab for ${chosenTest.name}.` : "Choose a lab to explore its tests, packages and prices."}</p></div></section>
+      <Search value={query} change={setQuery} placeholder="Search labs by name or city..."/>
       <div className="cl-section-title"><h2>Choose your lab</h2><span>{visibleLabs.length} labs</span></div>
       <div className="cl-lab-grid">{visibleLabs.map(provider => {
         const offerings = labListings.filter(l => l.lab === provider.id);
@@ -88,6 +93,7 @@ export default function LabsScreen({ labId = "", testId = "", panel, initialQuer
       })}</div>{!visibleLabs.length && <div className="ca-empty"><h2>No labs found</h2><p>Try a different lab name or city.</p><button className="ca-button" onClick={() => setQuery("")}>Clear search</button></div>}
     </> : panel ? <LabInformation panel={panel} labId={labId} listing={listing}/> : !listing ? <>
       <section className="cl-provider-banner" style={{ background: lab.background }}><div><h2>{lab.name}</h2><p>Home sample collection and digital reports</p></div><Link href="/labtest">Change lab</Link></section>
+      <Search value={query} change={setQuery} placeholder="Search tests and health packages..."/>
       <div className="cl-filters" aria-label="Filter lab tests">{["All", ...Array.from(new Set(available.map(l => tests.find(t => t.id === l.test)!.category)))].map(c => <button key={c} aria-pressed={category === c} className={category === c ? "active" : ""} onClick={() => setCategory(c)}>{c}</button>)}</div>
       <section className="cl-banner cl-choice"><CareIcon name="lab" size={42}/><div><h2>Know your health.<br/>Care for your future.</h2><p>Convenient sample collection at home</p></div><Link className="cl-secondary" href={labUrl(labId, undefined, "trust")}>Why choose Merabetta? <CareIcon name="arrow"/></Link></section>
       <div className="cl-section-title"><h2>Popular health packages</h2><span>{visible.length} available</span></div>
