@@ -31,7 +31,7 @@ export default function CareShell({ children, focused = false }: { children: Rea
   }
   return <div className={`ca-app ${focused ? "ca-focused" : ""}`}>
     <a className="ca-skip" href="#main-content">Skip to content</a>
-    <HomeHeader navigation={desktopLinks()} quickActions={quickActions()} showSearch={path === "/"} showCompactSearch={path === "/products" || path === "/labtest"} compactSearchAction={path === "/labtest" ? "/labtest" : "/products"} compact={path !== "/"}/>
+    <HomeHeader navigation={desktopLinks()} quickActions={quickActions()} showSearch={path === "/"} showCompactSearch={path === "/products" || path === "/labtest"} compactSearchAction={path === "/labtest" ? "/labtest" : "/products"} compact home={path === "/"}/>
     <main id="main-content" className="ca-main">{children}</main>
     <SiteFooter/>
     <nav className="ca-bottom-nav" aria-label="Mobile navigation">{links(true)}</nav>
