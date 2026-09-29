@@ -6,10 +6,7 @@ import type { ReactNode } from "react";
 import CareIcon from "./care-icon";
 import { useCare } from "./care-store";
 import SiteFooter from "./site-footer";
-<<<<<<< HEAD
 import HomeHeader from "./care-home-header";
-=======
->>>>>>> 2f0d4a40f8a1f9194817256bdd9ddfa3415c3a15
 
 const navigation = [
   { href: "/", name: "Home", icon: "home" },
@@ -27,12 +24,7 @@ export default function CareShell({ children, focused = false }: { children: Rea
   }
   return <div className={`ca-app ${focused ? "ca-focused" : ""}`}>
     <a className="ca-skip" href="#main-content">Skip to content</a>
-<<<<<<< HEAD
     <HomeHeader navigation={links()}/>
-=======
-    <div className="ca-topnote">A little care. A healthier tomorrow. <span>Free delivery on orders above ₹499</span></div>
-    <header className="ca-header"><Link href="/" aria-label="Merabetta home" className="ca-logo"><img src="/logo.png" alt="Merabetta"/></Link><div className="ca-delivery"><CareIcon name="pin"/><span><small>Care, delivered to your door</small><strong>Welcome to Merabetta</strong></span></div><nav aria-label="Main navigation">{links()}</nav><Link className="ca-mobile-profile" href="/profile" aria-label="Open profile"><CareIcon name="profile"/></Link></header>
->>>>>>> 2f0d4a40f8a1f9194817256bdd9ddfa3415c3a15
     <main id="main-content" className="ca-main">{children}</main>
     <SiteFooter/>
     <nav className="ca-bottom-nav" aria-label="Mobile navigation">{links(true)}</nav>

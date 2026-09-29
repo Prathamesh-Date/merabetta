@@ -25,11 +25,7 @@ export function HomeScreen() {
     <section className="ca-section"><SectionTitle title="Shop by category" href="/products"/><CategoryGrid/></section>
     <section className="ca-section"><SectionTitle title="Popular products" href="/products"/><div className="ca-product-grid">{products.slice(0, 4).map(product => <ProductCard key={product.id} product={product}/>)}</div></section>
     <section className="ca-wellness"><div><span className="ca-eyebrow">A healthier you starts here</span><h2>A little care for<br/>your everyday.</h2><p>Your healthier everyday starts here.<br/>Use <strong>MERA20</strong> for a little extra savings.</p><Link href="/products" className="ca-button">Explore essentials <CareIcon name="arrow"/></Link></div><img src={asset("wellness-banner")} alt="Daily wellness and personal care essentials" loading="lazy"/></section>
-<<<<<<< HEAD
     <section className="ca-section ca-lab-spotlight"><SectionTitle title="A healthier you starts here" href="/labtest" label="Explore labs"/><Link href="/labtest" className="ca-lab-spotlight-card"><span className="ca-lab-spotlight-icon"><CareIcon name="lab" size={48}/></span><span><strong>Choose the right lab for you</strong><small>6 labs · Compare tests and prices</small></span><b>Choose a lab <CareIcon name="arrow" size={22}/></b></Link><div className="ca-lab-benefits">{[["shield", "Trusted care"], ["medical", "Quality products"], ["heart", "Made for you"]].map(([icon, label]) => <span key={icon}><CareIcon name={icon} size={31}/>{label}</span>)}</div></section>
-=======
-    <section className="ca-section"><SectionTitle title="Popular health packages" href="/labtest"/><div className="ca-test-grid">{tests.slice(0, 3).map(test => <Link className="ca-test-preview" href={`/labtest?test=${test.id}`} key={test.id}><img src={asset(test.image)} alt="" loading="lazy"/><div><span className="ca-eyebrow">Home sample collection</span><h3>{test.name}</h3><p>{test.subtitle}</p><strong>From {money(Math.min(...labListings.filter(l => l.test === test.id).map(l => l.price)))}</strong></div><CareIcon name="arrow"/></Link>)}</div></section>
->>>>>>> 2f0d4a40f8a1f9194817256bdd9ddfa3415c3a15
     <aside className="ca-demo"><CareIcon name="shield"/><p><strong>Explore the Merabetta demo</strong><br/>{demoDescription}</p></aside>
   </CareShell>;
 }
@@ -45,7 +41,4 @@ export function ProductsScreen({ initialCategory = "", initialQuery = "" }: { in
 export function Quantity({ value, onChange, name, allowZero = false }: { value: number; onChange: (n: number) => void; name: string; allowZero?: boolean }) {
   return <div className="ca-quantity"><button aria-label={`Decrease ${name} quantity`} disabled={value <= (allowZero ? 0 : 1)} onClick={() => onChange(value - 1)}>−</button><span aria-label={`${name} quantity`}>{value}</span><button aria-label={`Increase ${name} quantity`} disabled={value >= 99} onClick={() => onChange(value + 1)}>+</button></div>;
 }
-<<<<<<< HEAD
 
-=======
->>>>>>> 2f0d4a40f8a1f9194817256bdd9ddfa3415c3a15
