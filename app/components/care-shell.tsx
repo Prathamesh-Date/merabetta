@@ -27,7 +27,7 @@ export default function CareShell({ children, focused = false }: { children: Rea
     return [item("/", "Home"), item("/products", "Products"), item("/labtest", "Lab Tests")];
   }
   function quickActions() {
-    return <><Link className={`ch-icon-action ${path === "/cart" ? "active" : ""}`} href="/cart" aria-label="Cart"><CareIcon name="cart" size={24}/>{count > 0 && <b className="ca-count">{count}</b>}</Link><Link className={`ch-icon-action ${path.startsWith("/profile") ? "active" : ""}`} href="/profile" aria-label="Profile"><CareIcon name="profile" size={24}/></Link></>;
+    return <><Link className={`ch-icon-action ${path === "/cart" ? "active" : ""}`} href="/cart" aria-label="Cart"><CareIcon name="cart" size={22}/>{count > 0 && <b className="ca-count">{count}</b>}</Link><Link className={`ch-icon-action ${path.startsWith("/profile") ? "active" : ""}`} href="/profile" aria-label="Profile"><CareIcon name="profile" size={22}/></Link></>;
   }
   return <div className={`ca-app ${focused ? "ca-focused" : ""}`}>
     <a className="ca-skip" href="#main-content">Skip to content</a>
