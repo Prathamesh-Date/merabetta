@@ -37,10 +37,10 @@ export function LabTestCard({ listing }: { listing: LabListing }) {
   </article>;
 }
 
-function ScreenTitle({ title, back, listing }: { title: string; back?: string; listing?: LabListing }) {
+function ScreenTitle({ title, back, listing, quiet = false }: { title: string; back?: string; listing?: LabListing; quiet?: boolean }) {
   const { state, wish, ready } = useCare();
   const saved = listing ? state.wishlist.includes(listing.id) : false;
-  return <header className="cl-screen-title">{back && <Link href={back} aria-label="Back"><CareIcon name="back" size={25}/></Link>}<h1>{title}</h1>{listing ? <button aria-label={saved ? "Unsave test" : "Save test"} aria-pressed={saved} disabled={!ready} onClick={() => wish(listing.id)} className={saved ? "cl-saved" : ""}><CareIcon name="heart" size={26}/></button> : <Link href="/profile?tab=wishlist" aria-label="View wishlist"><CareIcon name="heart" size={26}/></Link>}</header>;
+  return <header className={`cl-screen-title ${quiet ? "cl-quiet-title" : ""}`}>{back && <Link href={back} aria-label="Back"><CareIcon name="back" size={25}/></Link>}<h1>{title}</h1>{listing ? <button aria-label={saved ? "Unsave test" : "Save test"} aria-pressed={saved} disabled={!ready} onClick={() => wish(listing.id)} className={saved ? "cl-saved" : ""}><CareIcon name="heart" size={26}/></button> : <Link href="/profile?tab=wishlist" aria-label="View wishlist"><CareIcon name="heart" size={26}/></Link>}</header>;
 }
 
 export default function LabsScreen({ labId = "", testId = "", panel, initialQuery = "" }: { labId?: string; testId?: string; panel?: LabPanel; initialQuery?: string }) {
@@ -75,7 +75,7 @@ export default function LabsScreen({ labId = "", testId = "", panel, initialQuer
   const title = panel ? titles[panel] : listing ? "Test Details" : lab ? lab.name : "Labs";
 
   return <CareShell focused><div className={`cl-flow ${panel ? "cl-panel-page" : ""}`}>
-    {(lab || listing || panel) && <ScreenTitle title={title} back={back} listing={listing}/>} 
+    <ScreenTitle title={title} back={back} listing={listing} quiet={!lab && !listing && !panel}/>
     {!lab ? <>
       <section className="cl-banner"><CareIcon name="lab" size={42}/><div><h2>Your health. Your choice.</h2><p>{chosenTest ? `Choose a lab for ${chosenTest.name}.` : "Choose a lab to explore its tests, packages and prices."}</p></div></section>
       <div className="cl-section-title"><h2>Choose your lab</h2><span>{visibleLabs.length} labs</span></div>
