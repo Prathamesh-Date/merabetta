@@ -6,7 +6,7 @@ import { useRef, useState, type FormEvent, type ReactNode } from "react";
 import CareIcon from "./care-icon";
 import { useCare } from "./care-store";
 
-export default function HomeHeader({ navigation, showSearch = true }: { navigation: ReactNode; showSearch?: boolean }) {
+export default function HomeHeader({ navigation, showSearch = true, compact = false }: { navigation: ReactNode; showSearch?: boolean; compact?: boolean }) {
   const { state, ready, update, announce } = useCare();
   const router = useRouter();
   const dialog = useRef<HTMLDialogElement>(null);
@@ -29,11 +29,12 @@ export default function HomeHeader({ navigation, showSearch = true }: { navigati
     announce(mode === "signup" ? "Your demo account is ready" : "Logged in to your demo profile");
     router.push("/profile");
   }
+  const accountAction = ready && state.profile ? <Link className="ch-login" href="/profile">Account</Link> : <button className="ch-login" disabled={!ready} onClick={() => { chooseMode("login"); dialog.current?.showModal(); }}>Login</button>;
   return <>
-    <header className="ch-header">
-      <div className="ch-top"><Link href="/" className="ch-logo" aria-label="Merabetta home"><img src="/logo.png" alt="Merabetta"/></Link><div className="ch-welcome"><strong>Welcome to Merabetta</strong><span>Wellness starts here <b>✦</b></span></div><button className="ch-bell" aria-label="Notifications" onClick={() => announce("You’re all caught up. No new notifications.")}><CareIcon name="bell" size={27}/></button>{ready && state.profile ? <Link className="ch-login" href="/profile">Account</Link> : <button className="ch-login" disabled={!ready} onClick={() => { chooseMode("login"); dialog.current?.showModal(); }}>Login</button>}</div>
+    <header className={`ch-header ${compact ? "ch-compact" : ""}`}>
+      {compact ? <div className="ch-compact-bar"><Link href="/" className="ch-compact-logo" aria-label="Merabetta home"><img src="/logo.png" alt="Merabetta"/></Link><nav className="ch-navigation" aria-label="Main navigation">{navigation}</nav><button className="ch-bell" aria-label="Notifications" onClick={() => announce("You’re all caught up. No new notifications.")}><CareIcon name="bell" size={25}/></button>{accountAction}</div> : <><div className="ch-top"><Link href="/" className="ch-logo" aria-label="Merabetta home"><img src="/logo.png" alt="Merabetta"/></Link><div className="ch-welcome"><strong>Welcome to Merabetta</strong><span>Wellness starts here <b>✦</b></span></div><button className="ch-bell" aria-label="Notifications" onClick={() => announce("You’re all caught up. No new notifications.")}><CareIcon name="bell" size={27}/></button>{accountAction}</div>
       {showSearch && <form className="ch-search" action="/products" role="search"><button type="submit" aria-label="Search products"><CareIcon name="search" size={25}/></button><input name="q" aria-label="Search products, brands, health solutions" placeholder="Search products, brands, health solutions..." autoComplete="off"/></form>}
-      <nav className="ch-navigation" aria-label="Main navigation">{navigation}</nav>
+      <nav className="ch-navigation" aria-label="Main navigation">{navigation}</nav></>}
     </header>
     <dialog ref={dialog} className="ch-auth" aria-labelledby="auth-title" aria-describedby="auth-demo-note" onClose={() => { setError(""); setPassword(""); setConfirmPassword(""); }}>
       <button className="ch-close" aria-label="Close login" onClick={() => dialog.current?.close()}><CareIcon name="close"/></button>

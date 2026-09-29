@@ -12,6 +12,8 @@
 .ch-search input::placeholder{color:#767d87}
 .ch-navigation{display:flex;gap:34px;padding:0 0 17px;justify-content:center;border-bottom:1px solid #eee6f3}
 .ch-navigation a{display:flex;align-items:center;gap:8px;font-size:13px;color:#8a7b96;padding:7px 0}.ch-navigation a.active{color:#8453a7;font-weight:700}.ch-navigation a>span{position:relative;display:flex}
+.ch-compact{max-width:none;padding:0 28px;border-bottom:1px solid #eee6f3}.ch-compact-bar{max-width:1236px;min-height:72px;margin:auto;display:flex;align-items:center;gap:22px}.ch-compact-logo{display:flex;align-items:center;flex:none;width:85px}.ch-compact-logo img{width:100%;height:54px;object-fit:contain}.ch-compact .ch-navigation{flex:1;justify-content:center;border:0;padding:0;gap:27px}.ch-compact .ch-navigation a{font-size:12px;white-space:nowrap}.ch-compact .ch-bell{margin-left:auto}
+@media (min-width:701px) and (max-width:900px){.ch-compact{padding:0 18px}.ch-compact-bar{min-height:64px;gap:11px}.ch-compact-logo{width:58px}.ch-compact-logo img{height:45px}.ch-compact .ch-navigation{gap:13px}.ch-compact .ch-navigation a{gap:4px;font-size:10px}.ch-compact .ch-navigation svg{width:16px;height:16px}.ch-compact .ch-login{padding:7px 12px;font-size:11px!important;min-height:36px}.ch-compact .ch-bell{min-width:36px;min-height:36px;padding:4px}.ch-compact .ch-bell svg{width:21px;height:21px}}
 .ch-auth{margin:auto;border:1px solid #e7deed;border-radius:25px;padding:29px;width:440px;max-width:calc(100vw - 32px);max-height:calc(100dvh - 40px);overflow:auto;color:#302a3c;background:white;box-shadow:0 22px 100px #30203935;font-family:Inter,"Segoe UI",sans-serif}
 .ch-auth::backdrop{background:#24203570;backdrop-filter:blur(3px)}
 .ch-close{position:absolute;right:15px;top:15px;border:0;border-radius:50%;background:#f7f2fa;display:grid;place-items:center;width:36px;height:36px}
@@ -42,6 +44,7 @@
   .ch-search button{padding:3px;min-width:30px;min-height:36px}.ch-search svg{width:22px;height:22px}
   .ch-search input{font-size:12px;padding:10px 0}
   .ch-navigation{display:none}
+  .ch-header.ch-compact{display:none}
   .ch-auth{padding:25px 21px;border-radius:23px}.ch-auth h2{font-size:23px}
   .ca-lab-spotlight{margin-top:38px}.ca-lab-spotlight-card{grid-template-columns:58px 1fr;padding:20px;border-radius:24px}.ca-lab-spotlight-icon{width:56px;height:56px;border-radius:17px}.ca-lab-spotlight-icon svg{width:38px;height:38px}.ca-lab-spotlight-card strong{font-size:19px}.ca-lab-spotlight-card small{font-size:13px}.ca-lab-spotlight-card b{padding:14px;font-size:15px}.ca-lab-benefits{padding:28px 0 5px}.ca-lab-benefits span{font-size:12px}
   .ca-catalog-heading{min-height:44px;margin:4px 0 35px}.ca-catalog-heading h1{font-size:25px}.ca-catalog-category-grid{grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;margin:28px 0}.ca-catalog-category-grid button{min-height:132px;padding:15px 5px;border-radius:21px;font-size:12px}.ca-catalog-category-grid button span{width:54px;height:54px;border-radius:17px}.ca-catalog-category-grid button span svg{width:29px;height:29px}.ca-catalog-promo{min-height:175px;border-radius:22px;margin-top:10px;padding:21px 0 0 21px}.ca-catalog-promo strong{font-size:23px}.ca-catalog-promo p{font-size:12px;margin:10px 0}.ca-catalog-products{margin-top:34px}
