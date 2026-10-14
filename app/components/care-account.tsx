@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useRef, useState, type FormEvent } from "react";
 import { asset, demoDescription, labListings, labs, money, products, tests } from "../data/catalog";
 import { useCare, type Person, type Order } from "./care-store";
@@ -8,45 +9,41 @@ import CareShell, { EmptyState, PageHeading } from "./care-shell";
 import CareIcon from "./care-icon";
 import { LabTestCard } from "./care-labs";
 import { ProductCard, Quantity } from "./care-catalog";
+import OrdersPanel from "./care-orders";
+import orderStyles from "./care-orders.module.css";
+import HistoryBackButton from "./history-back-button";
+import CustomerProfile from "./customer-profile";
+import { SignInForm } from "./customer-auth";
+import CustomerSupport from "./customer-support";
+import CustomerOffers from "./customer-offers";
 
 const blankPerson: Person = { id: "", name: "", relation: "Self", phone: "", address: "", city: "", pin: "" };
 function PersonFields({ person, setPerson }: { person: Person; setPerson: (person: Person) => void }) {
   return <div className="ca-form-grid"><label>Full name<input required maxLength={80} autoComplete="name" value={person.name} onChange={e => setPerson({ ...person, name: e.target.value })}/></label><label>Relationship<select value={person.relation} onChange={e => setPerson({ ...person, relation: e.target.value })}>{["Self", "Parent", "Spouse", "Family", "Other"].map(r => <option key={r}>{r}</option>)}</select></label><label>Mobile number<input required type="tel" inputMode="tel" autoComplete="tel-national" pattern="[6-9][0-9]{9}" title="Enter a 10-digit Indian mobile number" maxLength={10} value={person.phone} onChange={e => setPerson({ ...person, phone: e.target.value })}/></label><label>City<input required autoComplete="address-level2" maxLength={80} value={person.city} onChange={e => setPerson({ ...person, city: e.target.value })}/></label><label className="ca-wide">Delivery & sample-collection address<textarea required autoComplete="street-address" maxLength={400} value={person.address} onChange={e => setPerson({ ...person, address: e.target.value })}/></label><label>PIN code<input required inputMode="numeric" autoComplete="postal-code" pattern="[1-9][0-9]{5}" title="Enter a 6-digit PIN code" maxLength={6} value={person.pin} onChange={e => setPerson({ ...person, pin: e.target.value })}/></label></div>;
 }
 
-export function ProfileScreen({ initialTab = "account" }: { initialTab?: string }) {
+function DemoProfileScreen({ initialTab = "account", fromHome = false }: { initialTab?: string; fromHome?: boolean }) {
   const { state, update, ready, announce } = useCare();
-  const [tab, setTab] = useState(initialTab === "account" ? "account" : initialTab);
+  const router = useRouter();
+  const tab = initialTab === "account" ? "account" : initialTab;
   const [person, setPerson] = useState<Person>(blankPerson);
   const [deleteOpen, setDeleteOpen] = useState(false);
+  const [wishlistKind, setWishlistKind] = useState<"product" | "lab">("product");
   const authDialog = useRef<HTMLDialogElement>(null);
-  const [authMode, setAuthMode] = useState<"login" | "signup">("login");
-  const [authName, setAuthName] = useState("");
-  const [authEmail, setAuthEmail] = useState("");
-  const [authPassword, setAuthPassword] = useState("");
-  const [authConfirmPassword, setAuthConfirmPassword] = useState("");
-  const [authError, setAuthError] = useState("");
   const signedIn = Boolean(state.profile);
-  const go = (next: string) => { setTab(next); window.scrollTo({ top: 0, behavior: "smooth" }); };
+  const go = (next: string) => router.push(next === "account" ? "/profile" : `/profile?tab=${next}`);
+  const back = () => {
+    if (window.history.length > 1) router.back();
+    else router.replace(fromHome ? "/#care-your-way-title" : "/profile");
+  };
   const profileName = state.profile?.name || "Your care profile";
   const initial = profileName.charAt(0).toUpperCase();
-  function chooseAuthMode(mode: "login" | "signup") { setAuthMode(mode); setAuthPassword(""); setAuthConfirmPassword(""); setAuthError(""); }
-  function submitProfileAuth(event: FormEvent<HTMLFormElement>) {
-    event.preventDefault();
-    if (authMode === "signup" && !authName.trim()) { setAuthError("Please enter your name."); return; }
-    if (authPassword.length < 8) { setAuthError("Password must be at least 8 characters."); return; }
-    if (authMode === "signup" && authPassword !== authConfirmPassword) { setAuthError("Passwords do not match."); return; }
-    const name = authMode === "signup" ? authName.trim() : state.profile?.email === authEmail.trim() ? state.profile.name : authEmail.trim().split("@")[0];
-    update(current => ({ ...current, profile: { name, email: authEmail.trim() } }));
-    authDialog.current?.close();
-    announce(authMode === "signup" ? "Your demo account is ready" : "Logged in to your demo profile");
-  }
 
-  if (!ready) return <CareShell><div className="ca-profile-page"><p>Loading your profile…</p></div></CareShell>;
-  return <CareShell><div className="ca-profile-page">
+  if (!ready) return <CareShell mainClassName={tab === "orders" || tab === "wishlist" ? orderStyles.main : ""}><div className="ca-profile-page"><p>Loading your profile…</p></div></CareShell>;
+  return <CareShell mainClassName={tab === "orders" || tab === "wishlist" ? orderStyles.main : ""}><div className="ca-profile-page">
     {tab === "account" && <>
-      <div className="ca-profile-heading"><h1>Profile</h1><Link href="/profile?tab=wishlist" aria-label="View wishlist"><CareIcon name="heart" size={29}/></Link></div>
-      <section className="ca-profile-card">{signedIn ? <><span className="ca-avatar">{initial}</span><div><h2>{state.profile!.name}</h2><p>{state.profile!.email}</p><small>Your everyday wellness companion</small></div></> : <><span className="ca-avatar"><CareIcon name="profile" size={35}/></span><div><h2>Welcome to Merabetta</h2><p>Sign in to keep your care details together.</p><button type="button" onClick={() => { chooseAuthMode("login"); authDialog.current?.showModal(); }} className="ca-profile-signin">Sign in</button></div></>}</section>
+      <div className="ca-profile-heading"><Link href="/" aria-label="Back to home"><CareIcon name="back" size={27}/></Link><h1>Profile</h1><Link href="/profile?tab=wishlist" aria-label="View wishlist"><CareIcon name="heart" size={29}/></Link></div>
+      <section className="ca-profile-card">{signedIn ? <><span className="ca-avatar">{initial}</span><div><h2>{state.profile!.name}</h2><p>{state.profile!.email}</p><small>Your everyday wellness companion</small></div></> : <><span className="ca-avatar"><CareIcon name="profile" size={35}/></span><div><h2>Welcome to Merabetta</h2><p>Sign in to keep your care details together.</p><button type="button" onClick={() => authDialog.current?.showModal()} className="ca-profile-signin">Sign in</button></div></>}</section>
       <div className="ca-profile-shortcuts"><button onClick={() => go("orders")}><CareIcon name="bag" size={29}/><span>My Orders</span></button><button onClick={() => go("wishlist")}><CareIcon name="heart" size={29}/><span>Wishlist</span></button><button onClick={() => announce("Offers will be available here soon.")}><CareIcon name="ticket" size={29}/><span>Offers</span></button></div>
       <section className="ca-profile-menu">
         <button onClick={() => go("people")}>Family &amp; Addresses <CareIcon name="chevron"/></button>
@@ -59,17 +56,34 @@ export function ProfileScreen({ initialTab = "account" }: { initialTab?: string 
       </section>
       <button className="ca-profile-signout" disabled={!signedIn} onClick={() => { update(current => ({ ...current, profile: null })); announce("Signed out of your profile"); }}>Sign out <CareIcon name="arrow"/></button>
       {deleteOpen && <div className="ca-profile-modal" role="dialog" aria-modal="true" aria-labelledby="delete-title"><div><h2 id="delete-title">Delete your demo account?</h2><p>Your profile, saved people and addresses, cart, wishlist and order history will be removed from this device.</p><button className="ca-button" onClick={() => { update(() => ({ cart: {}, wishlist: [], people: [], orders: [], profile: null, coupon: false })); setDeleteOpen(false); announce("Demo account and local data deleted"); }}>Delete account &amp; data <CareIcon name="arrow"/></button><button className="ca-profile-cancel" onClick={() => setDeleteOpen(false)}>Keep my account <CareIcon name="arrow"/></button></div></div>}
-      <dialog ref={authDialog} className="ch-auth" aria-labelledby="profile-auth-title" onClose={() => { setAuthError(""); setAuthPassword(""); setAuthConfirmPassword(""); }}><button className="ch-close" aria-label="Close login" onClick={() => authDialog.current?.close()}><CareIcon name="close"/></button><img className="ch-auth-logo" src="/logo.png" alt="Merabetta"/><h2 id="profile-auth-title">{authMode === "signup" ? "Create your account" : "Welcome back"}</h2><p>A little space for your everyday care.</p><div className="ch-auth-tabs" role="tablist" aria-label="Account access"><button role="tab" aria-selected={authMode === "login"} className={authMode === "login" ? "active" : ""} onClick={() => chooseAuthMode("login")}>Log in</button><button role="tab" aria-selected={authMode === "signup"} className={authMode === "signup" ? "active" : ""} onClick={() => chooseAuthMode("signup")}>Sign up</button></div><form onSubmit={submitProfileAuth}>{authMode === "signup" && <label>Full name<input autoComplete="name" value={authName} onChange={e => setAuthName(e.target.value)} maxLength={80} required placeholder="Your full name"/></label>}<label>Email address<input type="email" autoComplete="email" value={authEmail} onChange={e => setAuthEmail(e.target.value)} maxLength={160} required placeholder="you@example.com"/></label><label>Password<input type="password" autoComplete={authMode === "signup" ? "new-password" : "current-password"} value={authPassword} onChange={e => setAuthPassword(e.target.value)} minLength={8} required placeholder="At least 8 characters"/></label>{authMode === "signup" && <label>Confirm password<input type="password" autoComplete="new-password" value={authConfirmPassword} onChange={e => setAuthConfirmPassword(e.target.value)} minLength={8} required placeholder="Enter your password again"/></label>}{authError && <p role="alert" className="ch-auth-error">{authError}</p>}<button type="submit" className="ca-button">{authMode === "signup" ? "Create account" : "Log in"}<CareIcon name="arrow" size={18}/></button></form><p className="ch-auth-note">This demo stores your profile on this device. Passwords are never saved and no email is sent.</p></dialog>
+      <dialog ref={authDialog} className="ch-auth" aria-label="Sign in"><button className="ch-close" aria-label="Close login" onClick={() => authDialog.current?.close()}><CareIcon name="close"/></button><img className="ch-auth-logo" src="/logo.png" alt="Merabetta"/><SignInForm onDone={() => authDialog.current?.close()}/></dialog>
     </>}
-    {tab === "orders" && <ProfileSubpage title="My Orders" back={() => go("account")}>{state.orders.length ? <div className="ca-orders">{state.orders.map(order => <article key={order.id} className="ca-panel"><h2>{order.id}</h2><p>{new Date(order.date).toLocaleDateString("en-IN")} · {order.person.name}</p><p>{order.items.map(item => item.name).join(", ")}</p><strong>Total {money(order.total)}</strong></article>)}</div> : <EmptyState title="No orders yet" text="Your care essentials will appear here after checkout."/>}</ProfileSubpage>}
-    {tab === "wishlist" && <ProfileSubpage title="Wishlist" back={() => go("account")}>{state.wishlist.length ? <div className="ca-product-grid">{products.filter(p => state.wishlist.includes(p.id)).map(p => <ProductCard key={p.id} product={p}/>)}</div> : <EmptyState title="Keep your favourites close" text="Tap the heart on a product or lab test to save it here."/>}</ProfileSubpage>}
-    {tab === "people" && <ProfileSubpage title="Family & Addresses" back={() => go("account")}><form className="ca-panel ca-profile-address" onSubmit={e => { e.preventDefault(); if (!person.name.trim() || !person.address.trim() || !person.city.trim()) return; const saved = { ...person, id: person.id || crypto.randomUUID() }; update(current => ({ ...current, people: [...current.people.filter(p => p.id !== saved.id), saved] })); setPerson(blankPerson); announce("Person and address saved"); }}><h2>Recipient’s delivery address</h2><p>Use the address where this person will receive the order.</p><PersonFields person={person} setPerson={setPerson}/><button className="ca-button">Save person &amp; address <CareIcon name="arrow"/></button></form>{state.people.map(p => <article className="ca-panel ca-person" key={p.id}><h2>{p.name}</h2><p>{p.address}, {p.city} · {p.pin}</p><button className="ca-text-button" onClick={() => setPerson(p)}>Edit</button></article>)}</ProfileSubpage>}
-    {tab === "faq" && <ProfileSubpage title="FAQs" back={() => go("account")}><section className="ca-panel ca-profile-faq">{[["How do I place an order?", "Choose a product or lab test, add it to your cart, then complete checkout."], ["What payment methods are accepted?", "This prototype uses a simulated checkout and does not collect payments."], ["How can I track my order?", "Open My Orders to view the status of demo orders."], ["Can I return or exchange a product?", "Contact customer support for help with an order."], ["What is the delivery time?", "Demo orders use an estimated delivery time of two to three days."], ["Do you offer discounts?", "Use MERA20 for 20% off your demo cart."], ["How can I contact customer support?", "Open Customer Support below to send us a message."]].map(([q, a]) => <details key={q}><summary>{q}</summary><p>{a}</p></details>)}</section></ProfileSubpage>}
-    {tab === "returns" && <ProfileSubpage title="Return & Refund Policy" back={() => go("account")}><PolicyCard title="Return & Refund Policy">This prototype does not fulfil orders or collect payments. You can cancel a processing demo order from My Orders. A real return and refund policy must be configured before launch.</PolicyCard></ProfileSubpage>}
-    {tab === "privacy" && <ProfileSubpage title="Privacy Policy" back={() => go("account")}><PolicyCard title="Privacy Policy">This demo saves your profile, cart, saved addresses, wishlist and demo orders only in your browser so the experience can continue on this device.</PolicyCard></ProfileSubpage>}
-    {tab === "terms" && <ProfileSubpage title="Terms & Conditions" back={() => go("account")}><PolicyCard title="Terms & Conditions">Merabetta is currently a demonstration app. Products, prices, lab packages and orders are sample data. The app does not provide medical advice, prescriptions, diagnostic services or live payments.</PolicyCard></ProfileSubpage>}
-    {tab === "support" && <ProfileSubpage title="Customer Support" back={() => go("account")}><section className="ca-panel ca-profile-support"><div><span className="ca-avatar"><CareIcon name="support" size={34}/></span><h2>Merabetta care team</h2><p>Demo assistant · Here to help</p></div><p>Hello! How can we help with your order or lab booking?</p></section><form className="ca-profile-support-form" onSubmit={e => { e.preventDefault(); announce("Your message has been sent to the demo care team."); e.currentTarget.reset(); }}><input aria-label="Your support message" placeholder="Write your message" required/><button aria-label="Send message"><CareIcon name="send" size={26}/></button></form></ProfileSubpage>}
+    {tab === "orders" && <OrdersPanel orders={state.orders} fromHome={fromHome} onBack={back}/>}
+    {tab === "wishlist" && <section className={orderStyles.page}>
+      <header className={`ca-profile-heading ${orderStyles.heading}`}><button type="button" onClick={back} aria-label="Back"><CareIcon name="back" size={27}/></button><h1>Wishlist</h1><span className={orderStyles.wishlistHeart} aria-hidden="true"><CareIcon name="heart" size={27}/></span></header>
+      <div className={orderStyles.tabs} aria-label="Wishlist type">
+        <button type="button" aria-pressed={wishlistKind === "product"} className={wishlistKind === "product" ? orderStyles.activeTab : ""} onClick={() => setWishlistKind("product")}><CareIcon name="bag" size={24}/>Products</button>
+        <button type="button" aria-pressed={wishlistKind === "lab"} className={wishlistKind === "lab" ? orderStyles.activeTab : ""} onClick={() => setWishlistKind("lab")}><CareIcon name="lab" size={24}/>Labs</button>
+      </div>
+      {wishlistKind === "product" ? products.some(product => state.wishlist.includes(product.id)) ? <div className={`${orderStyles.wishlistList} ca-product-grid`}>{products.filter(product => state.wishlist.includes(product.id)).map(product => <ProductCard key={product.id} product={product} showBuyNow/>)}</div> : <WishlistEmpty kind="product"/> : labListings.some(listing => state.wishlist.includes(listing.id)) ? <div className={`${orderStyles.wishlistList} cl-test-grid`}>{labListings.filter(listing => state.wishlist.includes(listing.id)).map(listing => <LabTestCard key={listing.id} listing={listing}/>)}</div> : <WishlistEmpty kind="lab"/>}
+    </section>}
+    {tab === "people" && <ProfileSubpage title="Family & Addresses" back={back}><form className="ca-panel ca-profile-address" onSubmit={e => { e.preventDefault(); if (!person.name.trim() || !person.address.trim() || !person.city.trim()) return; const saved = { ...person, id: person.id || crypto.randomUUID() }; update(current => ({ ...current, people: [...current.people.filter(p => p.id !== saved.id), saved] })); setPerson(blankPerson); announce("Person and address saved"); }}><h2>Recipient’s delivery address</h2><p>Use the address where this person will receive the order.</p><PersonFields person={person} setPerson={setPerson}/><button className="ca-button">Save person &amp; address <CareIcon name="arrow"/></button></form>{state.people.map(p => <article className="ca-panel ca-person" key={p.id}><h2>{p.name}</h2><p>{p.address}, {p.city} · {p.pin}</p><button className="ca-text-button" onClick={() => setPerson(p)}>Edit</button></article>)}</ProfileSubpage>}
+    {tab === "faq" && <ProfileSubpage title="FAQs" back={back}><section className="ca-panel ca-profile-faq">{[["How do I place an order?", "Choose a product or lab test, add it to your cart, then complete checkout."], ["What payment methods are accepted?", "This prototype uses a simulated checkout and does not collect payments."], ["How can I track my order?", "Open My Orders to view the status of demo orders."], ["Can I return or exchange a product?", "Contact customer support for help with an order."], ["What is the delivery time?", "Demo orders use an estimated delivery time of two to three days."], ["Do you offer discounts?", "Use MERA20 for 20% off your demo cart."], ["How can I contact customer support?", "Open Customer Support below to send us a message."]].map(([q, a]) => <details key={q}><summary>{q}</summary><p>{a}</p></details>)}</section></ProfileSubpage>}
+    {tab === "returns" && <ProfileSubpage title="Return & Refund Policy" back={back}><PolicyCard title="Return & Refund Policy">This prototype does not fulfil orders or collect payments. You can cancel a processing demo order from My Orders. A real return and refund policy must be configured before launch.</PolicyCard></ProfileSubpage>}
+    {tab === "privacy" && <ProfileSubpage title="Privacy Policy" back={back}><PolicyCard title="Privacy Policy">This demo saves your profile, cart, saved addresses, wishlist and demo orders only in your browser so the experience can continue on this device.</PolicyCard></ProfileSubpage>}
+    {tab === "terms" && <ProfileSubpage title="Terms & Conditions" back={back}><PolicyCard title="Terms & Conditions">Merabetta is currently a demonstration app. Products, prices, lab packages and orders are sample data. The app does not provide medical advice, prescriptions, diagnostic services or live payments.</PolicyCard></ProfileSubpage>}
+    {tab === "support" && <ProfileSubpage title="Customer Support" back={back}><section className="ca-panel ca-profile-support"><div><span className="ca-avatar"><CareIcon name="support" size={34}/></span><h2>Merabetta care team</h2><p>Demo assistant · Here to help</p></div><p>Hello! How can we help with your order or lab booking?</p></section><form className="ca-profile-support-form" onSubmit={e => { e.preventDefault(); announce("Your message has been sent to the demo care team."); e.currentTarget.reset(); }}><input aria-label="Your support message" placeholder="Write your message" required/><button aria-label="Send message"><CareIcon name="send" size={26}/></button></form></ProfileSubpage>}
   </div></CareShell>;
+}
+
+function WishlistEmpty({ kind }: { kind: "product" | "lab" }) {
+  const isLab = kind === "lab";
+  return <div className={`${orderStyles.empty} ${orderStyles.wishlistEmpty}`}>
+    <span className={orderStyles.emptyIcon}><CareIcon name={isLab ? "lab" : "bag"} size={38}/></span>
+    <h2>No saved {isLab ? "lab tests" : "products"} yet</h2>
+    <p>Tap the heart on a {isLab ? "lab test" : "product"} to save it here.</p>
+    <Link href={isLab ? "/labtest" : "/products"} className={orderStyles.action}>{isLab ? "Explore lab tests" : "Explore all products"} <CareIcon name="arrow" size={20}/></Link>
+  </div>;
 }
 
 function ProfileSubpage({ title, back, children }: { title: string; back: () => void; children: React.ReactNode }) {
@@ -80,7 +94,7 @@ function PolicyCard({ title, children }: { title: string; children: React.ReactN
   return <section className="ca-panel ca-policy-card"><CareIcon name="report" size={48}/><h2>{title}</h2><p>{children}</p><small>Sample policy content · Replace before production launch.</small></section>;
 }
 
-export function CartScreen({ appointment = false }: { appointment?: boolean }) {
+function DemoCartScreen({ appointment = false }: { appointment?: boolean }) {
   const { state, quantity, update, announce, ready } = useCare();
   const [coupon, setCoupon] = useState("");
   const [checkout, setCheckout] = useState(appointment);
@@ -112,13 +126,36 @@ export function CartScreen({ appointment = false }: { appointment?: boolean }) {
     if (hasLab && (!date || date < minDate)) { announce("Choose a collection date from tomorrow onwards."); return; }
     submitting.current = true;
     const recipient = { ...person, id: person.id || crypto.randomUUID() };
-    const order: Order = { id: `MB-${crypto.randomUUID().slice(0,8).toUpperCase()}`, date: new Date().toISOString(), items: items.map(({ name, subtitle, lab, price, quantity }) => ({ name: lab ? `${name} · ${subtitle}` : name, price, quantity })), total, person: recipient, slot: hasLab ? `${date} · ${slot}` : "Estimated delivery: 2–3 days", status: "Confirmed" };
+    const order: Order = { id: `MB-${crypto.randomUUID().slice(0,8).toUpperCase()}`, date: new Date().toISOString(), items: items.map(({ name, subtitle, lab, price, quantity }) => ({ name: lab ? `${name} · ${subtitle}` : name, price, quantity, kind: lab ? "lab" as const : "product" as const })), total, person: recipient, slot: hasLab ? `${date} · ${slot}` : "Estimated delivery: 2–3 days", status: "Confirmed" };
     update(current => ({ ...current, cart: {}, coupon: false, orders: [order, ...current.orders], people: savePerson ? [...current.people.filter(p => p.id !== recipient.id), recipient] : current.people }));
     setPlaced(order.id);
   }
-  if (!ready) return <CareShell><p className="ca-empty">Loading your cart…</p></CareShell>;
-  if (placed) return <CareShell><div className="ca-success"><span><CareIcon name="check" size={40}/></span><p className="ca-eyebrow">Demo order confirmed</p><h1>A little care is on its way!</h1><p>Order {placed} is saved on this device.<br/>This is a demonstration. No payment was collected and no real order was placed.</p><Link href="/profile?tab=orders" className="ca-button">View my orders <CareIcon name="arrow"/></Link><Link href="/products" className="ca-back">Continue shopping</Link></div></CareShell>;
-  return <CareShell><PageHeading eyebrow="Care for the ones you love" title={checkout ? hasLab ? "Book your appointment" : "Complete your demo order" : "Your cart"} text="Products and lab tests, together in one place."/>{!items.length ? <EmptyState title="Your cart is waiting for a little care" text="Add products or health packages to get started."/> : <div className="ca-cart-layout"><div>{checkout ? <form id="checkout" className="ca-panel" onSubmit={placeOrder}><button type="button" className="ca-back" onClick={() => setCheckout(false)}><CareIcon name="back" size={18}/> Back to cart</button><h2>Who will receive the care in this order?</h2>{state.people.length > 0 && <label className="ca-field">Saved people<select aria-label="Choose a saved person" value={person.id} onChange={e => setPerson(state.people.find(p => p.id === e.target.value) ?? blankPerson)}><option value="">Add another person</option>{state.people.map(p => <option key={p.id} value={p.id}>{p.name} · {p.relation}</option>)}</select></label>}<PersonFields person={person} setPerson={setPerson}/><label className="ca-checkbox"><input type="checkbox" checked={savePerson} onChange={e => setSavePerson(e.target.checked)}/> Save recipient for future orders</label>{hasLab && <><h2>Sample collection slot</h2><div className="ca-form-grid"><label>Collection date<input required type="date" min={minDate} value={date} onInput={e => setDate(e.currentTarget.value)} onChange={e => setDate(e.target.value)}/></label><label>Preferred time<select value={slot} onChange={e => setSlot(e.target.value)}>{["7:00 AM – 9:00 AM", "9:00 AM – 11:00 AM", "11:00 AM – 1:00 PM"].map(s => <option key={s}>{s}</option>)}</select></label></div></>}<div className="ca-info-note">Simulated payment · No card or UPI details needed. Your order will be saved locally for this prototype.</div></form> : <div className="ca-cart-items">{items.map(item => <article className="ca-cart-item" key={item.id}><img src={asset(item.image)} alt={item.name}/><div><h2>{item.name}</h2><p>{item.subtitle}</p><strong>{money(item.price)}</strong> {item.mrp > item.price && <del>{money(item.mrp)}</del>}<Quantity value={item.quantity} onChange={n => quantity(item.id, n)} name={item.name} allowZero/></div><button className="ca-remove" aria-label={`Remove ${item.name} from cart`} onClick={() => quantity(item.id, 0)}><CareIcon name="close" size={18}/></button></article>)}</div>}</div><aside className="ca-summary ca-panel"><h2>Order summary</h2><form className="ca-coupon" onSubmit={e => { e.preventDefault(); if (coupon.trim().toUpperCase() === "MERA20") { update(current => ({ ...current, coupon: true })); announce("Coupon applied to your cart"); } else announce("Try MERA20 for 20% off your demo order."); }}><label htmlFor="coupon-code">Offers & coupons</label><div><input id="coupon-code" placeholder="Enter coupon code" value={coupon} onChange={e => setCoupon(e.target.value)}/><button type="submit">Apply</button></div></form>{state.coupon && <div className="ca-coupon-applied">MERA20 applied <button onClick={() => update(current => ({ ...current, coupon: false }))}>Remove</button></div>}<dl><div><dt>Subtotal</dt><dd>{money(subtotal)}</dd></div><div><dt>Coupon discount</dt><dd>−{money(discount)}</dd></div><div><dt>Delivery</dt><dd>{delivery ? money(delivery) : "Free"}</dd></div><div className="ca-total"><dt>Total</dt><dd>{money(total)}</dd></div></dl>{checkout ? <button key="place-order" type="submit" form="checkout" className="ca-button">{hasLab ? "Confirm demo appointment" : "Place demo order"} <CareIcon name="arrow"/></button> : <button key="open-checkout" type="button" className="ca-button" onClick={() => { setCheckout(true); window.scrollTo({ top: 0, behavior: "smooth" }); }}>{hasLab ? "Book appointment" : "Continue to checkout"} <CareIcon name="arrow"/></button>}<p className="ca-small">Demo checkout. No real payment or delivery.</p></aside></div>}</CareShell>;
+  if (!ready) return <CareShell mainClassName={orderStyles.main}><p className="ca-empty">Loading your cart…</p></CareShell>;
+  if (placed) return <CareShell mainClassName={orderStyles.main}><div className="ca-success"><span><CareIcon name="check" size={40}/></span><p className="ca-eyebrow">Demo order confirmed</p><h1>A little care is on its way!</h1><p>Order {placed} is saved on this device.<br/>This is a demonstration. No payment was collected and no real order was placed.</p><Link href="/profile?tab=orders" className="ca-button">View my orders <CareIcon name="arrow"/></Link><Link href="/products" className="ca-back">Continue shopping</Link></div></CareShell>;
+  if (!items.length) return <CareShell mainClassName={orderStyles.main}>
+    <section className={orderStyles.page}>
+      <header className={`ca-profile-heading ${orderStyles.heading}`}>
+        <HistoryBackButton fallback="/products" ariaLabel="Back to products"><CareIcon name="back" size={27}/></HistoryBackButton>
+        <h1>My cart</h1>
+        <Link href="/profile?tab=wishlist" aria-label="View wishlist"><CareIcon name="heart" size={27}/></Link>
+      </header>
+      <div className={`${orderStyles.empty} ${orderStyles.wishlistEmpty} ${orderStyles.cartEmpty}`}>
+        <span className={orderStyles.emptyIcon}><CareIcon name="cart" size={38}/></span>
+        <h2>Your cart is waiting for a little care</h2>
+        <p>Add products or health packages to get started.</p>
+        <Link href="/products" className={orderStyles.action}>Explore all products <CareIcon name="arrow" size={20}/></Link>
+      </div>
+    </section>
+  </CareShell>;
+  const cartHeading = checkout ? <PageHeading eyebrow="Care for the ones you love" title={hasLab ? "Book your appointment" : "Complete your demo order"} text="Products and lab tests, together in one place."/> : <>
+    <header className="ca-profile-heading ca-cart-page-heading">
+      <HistoryBackButton fallback="/products" ariaLabel="Back"><CareIcon name="back" size={27}/></HistoryBackButton>
+      <h1>My cart</h1>
+      <Link href="/profile?tab=wishlist" aria-label="View wishlist"><CareIcon name="heart" size={27}/></Link>
+    </header>
+    <p className="ca-cart-page-intro">Products and lab tests, together in one place.</p>
+  </>;
+  return <CareShell mainClassName={orderStyles.main}>{cartHeading}{!items.length ? <EmptyState title="Your cart is waiting for a little care" text="Add products or health packages to get started."/> : <div className="ca-cart-layout"><div>{checkout ? <form id="checkout" className="ca-panel" onSubmit={placeOrder}><button type="button" className="ca-back" onClick={() => setCheckout(false)}><CareIcon name="back" size={18}/> Back to cart</button><h2>Who will receive the care in this order?</h2>{state.people.length > 0 && <label className="ca-field">Saved people<select aria-label="Choose a saved person" value={person.id} onChange={e => setPerson(state.people.find(p => p.id === e.target.value) ?? blankPerson)}><option value="">Add another person</option>{state.people.map(p => <option key={p.id} value={p.id}>{p.name} · {p.relation}</option>)}</select></label>}<PersonFields person={person} setPerson={setPerson}/><label className="ca-checkbox"><input type="checkbox" checked={savePerson} onChange={e => setSavePerson(e.target.checked)}/> Save recipient for future orders</label>{hasLab && <><h2>Sample collection slot</h2><div className="ca-form-grid"><label>Collection date<input required type="date" min={minDate} value={date} onInput={e => setDate(e.currentTarget.value)} onChange={e => setDate(e.target.value)}/></label><label>Preferred time<select value={slot} onChange={e => setSlot(e.target.value)}>{["7:00 AM – 9:00 AM", "9:00 AM – 11:00 AM", "11:00 AM – 1:00 PM"].map(s => <option key={s}>{s}</option>)}</select></label></div></>}<div className="ca-info-note">Simulated payment · No card or UPI details needed. Your order will be saved locally for this prototype.</div></form> : <div className="ca-cart-items">{items.map(item => <article className="ca-cart-item" key={item.id}><img src={asset(item.image)} alt={item.name}/><div><h2>{item.name}</h2><p>{item.subtitle}</p><strong>{money(item.price)}</strong> {item.mrp > item.price && <del>{money(item.mrp)}</del>}<Quantity value={item.quantity} onChange={n => quantity(item.id, n)} name={item.name} allowZero/></div><button className="ca-remove" aria-label={`Remove ${item.name} from cart`} onClick={() => quantity(item.id, 0)}><CareIcon name="close" size={18}/></button></article>)}</div>}</div><aside className="ca-summary ca-panel"><h2>Order summary</h2><form className="ca-coupon" onSubmit={e => { e.preventDefault(); if (coupon.trim().toUpperCase() === "MERA20") { update(current => ({ ...current, coupon: true })); announce("Coupon applied to your cart"); } else announce("Try MERA20 for 20% off your demo order."); }}><label htmlFor="coupon-code">Offers & coupons</label><div><input id="coupon-code" placeholder="Enter coupon code" value={coupon} onChange={e => setCoupon(e.target.value)}/><button type="submit">Apply</button></div></form>{state.coupon && <div className="ca-coupon-applied">MERA20 applied <button onClick={() => update(current => ({ ...current, coupon: false }))}>Remove</button></div>}<dl><div><dt>Subtotal</dt><dd>{money(subtotal)}</dd></div><div><dt>Coupon discount</dt><dd>−{money(discount)}</dd></div><div><dt>Delivery</dt><dd>{delivery ? money(delivery) : "Free"}</dd></div><div className="ca-total"><dt>Total</dt><dd>{money(total)}</dd></div></dl>{checkout ? <button key="place-order" type="submit" form="checkout" className="ca-button">{hasLab ? "Confirm demo appointment" : "Place demo order"} <CareIcon name="arrow"/></button> : <button key="open-checkout" type="button" className="ca-button" onClick={() => { setCheckout(true); window.scrollTo({ top: 0, behavior: "smooth" }); }}>{hasLab ? "Book appointment" : "Continue to checkout"} <CareIcon name="arrow"/></button>}<p className="ca-small">Demo checkout. No real payment or delivery.</p></aside></div>}</CareShell>;
 }
 
 function LegacyProfileScreen({ initialTab = "account" }: { initialTab?: string }) {
@@ -135,4 +172,14 @@ function LegacyProfileScreen({ initialTab = "account" }: { initialTab?: string }
   </>}</CareShell>;
 }
 
+
+
+// Retain the existing policy/support pages while account flows use the backend.
+export function ProfileScreen(props: { initialTab?: string; fromHome?: boolean }) {
+  if (props.initialTab === "offers") return <CustomerOffers/>;
+  if (props.initialTab === "support") return <CustomerSupport fromHome={props.fromHome}/>;
+  if (["returns", "privacy", "terms"].includes(props.initialTab ?? "")) return <DemoProfileScreen {...props}/>;
+  return <CustomerProfile {...props}/>;
+}
+export { default as CartScreen } from "./customer-cart";
 

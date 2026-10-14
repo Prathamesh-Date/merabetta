@@ -1,0 +1,7 @@
+.desktop{display:none}
+.mobile{display:contents}
+
+@media(min-width:701px){
+  .desktop{display:block}
+  .mobile{display:none}
+}

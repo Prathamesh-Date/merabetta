@@ -1,0 +1,33 @@
+.heading.heading.heading { gap: 18px; min-height: 50px; margin: 0 0 24px; }
+.heading.heading h1 { font-family: Poppins, Inter, "Segoe UI", sans-serif; font-size: 29px; font-weight: 400; line-height: normal; letter-spacing: -.8px; }
+.trust { width: 100%; max-width: 560px; min-width: 0; margin: 20px auto 0; }
+.tabs { display: flex; flex-wrap: wrap; gap: 9px; margin-bottom: 22px; }
+.tabs button { min-height: 39px; padding: 10px 16px; border: 0; border-radius: 16px; background: #efebf6; color: #64616e; font-size: 13px; font-weight: 500; line-height: 1.4; }
+.tabs button[aria-selected="true"] { background: #f5803d; color: #fff; }
+.card { padding: 22px; border: 1px solid #eae5ef; border-radius: 22px; background: #fff; box-shadow: 0 2px 2px #35274208; text-align: center; }
+.medal { display: grid; place-items: center; width: 68px; height: 68px; margin: 0 auto 16px; border-radius: 50%; background: #f0e9fc; color: #85549f; }
+.medal svg { width: 39px; height: 39px; }
+.copy { min-height: 92px; }
+.copy.copy h2 { margin: 0 0 12px; font-size: 20px; font-weight: 500; line-height: 1.4; letter-spacing: -.4px; }
+.copy p { max-width: 520px; margin: 0 auto; color: #72737e; font-size: 14px; line-height: 1.75; }
+.features { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 24px 16px; max-width: 400px; margin: 18px auto 22px; }
+.features > div { display: grid; justify-items: center; gap: 10px; min-width: 0; font-size: 14px; line-height: 1.5; }
+.features svg { width: 26px; height: 26px; color: #a35021; }
+.support { display: flex; align-items: center; justify-content: center; gap: 10px; width: 100%; min-height: 44px; padding: 10px 16px; border-radius: 999px; background: #e9d8f3; color: #80549b; font-size: 13px; font-weight: 600; line-height: 1.5; }
+.support:hover { background: #dec5ed; }
+@media (max-width: 700px) {
+  .trust { margin-top: 20px; }
+  .tabs { gap: 7px; margin-bottom: 20px; }
+  .tabs button { padding: 9px 12px; min-height: 36px; font-size: 12px; }
+  .heading.heading h1 { font-size: 25px; }
+  .card { padding: 20px 18px; }
+  .medal { width: 62px; height: 62px; }
+  .medal svg { width: 36px; height: 36px; }
+  .copy { min-height: 98px; }
+  .copy.copy h2 { font-size: 18px; }
+  .copy p { font-size: 13px; }
+  .features { margin-top: 14px; gap: 22px 12px; }
+  .features > div { font-size: 13px; gap: 9px; }
+  .support { font-size: 13px; }
+}
+@media (max-width: 350px) { .tabs { gap: 6px; } .tabs button { padding-inline: 9px; font-size: 11px; } .card { padding-inline: 16px; } }

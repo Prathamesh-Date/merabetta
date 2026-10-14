@@ -1,0 +1,37 @@
+.section { margin-top: 36px; }
+.grid { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 16px; }
+.card { display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; min-width: 0; min-height: 200px; padding: 18px 16px; border: 1px solid var(--card-border); border-radius: 20px; background: var(--card-background); color: var(--ca-ink); transition: transform .18s, box-shadow .18s, border-color .18s; }
+.lavender { --card-background: linear-gradient(145deg, #f3eafa, #eee5f6); --card-border: #e6d8ef; --icon-color: #8856a5; }
+.rose { --card-background: linear-gradient(145deg, #fff0f3, #fae6eb); --card-border: #f2dce3; --icon-color: #ae476d; }
+.peach { --card-background: linear-gradient(145deg, #fff5e9, #ffeedc); --card-border: #f1e0cc; --icon-color: #a7663c; }
+.sage { --card-background: linear-gradient(145deg, #eef7f0, #e3efe7); --card-border: #d5e6da; --icon-color: #567e65; }
+.blue { --card-background: linear-gradient(145deg, #edf3fc, #e3ecf8); --card-border: #d4e1f1; --icon-color: #5b7da7; }
+.card:hover { transform: translateY(-4px); box-shadow: 0 12px 26px #60317d12; border-color: #cbaaDE; }
+.icon { display: grid; place-items: center; width: 64px; height: 64px; flex-shrink: 0; border-radius: 20px; background: #ffffffb8; color: var(--icon-color); }
+.icon svg { width: 37px; height: 37px; }
+.copy { margin-top: 14px; }
+.copy h3 { margin: 0 0 7px; font-size: 18px; font-weight: 600; line-height: 1.3; letter-spacing: -.35px; }
+.copy p { margin: 0; color: #776c7e; font-size: 12px; line-height: 1.6; }
+.footer { display: flex; align-items: center; justify-content: center; gap: 8px; padding-top: 12px; color: var(--icon-color); font-size: 11px; font-weight: 600; }
+.badge { display: inline-flex; align-items: center; padding: 5px 10px; border-radius: 999px; border: 1px solid #ffffffbb; background: #ffffff90; color: #796c83; font-size: 10px; }
+@media (min-width: 701px) and (max-width: 1000px) {
+  .grid { gap: 12px; }
+  .card { padding: 16px 12px; }
+  .copy h3 { font-size: 16px; }
+}
+@media (max-width: 700px) {
+  .section { margin-top: 28px; }
+  .grid { grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 12px; }
+  .card { grid-column: span 2; min-height: 160px; padding: 13px 8px; border-radius: 18px; }
+  .upcoming { grid-column: span 3; min-height: 170px; }
+  .icon { width: 52px; height: 52px; border-radius: 17px; }
+  .icon svg { width: 30px; height: 30px; }
+  .upcoming .icon { width: 60px; height: 60px; border-radius: 50%; }
+  .upcoming .icon svg { width: 34px; height: 34px; }
+  .copy { margin-top: 10px; }
+  .copy h3 { margin-bottom: 5px; font-size: 13px; letter-spacing: -.2px; }
+  .copy p { font-size: 10px; line-height: 1.45; }
+  .footer { padding-top: 12px; font-size: 10px; }
+  .upcoming .copy h3 { font-size: 16px; }
+}
+@media (prefers-reduced-motion: reduce) { .card { transition: none; } .card:hover { transform: none; } }

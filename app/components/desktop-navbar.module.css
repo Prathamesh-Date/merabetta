@@ -1,0 +1,137 @@
+.navbar{display:none}
+
+/* Shared navbar for desktop and mobile. */
+@media(min-width:0px){
+  .navbar{position:sticky;top:12px;z-index:50;display:flex;align-items:center;justify-content:space-between;width:96%;margin:0 auto;padding:14px 24px;border:1px solid #fff3;border-radius:16px;background:#fff;font-family:Inter,sans-serif;font-size:16px;line-height:24px;font-weight:400;-webkit-font-smoothing:antialiased;transition:all .3s cubic-bezier(.4,0,.2,1)}
+  .scrolled{background:#ffffff4d;backdrop-filter:blur(12px);box-shadow:0 4px 6px -1px #0000001a,0 2px 4px -2px #0000001a}
+  .accountPage{border-color:#eee6f3;box-shadow:0 5px 18px #55336b0b}
+  .accountPage.scrolled{top:8px;border-color:#e5d8ec;background:#fffffff2;backdrop-filter:blur(16px);box-shadow:0 10px 30px #4e315f1a,0 2px 8px #4e315f12}
+  .brand{display:flex;align-items:center;gap:8px;margin-left:8px;flex-shrink:0}
+  .brand a{display:block}
+  .brand img{display:block;height:56px;width:auto;max-width:100%}
+  .links{display:none;align-items:center;gap:28px;list-style:none;margin:0 0 0 auto;padding:0;font-size:14px;line-height:20px;font-weight:500}
+  .links li{position:relative;cursor:pointer}
+  .link{position:relative;display:inline-block;color:lab(35.6337% -1.58697 -10.8425);white-space:nowrap}
+  .link:hover,.active{color:#ee8041}
+  .underline{position:absolute;left:0;bottom:-4px;height:2px;width:0;background:#ee8041;transition:width .3s cubic-bezier(.4,0,.2,1)}
+  .link:hover .underline,.link:focus-visible .underline,.active .underline{width:100%}
+  .actions{display:flex;align-items:center;gap:6px;margin-left:auto}
+  .iconLink{position:relative;display:flex;align-items:center;justify-content:center;width:40px;height:40px;border-radius:50%;color:#4c505b}
+  .iconLink:hover{background:#fff3eb;color:#ee8041}
+  .iconLink.active{color:#ee8041}
+  .iconLink:focus-visible,.contact:focus-visible,.menuButton:focus-visible{outline:2px solid #ee8041;outline-offset:4px}
+  .count{position:absolute;top:-2px;right:-4px;display:flex;align-items:center;justify-content:center;min-width:18px;height:18px;padding:0 4px;border-radius:999px;background:#ee8041;color:#fff;font-size:11px;line-height:1;font-weight:600}
+  .contactWrap{display:block}
+  .contact.contact{position:relative;display:flex;align-items:center;gap:8px;border:0;border-radius:999px;padding:8px 10px 8px 16px;background:#ee8041;color:#fff;font-family:inherit;font-size:16px;font-weight:500;line-height:24px;white-space:nowrap;cursor:pointer;box-shadow:0 4px 6px -1px #0000001a,0 2px 4px -2px #0000001a;overflow:hidden;isolation:isolate}
+  .contact:disabled{opacity:.6;cursor:default}
+  .contact::after{content:"";position:absolute;inset:0;border:1px solid #fff3;border-radius:inherit;pointer-events:none}
+  .contact:hover{background:#d96f34}
+  .arrow{display:flex;align-items:center;justify-content:center;width:28px;height:28px;border-radius:50%;background:#fff;color:#ee8041;flex-shrink:0}
+  .arrow img{display:block;width:24px;height:24px}
+  .shine{position:absolute;inset:-2px;background:linear-gradient(to right,transparent,#ffffffb3,transparent);opacity:0;pointer-events:none}
+  .contact:hover .shine{opacity:1;animation:reference-shine 1.5s linear}
+  .menuButton{display:flex;flex-direction:column;gap:4px;margin-left:12px;padding:8px;border:0;background:none;cursor:pointer}
+  .menuButton span{display:block;width:24px;height:2px;background:#000}
+  .menu{position:absolute;top:calc(100% - 1px);left:0;display:flex;flex-direction:column;align-items:center;gap:20px;width:100%;padding:24px 0;border:1px solid #f3f4f6;border-top:0;border-radius:0 0 16px 16px;background:#fff;box-shadow:0 4px 6px -1px #0000001a,0 2px 4px -2px #0000001a}
+  .menu ul{display:flex;flex-direction:column;align-items:center;gap:20px;margin:0;padding:0;list-style:none;font-size:18px;line-height:28px;font-weight:500}
+}
+
+@media(min-width:1024px){
+  .navbar{justify-content:flex-start;gap:16px;padding-left:24px;padding-right:24px}
+  .brand{margin-left:8px}
+  .brand img{height:60px}
+  .links{display:flex;margin-left:auto}
+  .actions{margin-left:0}
+  .contactWrap{display:block}
+  .menuButton,.menu{display:none}
+}
+
+@media(min-width:1280px){.links{font-size:16px;line-height:24px}}
+@media(min-width:1024px) and (max-width:1199px){.links{gap:20px;font-size:13px}}
+
+@media(min-width:701px){
+  .withSearch{gap:16px}
+  .search{flex:1;min-width:0;margin-inline:24px}
+  .withSearch .actions{flex-shrink:0}
+}
+
+@keyframes reference-shine{0%{transform:translateX(-100%) rotate(25deg)}100%{transform:translateX(200%) rotate(25deg)}}
+@media(prefers-reduced-motion:reduce){.navbar,.underline{transition:none}.contact:hover .shine{animation:none}}
+
+@media(max-width:700px){.navbar{top:8px;width:calc(100% - 32px);padding:10px 12px;border:1px solid #eee6f3;box-shadow:0 4px 18px #55336b0b}.brand{margin-left:0}.brand img{height:46px}.actions{gap:0}.iconLink{width:36px;height:36px}.menuButton{margin-left:6px}.menu{gap:16px;padding:20px 12px}.menu ul{font-size:16px}.search{display:none}}
+
+@media(max-width:700px){.actions{gap:8px}.contact.contact{padding:7px 8px 7px 14px;font-size:13px;line-height:20px}.arrow{width:25px;height:25px}}
+
+.desktopActions { display: none; align-items: center; gap: 6px; }
+.mobileWelcome { display: none; }
+@media (max-width: 749px) {
+  .navbar { display: grid; grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr); gap: 8px; }
+  .brand { justify-self: start; min-width: 0; }
+  .brand img { max-width: 100%; }
+  .mobileWelcome { display: flex; flex-direction: column; align-items: center; justify-self: center; gap: 6px; text-align: center; color: #242c35; font-family: Inter, sans-serif; }
+  .mobileWelcome strong { font-size: clamp(11px, 3.6vw, 25px); font-weight: 700; letter-spacing: -.45px; line-height: 1.18; white-space: nowrap; }
+  .mobileWelcome > span { color: #727884; font-size: clamp(9px, 2.7vw, 17px); font-weight: 400; line-height: 1.3; white-space: nowrap; }
+  .mobileWelcome b { color: #ee8041; font-weight: 700; }
+  .actions { grid-column: 3; justify-self: end; margin-left: 0; }
+}
+@media (max-width: 750px) {
+  .menuButton, .menu { display: none; }
+  .contactWrap { display: block; }
+  .contact.contact { padding: 7px 8px 7px 14px; font-size: 13px; line-height: 20px; }
+  .arrow { width: 25px; height: 25px; }
+}
+@media (min-width: 751px) and (max-width: 1023px) {
+  .menuButton { display: flex; flex-shrink: 0; }
+  .menu { display: flex; }
+}
+@media (min-width: 1024px) {
+  .desktopActions { display: flex; }
+  .menuButton, .menu { display: none; }
+}
+@media (max-width: 360px) {
+  .contact.contact { gap: 4px; padding: 7px 6px 7px 10px; font-size: 11px; }
+  .arrow { width: 20px; height: 20px; }
+  .arrow svg { width: 16px; height: 16px; }
+}
+@media (max-width: 749px) {
+  .contact.contact { padding: 7px 10px; font-size: 11px; line-height: 20px; }
+  .contact .arrow { display: none; }
+}
+
+
+/* Search uses the remaining space without changing Home's link or action layout. */
+@media (width >= 1024px) {
+  .withSearch { flex-wrap: nowrap; gap: 16px; }
+  .withSearch .search { flex: 1 1 360px; min-width: 0; margin: 0; }
+  .withSearch .links { flex: 0 0 auto; margin-left: 0; }
+}
+@media (width < 751px) {
+  .withSearch { display: grid; grid-template-columns: 60px minmax(0,1fr) auto; gap: 10px; padding: 10px 12px; }
+  .withSearch .brand { margin: 0; min-width: 0; }
+  .withSearch .brand img { height: 42px; max-width: 60px; }
+  .withSearch .search { display: block; min-width: 0; margin: 0; }
+  .withSearch .actions { margin: 0; justify-self: end; }
+  .withSearch .contact.contact { padding: 7px 10px; font-size: 11px; line-height: 20px; }
+  .withSearch .contact .arrow { display: none; }
+}
+@media (width < 360px) {
+  .withSearch { grid-template-columns: 48px minmax(0,1fr) auto; gap: 8px; padding: 9px; }
+  .withSearch .brand img { height: 36px; max-width: 48px; }
+}
+
+/* Keep every page's navbar as tall as Home at the same screen size. */
+.navbar { min-height: 90px; }
+@media (min-width: 751px) {
+  .desktopActions { display: flex; }
+}
+@media (width < 751px) {
+  .navbar { height: clamp(76px, 11.4vw, 86px); min-height: clamp(76px, 11.4vw, 86px); padding: 10px 12px; }
+  .navbar:not(.plainMobilePage) { border: 1px solid #eee6f3; box-shadow: 0 4px 18px #55336b0b; }
+  .menuButton, .menu { display: none; }
+  .navbar.plainMobilePage { border-color: transparent; background: #fff; box-shadow: none; backdrop-filter: none; }
+  .accountContact.accountContact { justify-content: center; gap: 6px; width: auto; height: 38px; min-width: 0; padding: 7px 10px; }
+  .withSearch .accountContact.accountContact { padding: 7px 10px; }
+  .accountLabel { display: inline; }
+  .accountContact.accountContact .arrow { display: flex; width: 22px; height: 22px; background: #fff; color: #ee8041; }
+  .accountContact .arrow svg { width: 20px; height: 20px; }
+}

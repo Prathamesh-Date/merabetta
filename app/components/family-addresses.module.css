@@ -1,0 +1,38 @@
+
+.page.page { padding-top: 12px; }
+.content { display: grid; gap: 22px; }
+.groupCard { min-width: 0; padding: 25px; border: 1px solid #eae5ef; border-radius: 26px; background: #fff; box-shadow: 0 2px 2px #35274206; }
+.groupCard h2 { margin: 0 0 14px; font-size: 22px; line-height: 1.4; font-weight: 500; letter-spacing: -.5px; }
+.description.description, .emptyText.emptyText { margin: 0 0 17px; color: #72737e; font-size: 14px; line-height: 1.65; }
+.emptyText.emptyText { margin-top: 15px; }
+.savedList { display: grid; gap: 12px; }
+.savedRow { display: flex; align-items: center; gap: 14px; min-width: 0; padding: 18px; border: 1px solid #e4deea; border-radius: 19px; }
+.savedRow > svg { flex-shrink: 0; color: #8954a2; }
+.savedRow > div { flex: 1; min-width: 0; }
+.savedRow h3 { margin: 0 0 4px; font-size: 18px; line-height: 1.4; font-weight: 500; overflow-wrap: anywhere; }
+.savedRow p { margin: 0; color: #72737e; font-size: 13px; line-height: 1.6; overflow-wrap: anywhere; }
+.editButton.editButton { display: grid; place-items: center; flex-shrink: 0; width: 34px; height: 38px; padding: 5px; border: 0; border-radius: 9px; background: transparent; color: #242c35; }
+.editButton:hover { background: #f6effa; }
+.addButton.addButton { display: flex; align-items: center; justify-content: center; gap: 12px; width: 100%; min-height: 49px; margin-top: 16px; padding: 13px 16px; border: 0; border-radius: 999px; background: #e9d8f3; color: #80549b; font-size: 14px; font-weight: 700; }
+.addButton:hover { background: #dec5ed; }
+.editor { margin-top: 22px; padding-top: 20px; border-top: 1px solid #eee6f3; }
+.editor h3 { margin: 0 0 18px; font-size: 17px; font-weight: 650; }
+.fieldset { min-width: 0; margin: 0; padding: 0; border: 0; }
+.content :global(.ca-form-grid) { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 18px; }
+.content :global(.ca-form-grid) > *, .content :global(.ca-field) { min-width: 0; }
+.content :global(.ca-form-grid) input, .content :global(.ca-form-grid) select { min-height: 45px; width: 100%; border-radius: 12px; }
+.actions { display: flex; gap: 10px; }
+.actions button { display: flex; align-items: center; justify-content: center; gap: 7px; flex: 1; min-height: 40px; padding: 9px 14px; border: 0; border-radius: 999px; background: #e9d8f3; color: #80549b; font-size: 12px; font-weight: 650; }
+.actions button:hover { background: #dec5ed; }
+.removeButton.removeButton { display: flex; align-items: center; justify-content: center; gap: 7px; margin: 14px auto 0; padding: 8px 12px; border: 0; border-radius: 9px; background: #f9eeee; color: #a15151; font-size: 12px; font-weight: 600; }
+@media (max-width: 700px) {
+.content { gap: 18px; }
+.groupCard { padding: 20px 18px; border-radius: 24px; }
+.groupCard h2 { font-size: 20px; }
+.description.description, .emptyText.emptyText { font-size: 13px; }
+.savedRow { gap: 12px; padding: 16px; }
+.savedRow h3 { font-size: 16px; }
+.savedRow p { font-size: 12px; }
+.addButton.addButton { font-size: 13px; }
+}
+@media (max-width: 480px) { .content :global(.ca-form-grid) { grid-template-columns: minmax(0, 1fr); } }

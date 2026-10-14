@@ -2,45 +2,80 @@
 
 import Link from "next/link";
 import { useState } from "react";
-import { asset, categories, demoDescription, labListings, money, products, tests, type Product } from "../data/catalog";
+import { asset, categories, labListings, money, products, tests, type Product } from "../data/catalog";
 import CareIcon from "./care-icon";
 import CareShell from "./care-shell";
 import { useCare } from "./care-store";
+import ReferenceHomeHero from "./reference-home-hero";
+import CatalogPromo from "./catalog-promo";
+import CareYourWay from "./care-your-way";
+import supportStyles from "./home-care-support.module.css";
+import navigationStyles from "./product-category-navigation.module.css";
+import HomeLabSpotlight from "./home-lab-spotlight";
+import HomeDiscover from "./home-discover";
 
-export function ProductCard({ product }: { product: Product }) {
+export function ProductCard({ product, showBuyNow = false }: { product: Product; showBuyNow?: boolean }) {
   const { state, add, wish, ready } = useCare();
   const saved = state.wishlist.includes(product.id);
-  return <article className="ca-product"><div className="ca-product-art"><Link href={`/products/${product.id}`}><img src={asset(product.image)} alt={product.name} loading="lazy"/></Link><span className="ca-discount">{Math.round((1 - product.price / product.mrp) * 100)}% OFF</span><button className={`ca-wish ${saved ? "saved" : ""}`} aria-label={`${saved ? "Remove" : "Save"} ${product.name} ${saved ? "from" : "to"} wishlist`} aria-pressed={saved} onClick={() => wish(product.id)} disabled={!ready}><CareIcon name="heart" size={19}/></button></div><div className="ca-product-copy"><span className="ca-rating">★ {product.rating} <small>· Sample rating</small></span><Link href={`/products/${product.id}`}><h3>{product.name}</h3></Link><p>{product.subtitle}</p><div className="ca-product-bottom"><div><strong>{money(product.price)}</strong> <del>{money(product.mrp)}</del></div><button className="ca-add" onClick={() => add(product.id)} disabled={!ready} aria-label={`Add ${product.name} to cart`}>Add <span>+</span></button></div></div></article>;
+  return <article className="ca-product"><div className="ca-product-art"><Link href={`/products/${product.id}`}><img src={asset(product.image)} alt={product.name} loading="lazy"/></Link><span className="ca-discount">{Math.round((1 - product.price / product.mrp) * 100)}% OFF</span><button className={`ca-wish ${saved ? "saved" : ""}`} aria-label={`${saved ? "Remove" : "Save"} ${product.name} ${saved ? "from" : "to"} wishlist`} aria-pressed={saved} onClick={() => wish(product.id)} disabled={!ready}><CareIcon name="heart" size={19}/></button></div><div className="ca-product-copy"><span className="ca-rating">★ {product.rating} <small>· Sample rating</small></span><Link href={`/products/${product.id}`}><h3>{product.name}</h3></Link><p>{product.subtitle}</p><div className="ca-product-bottom"><div><strong>{money(product.price)}</strong> <del>{money(product.mrp)}</del></div><div className="ca-product-actions">{showBuyNow ? <><button className="ca-buy-now" onClick={() => add(product.id)} disabled={!ready} aria-label={`Add ${product.name} to cart`}>Add to cart</button><button className="ca-wishlist-remove" onClick={() => wish(product.id)} disabled={!ready} aria-label={`Remove ${product.name} from wishlist`}>Remove</button></> : <button className="ca-add" onClick={() => add(product.id)} disabled={!ready} aria-label={`Add ${product.name} to cart`}>Add <span>+</span></button>}</div></div></div></article>;
 }
 function SectionTitle({ title, href, label = "View all" }: { title: string; href?: string; label?: string }) {
   return <div className="ca-section-title"><h2>{title}</h2>{href && <Link href={href}>{label} <CareIcon name="arrow" size={17}/></Link>}</div>;
 }
 function CategoryGrid() {
-  return <div className="ca-categories ca-category-tiles">{categories.map(category => <Link key={category.id} href={`/products?category=${category.id}`}><span><CareIcon name={category.icon} size={40}/></span><strong>{category.name}</strong></Link>)}<Link href="/products"><span><CareIcon name="grid" size={40}/></span><strong>More</strong></Link></div>;
+  return <div className="ca-categories ca-category-tiles">{categories.map(category => <Link key={category.id} href={`/products?category=${category.id}&from=home`}><span><CareIcon name={category.icon} size={37}/></span><strong>{category.name}</strong></Link>)}<Link href="/products"><span><CareIcon name="grid" size={37}/></span><strong>More</strong></Link></div>;
 }
 export function HomeScreen() {
   return <CareShell>
-    <section className="ca-hero"><div className="ca-hero-copy"><span className="ca-eyebrow">Made with care, for your care.</span><h1>Good health<br/><em>comes home.</em></h1><p>Medicines, everyday care and trusted lab tests.<br/>Everything you need, a little closer.</p><Link href="/products" className="ca-button">Shop now <CareIcon name="arrow" size={18}/></Link><span className="ca-hero-foot"><CareIcon name="heart" size={17}/> A little care. A healthier tomorrow.</span></div><div className="ca-hero-image"><img src={asset("care")} alt="A caregiver supporting an older adult" fetchPriority="high"/><div className="ca-hero-badge"><CareIcon name="shield" size={26}/><span>Care in every detail<small>For you and the ones you love</small></span></div></div></section>
-    <div className="ca-trust">{[["shield", "Thoughtful essentials"], ["truck", "Care at your doorstep"], ["support", "Here to help"]].map(([icon, label]) => <span key={icon}><CareIcon name={icon}/>{label}</span>)}</div>
+    <ReferenceHomeHero/>
+    <CareYourWay/>
     <section className="ca-section"><SectionTitle title="Shop by category" href="/products"/><CategoryGrid/></section>
-    <section className="ca-section"><SectionTitle title="Popular products" href="/products"/><div className="ca-product-grid">{products.slice(0, 4).map(product => <ProductCard key={product.id} product={product}/>)}</div></section>
-    <section className="ca-wellness"><div><span className="ca-eyebrow">A healthier you starts here</span><h2>A little care for<br/>your everyday.</h2><p>Your healthier everyday starts here.<br/>Use <strong>MERA20</strong> for a little extra savings.</p><Link href="/products" className="ca-button">Explore essentials <CareIcon name="arrow"/></Link></div><img src={asset("wellness-banner")} alt="Daily wellness and personal care essentials" loading="lazy"/></section>
-    <section className="ca-section ca-lab-spotlight"><SectionTitle title="A healthier you starts here" href="/labtest" label="Explore labs"/><Link href="/labtest" className="ca-lab-spotlight-card"><span className="ca-lab-spotlight-icon"><CareIcon name="lab" size={48}/></span><span><strong>Choose the right lab for you</strong><small>6 labs · Compare tests and prices</small></span><b>Choose a lab <CareIcon name="arrow" size={22}/></b></Link><div className="ca-lab-benefits">{[["shield", "Trusted care"], ["medical", "Quality products"], ["heart", "Made for you"]].map(([icon, label]) => <span key={icon}><CareIcon name={icon} size={31}/>{label}</span>)}</div></section>
-    <aside className="ca-demo"><CareIcon name="shield"/><p><strong>Explore the Merabetta demo</strong><br/>{demoDescription}</p></aside>
+    <section className="ca-section ca-home-favorites"><SectionTitle title="Everyday favorite" href="/products"/><div className="ca-product-grid">{products.slice(0, 5).map(product => <ProductCard key={product.id} product={product}/>)}</div></section>
+    <HomeLabSpotlight/>
+    <HomeDiscover/>
+    <section className={`ca-wellness ${supportStyles.section}`} aria-labelledby="home-care-support-title"><div><span className="ca-eyebrow">Care beyond age</span><h2 id="home-care-support-title">A little help.<br/>A lot of care.</h2><p>Thoughtful support for seniors.<br/>Here for you and your family.</p><div className={supportStyles.actions}><Link href="/contact" className="ca-button">Enquire Now <CareIcon name="arrow"/></Link><Link href="/profile?tab=support" className={supportStyles.supportLink}><CareIcon name="support" size={18}/>Customer Support</Link></div></div><img src="/app/senior-care-support-western.png" alt="A care professional helping an older Western couple explore care options together" loading="lazy" width={2172} height={724}/></section>
   </CareShell>;
 }
 
-export function ProductsScreen({ initialCategory = "", initialQuery = "" }: { initialCategory?: string; initialQuery?: string }) {
+export function ProductsScreen({ initialCategory = "", initialQuery = "", initialFromHome = false }: { initialCategory?: string; initialQuery?: string; initialFromHome?: boolean }) {
   const [query, setQuery] = useState(initialQuery);
   const [category, setCategory] = useState(initialCategory);
   const [sort, setSort] = useState("featured");
   const [showCatalog, setShowCatalog] = useState(Boolean(initialCategory || initialQuery));
+  const [categoryFromHome, setCategoryFromHome] = useState(Boolean(initialCategory && initialFromHome));
   const visible = products.filter(p => (!category || p.category === category) && `${p.name} ${p.subtitle}`.toLowerCase().includes(query.toLowerCase().trim())).sort((a, b) => sort === "low" ? a.price - b.price : sort === "high" ? b.price - a.price : 0);
   const browsingCategories = !showCatalog && !query.trim() && !category;
-  return <CareShell><header className="ca-catalog-heading"><h1>Categories</h1><Link href="/profile?tab=wishlist" aria-label="View wishlist"><CareIcon name="heart" size={27}/></Link></header><label className="ca-mobile-page-search ca-search"><CareIcon name="search"/><input value={query} onChange={e => { setQuery(e.target.value); setShowCatalog(Boolean(e.target.value.trim())); }} placeholder="Search products, brands, health solutions..." aria-label="Search products"/>{query && <button onClick={() => { setQuery(""); setShowCatalog(false); }} aria-label="Clear search"><CareIcon name="close" size={17}/></button>}</label>{!browsingCategories && <div className="ca-toolbar"><select aria-label="Sort products" value={sort} onChange={e => setSort(e.target.value)}><option value="featured">Featured products</option><option value="low">Price: low to high</option><option value="high">Price: high to low</option></select></div>}{browsingCategories ? <><div className="ca-catalog-category-grid">{categories.map(c => <button key={c.id} onClick={() => { setCategory(c.id); setShowCatalog(true); }}><span><CareIcon name={c.icon} size={37}/></span><strong>{c.name}</strong></button>)}<button onClick={() => setShowCatalog(true)}><span><CareIcon name="grid" size={37}/></span><strong>More</strong></button></div><section className="ca-catalog-promo"><div><strong>Good health<br/>comes home</strong><p>Up to 60% off essentials.</p></div><img src={asset("care")} alt="Care at home"/></section><section className="ca-catalog-products"><SectionTitle title="Popular products" href="/products"/><div className="ca-product-grid">{visible.map(p => <ProductCard key={p.id} product={p}/>)}</div></section></> : <><div className="ca-chips" aria-label="Product categories"><button className={!category ? "active" : ""} onClick={() => { setQuery(""); setCategory(""); setShowCatalog(false); }}>All categories</button>{categories.map(c => <button key={c.id} className={category === c.id ? "active" : ""} onClick={() => setCategory(c.id)}>{c.name}</button>)}</div><p className="ca-result-count">{visible.length} products · Sample catalog</p>{visible.length ? <div className="ca-product-grid">{visible.map(p => <ProductCard key={p.id} product={p}/>)}</div> : <div className="ca-empty"><h2>No products found</h2><p>Try another search or category.</p><button className="ca-button" onClick={() => { setQuery(""); setCategory(""); setShowCatalog(false); }}>Clear filters</button></div>}</>}</CareShell>;
+  function backToCategories() {
+    setQuery("");
+    setCategory("");
+    setSort("featured");
+    setShowCatalog(false);
+    setCategoryFromHome(false);
+  }
+  const heading = <header className="ca-catalog-heading"><div className={navigationStyles.heading}>
+    {browsingCategories || categoryFromHome ? <Link href="/" className={navigationStyles.back} aria-label="Back to home"><CareIcon name="back" size={23}/></Link> : <button suppressHydrationWarning type="button" className={navigationStyles.back} onClick={backToCategories} aria-label="Back to categories"><CareIcon name="back" size={23}/></button>}
+    <h1>Categories</h1>
+  </div><Link href="/profile?tab=wishlist" aria-label="View wishlist"><CareIcon name="heart" size={27}/></Link></header>;
+  // Form extensions may add fdprocessedid before hydration; only tolerate it on native controls.
+  return <CareShell mainClassName="ca-products-page" search={<label className="ca-search ca-nav-search"><CareIcon name="search"/><input suppressHydrationWarning value={query} onChange={e => { setQuery(e.target.value); setShowCatalog(Boolean(e.target.value.trim())); }} placeholder="Search products, brands, health solutions..." aria-label="Search products"/>{query && <button suppressHydrationWarning onClick={() => { setQuery(""); setShowCatalog(false); }} aria-label="Clear search"><CareIcon name="close" size={17}/></button>}</label>}>{heading}{browsingCategories ? <><div className="ca-catalog-category-grid">{categories.map(c => <button suppressHydrationWarning key={c.id} onClick={() => { setCategoryFromHome(false); setCategory(c.id); setShowCatalog(true); }}><span><CareIcon name={c.icon} size={37}/></span><strong>{c.name}</strong></button>)}<button suppressHydrationWarning onClick={() => setShowCatalog(true)}><span><CareIcon name="grid" size={37}/></span><strong>More</strong></button></div><CatalogPromo onBrowse={nextCategory => { setCategoryFromHome(false); setCategory(nextCategory); setShowCatalog(true); }}/><section className="ca-catalog-products"><SectionTitle title="Popular products" href="/products"/><div className="ca-product-grid">{visible.map(p => <ProductCard key={p.id} product={p}/>)}</div></section></> : <><div className="ca-catalog-controls">
+  <div className="ca-chips" aria-label="Product categories">
+    <button suppressHydrationWarning className={!category ? "active" : ""} aria-pressed={!category} onClick={() => { setQuery(""); setCategory(""); setShowCatalog(false); }}>All categories</button>
+    {categories.map(c => <button suppressHydrationWarning key={c.id} className={category === c.id ? "active" : ""} aria-pressed={category === c.id} onClick={() => setCategory(c.id)}>{c.name}</button>)}
+  </div>
+  <label className="ca-catalog-filter">
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" aria-hidden="true"><path d="M4 7h16M4 17h16"/><circle cx="9" cy="7" r="2" fill="white"/><circle cx="15" cy="17" r="2" fill="white"/></svg>
+    <span>Filter</span>
+    <select suppressHydrationWarning aria-label="Filter products by sort order" value={sort} onChange={e => setSort(e.target.value)}>
+      <option value="featured">Featured products</option>
+      <option value="low">Price: low to high</option>
+      <option value="high">Price: high to low</option>
+    </select>
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg>
+  </label>
+</div><p className="ca-result-count">{visible.length} products · Sample catalog</p>{visible.length ? <div className="ca-product-grid">{visible.map(p => <ProductCard key={p.id} product={p}/>)}</div> : <div className="ca-empty"><h2>No products found</h2><p>Try another search or category.</p><button suppressHydrationWarning className="ca-button" onClick={() => { setQuery(""); setCategory(""); setShowCatalog(false); }}>Clear filters</button></div>}</>}</CareShell>;
 }
 
 export function Quantity({ value, onChange, name, allowZero = false }: { value: number; onChange: (n: number) => void; name: string; allowZero?: boolean }) {
-  return <div className="ca-quantity"><button aria-label={`Decrease ${name} quantity`} disabled={value <= (allowZero ? 0 : 1)} onClick={() => onChange(value - 1)}>−</button><span aria-label={`${name} quantity`}>{value}</span><button aria-label={`Increase ${name} quantity`} disabled={value >= 99} onClick={() => onChange(value + 1)}>+</button></div>;
+  return <div className="ca-quantity"><button suppressHydrationWarning aria-label={`Decrease ${name} quantity`} disabled={value <= (allowZero ? 0 : 1)} onClick={() => onChange(value - 1)}>−</button><span aria-label={`${name} quantity`}>{value}</span><button suppressHydrationWarning aria-label={`Increase ${name} quantity`} disabled={value >= 99} onClick={() => onChange(value + 1)}>+</button></div>;
 }
 

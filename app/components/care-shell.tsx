@@ -7,34 +7,21 @@ import CareIcon from "./care-icon";
 import { useCare } from "./care-store";
 import SiteFooter from "./site-footer";
 import HomeHeader from "./care-home-header";
+import MobileBottomNavigation from "./mobile-bottom-navigation";
 
-const navigation = [
-  { href: "/", name: "Home", icon: "home" },
-  { href: "/products", name: "Products", icon: "grid" },
-  { href: "/cart", name: "Cart", icon: "cart" },
-  { href: "/labtest", name: "Lab Tests", icon: "lab" },
-  { href: "/profile", name: "Profile", icon: "profile" },
-];
-export default function CareShell({ children, focused = false }: { children: ReactNode; focused?: boolean }) {
+export default function CareShell({ children, focused = false, search, mainClassName = "", hideHeader = false }: { children: ReactNode; focused?: boolean; search?: ReactNode; mainClassName?: string; hideHeader?: boolean }) {
   const path = usePathname();
-  const { state, notice } = useCare();
-  const count = Object.values(state.cart).reduce((a, b) => a + b, 0);
-  function links(mobile = false) {
-    return navigation.map(item => <Link key={item.href} href={item.href} className={path === item.href || (item.href !== "/" && path.startsWith(item.href + "/")) ? "active" : ""} aria-current={path === item.href ? "page" : undefined}><span><CareIcon name={item.icon}/>{item.icon === "cart" && count > 0 && <b className="ca-count">{count}</b>}</span>{mobile && item.icon === "grid" ? "Categories" : mobile && item.icon === "lab" ? "Labs" : item.name}</Link>);
-  }
+  const { notice } = useCare();
   function desktopLinks() {
     const item = (href: string, name: string) => <Link key={href} href={href} className={path === href || (href !== "/" && path.startsWith(href + "/")) ? "active" : ""} aria-current={path === href ? "page" : undefined}>{name}</Link>;
     return [item("/", "Home"), item("/products", "Products"), item("/labtest", "Lab Tests")];
   }
-  function quickActions() {
-    return <><Link className={`ch-icon-action ${path === "/cart" ? "active" : ""}`} href="/cart" aria-label="Cart"><CareIcon name="cart" size={22}/>{count > 0 && <b className="ca-count">{count}</b>}</Link><Link className={`ch-icon-action ${path.startsWith("/profile") ? "active" : ""}`} href="/profile" aria-label="Profile"><CareIcon name="profile" size={22}/></Link></>;
-  }
   return <div className={`ca-app ${focused ? "ca-focused" : ""}`}>
     <a className="ca-skip" href="#main-content">Skip to content</a>
-    <HomeHeader navigation={desktopLinks()} quickActions={quickActions()} showSearch={path === "/"} showCompactSearch={path === "/products" || path === "/labtest"} compactSearchAction={path === "/labtest" ? "/labtest" : "/products"} compact home={path === "/"}/>
-    <main id="main-content" className="ca-main">{children}</main>
+    {!hideHeader && <HomeHeader navigation={desktopLinks()} showSearch={path === "/"} compact home={path === "/"} search={search}/>}
+    <main id="main-content" className={`ca-main ${mainClassName}`}>{children}</main>
     <SiteFooter/>
-    <nav className="ca-bottom-nav" aria-label="Mobile navigation">{links(true)}</nav>
+    <MobileBottomNavigation/>
     {notice && <div className="ca-toast" role="status"><CareIcon name="check"/>{notice}</div>}
   </div>;
 }

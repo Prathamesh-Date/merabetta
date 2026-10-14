@@ -1,0 +1,37 @@
+.main.main { min-height: calc(100svh - 125px); padding-top: 24px; padding-bottom: 60px; }
+.page { max-width: 700px; margin: 0 auto; }
+.heading.heading { gap: 16px; margin-bottom: 42px; }
+.teamCard { padding: 25px; border: 1px solid #eae5ef; border-radius: 26px; background: #fff; box-shadow: 0 2px 2px #35274206; }
+.teamHeading { display: flex; align-items: center; gap: 16px; }
+.avatar { display: grid; place-items: center; flex: 0 0 auto; width: 54px; height: 54px; border-radius: 50%; background: #e9d8f3; color: #a3592f; }
+.teamHeading h2 { margin: 0 0 4px; font-size: 21px; font-weight: 700; letter-spacing: -.35px; line-height: 1.35; }
+.teamHeading p { margin: 0; color: #72737e; font-size: 15px; line-height: 1.5; }
+.welcome.welcome { margin: 20px 0 0; font-size: 16px; line-height: 1.65; }
+.conversation { display: grid; gap: 18px; }
+.exchange { display: grid; gap: 18px; margin-top: 20px; font-size: 15px; line-height: 1.6; }
+.userMessage { width: fit-content; min-width: 100px; max-width: 90%; margin-left: auto; padding: 18px 22px; border-radius: 25px; background: #f0e8f8; white-space: pre-wrap; overflow-wrap: anywhere; }
+.assistantMessage { max-width: 92%; padding: 19px 22px; border: 1px solid #eae5ef; border-radius: 25px; background: #fff; box-shadow: 0 2px 2px #35274206; }
+.assistantMessage p { margin: 0; }
+.assistantMessage a { display: inline-flex; align-items: center; gap: 6px; margin-top: 10px; color: #80549b; font-size: 13px; font-weight: 600; }
+.composer { display: flex; align-items: center; gap: 15px; margin-top: 22px; }
+.composer input { flex: 1; min-width: 0; min-height: 59px; padding: 16px 20px; border: 1px solid #e4deea; border-radius: 20px; background: #fff; font-size: 15px; color: #242c35; }
+.composer input::placeholder { color: #72737e; }
+.composer button { display: grid; place-items: center; flex: 0 0 auto; width: 42px; height: 46px; padding: 5px; border: 0; border-radius: 12px; background: transparent; color: #242c35; }
+.composer button:hover { background: #f6effa; color: #80549b; }
+.composer button:disabled { opacity: .45; }
+.availability.availability { margin: 10px 0 0; color: #72737e; font-size: 11px; line-height: 1.5; }
+@media (max-width: 700px) {
+  .main.main { min-height: calc(100svh - 100px); padding-top: 18px; padding-bottom: 40px; }
+  .heading.heading { gap: 12px; margin-bottom: 38px; }
+  .teamCard { padding: 20px 18px; border-radius: 24px; }
+  .teamHeading { gap: 12px; }
+  .avatar { width: 48px; height: 48px; }
+  .teamHeading h2 { font-size: 17px; }
+  .teamHeading p { font-size: 13px; }
+  .welcome.welcome { margin-top: 17px; font-size: 14px; }
+  .exchange { font-size: 14px; }
+  .composer { gap: 12px; margin-top: 20px; }
+  .composer input { min-height: 56px; padding: 15px 16px; border-radius: 19px; font-size: 14px; }
+  .userMessage { min-width: 90%; padding: 17px 20px; border-radius: 23px; }
+  .assistantMessage { padding: 18px; border-radius: 23px; }
+}

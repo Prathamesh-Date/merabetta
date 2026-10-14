@@ -1,5 +1,10 @@
 export default function CareIcon({ name, size = 22 }: { name: string; size?: number }) {
   const paths: Record<string, React.ReactNode> = {
+    pause: <><path d="M8 5v14M16 5v14"/></>,
+    play: <path d="m8 4 12 8-12 8Z"/>,
+    "sign-in": <><path d="M14 3h6v18h-6M3 12h12m-4-4 4 4-4 4"/></>,
+    trash: <><path d="M3 6h18M9 6V3h6v3M5 6l1 15h12l1-15M10 10v7M14 10v7"/></>,
+    edit: <><path d="M13 5H5a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8M16 3l5 5M10 14l-1 4 4-1L22 8l-5-5Z"/></>,
     bell: <><path d="M5 9a7 7 0 0 1 5-6V2h4v1a7 7 0 0 1 5 6c0 7 3 8 3 8H2s3-1 3-8ZM9 20a3 3 0 0 0 6 0"/></>,
     layers: <><path d="m3 7 9-4 9 4-9 4Zm0 5 9 4 9-4M3 17l9 4 9-4"/></>,
     walk: <><circle cx="13" cy="4" r="2"/><path d="m8 12 2-4h4l2 5 4 2M12 9l-1 7-5 5m5-5 5 5M7 8v7"/></>,
@@ -28,6 +33,8 @@ export default function CareIcon({ name, size = 22 }: { name: string; size?: num
     shield: <><path d="m12 3 8 3v6c0 5-8 9-8 9s-8-4-8-9V6Z"/><path d="m8 12 3 3 5-6"/></>,
     truck: <><path d="M2 5h12v12H2zm12 5h4l4 4v3h-8"/><circle cx="6" cy="19" r="2"/><circle cx="18" cy="19" r="2"/></>,
     support: <><path d="M4 14v-3a8 8 0 0 1 16 0v3M20 17v2l-6 2"/><rect x="2" y="11" width="4" height="7" rx="2"/><rect x="18" y="11" width="4" height="7" rx="2"/></>,
+    mail: <><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m4 7 8 6 8-6"/></>,
+    phone: <path d="M7.2 3.5H5a2 2 0 0 0-2 2c.2 8.6 7.1 15.4 15.7 15.6a2 2 0 0 0 2-2v-2.2l-4.3-1.5-1.5 2.1a15 15 0 0 1-6.9-6.9l2.1-1.5-1.5-4.3Z"/>,
     pin: <><path d="M19 10c0 5-7 11-7 11S5 15 5 10a7 7 0 0 1 14 0Z"/><circle cx="12" cy="10" r="2.5"/></>,
     clock: <><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></>,
     ticket: <><path d="M3 5h18v5a2 2 0 0 0 0 4v5H3v-5a2 2 0 0 0 0-4Z"/><path d="m9 15 6-6M9 9h.01M15 15h.01"/></>,

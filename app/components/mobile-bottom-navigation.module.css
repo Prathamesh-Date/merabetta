@@ -1,0 +1,21 @@
+.navigation { display: none; --ca-line: #ebe5f0; --ca-purple: #8453a7; --ca-orange: #f5803d; font-family: Inter, "Segoe UI", sans-serif; }
+@media (width < 751px) {
+  .navigation.navigation { display: flex; position: fixed; bottom: 0; left: 0; right: 0; z-index: 30; align-items: flex-end; justify-content: space-around; min-height: 68px; padding: 9px 6px calc(10px + env(safe-area-inset-bottom)); border-top: 1px solid #ebe5f0; border-radius: 20px 20px 0 0; background: #ffffffef; box-shadow: 0 -6px 28px #61387c12; backdrop-filter: blur(16px); }
+  .navigation a { display: flex; flex: 1; min-width: 0; flex-direction: column; align-items: center; gap: 4px; color: #8b7b97; font-size: 10px; line-height: 1.5; text-decoration: none; transition: color .2s ease; -webkit-tap-highlight-color: transparent; }
+  .navigation a[aria-current="page"] { color: #8453a7; font-weight: 700; }
+  .navigation a > span { position: relative; display: flex; justify-content: center; min-width: 42px; padding: 3px 9px; border-radius: 12px; transition: background .2s ease, transform .2s ease, box-shadow .2s ease; }
+  .navigation a[aria-current="page"] > span { background: #f0e5f8; box-shadow: inset 0 0 0 1px #8453a70c; }
+  .navigation a:active > span { transform: scale(.92); }
+  .navigation a:has([data-icon="cart"])[aria-current="page"] { color: #e1803d; }
+  .navigation svg { width: 24px; height: 24px; }
+  .navigation a:has([data-icon="cart"]) > span { display: grid; place-items: center; width: 55px; height: 55px; margin-top: -24px; padding: 8px; border: 6px solid #ffeadb; border-radius: 50%; background: linear-gradient(145deg,#ff9956,#ed742f); color: #fff; box-shadow: 0 4px 12px #e1803d26; }
+  .navigation :global(.ca-count) { position: absolute; top: -5px; right: -6px; min-width: 17px; height: 17px; padding: 1px 4px; border-radius: 20px; background: #252e38; color: #fff; font-size: 10px; line-height: 15px; text-align: center; }
+  .navigation a:focus-visible { outline: 2px solid #8453a7; outline-offset: 3px; border-radius: 8px; }
+}
+@media (hover: hover) and (width < 751px) {
+  .navigation a:hover { color: #8453a7; }
+  .navigation a:not(:has([data-icon="cart"])):hover > span { background: #f6effb; transform: translateY(-2px); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .navigation a, .navigation a > span { transition: none; }
+}

@@ -1,0 +1,73 @@
+/* Keep the footer at the wishlist's screen position on all three pages. */
+.main.main { --order-results-height: clamp(355px, calc(100svh - 385px), 545px); height: calc(var(--order-results-height) + 222px); min-height: 0; padding-top: 22px; padding-bottom: 26px; box-sizing: border-box; overflow-y: auto; }
+.contentMain.contentMain.contentMain { height: auto; min-height: 60vh; overflow: visible; }
+.main :global(.ca-profile-page) { padding: 0; }
+.page { --order-results-height: clamp(355px, calc(100svh - 385px), 545px); max-width: 620px; margin: 0 auto; }
+.ordersPage .results, .ordersPage .empty, .ordersPage .list { min-height: calc(var(--order-results-height) - 28px); }
+.heading { margin-bottom: 18px; }
+.heading button, .heading a { display: grid; place-items: center; width: 44px; height: 44px; padding: 6px; border: 0; border-radius: 12px; background: transparent; color: var(--ca-ink); }
+.heading button:hover, .heading a:hover { background: #f5eef9; }
+.tabs { display: grid; grid-template-columns: 1fr 1fr; gap: 5px; padding: 4px; border-radius: 15px; background: #f6f0fb; }
+.tabs button { display: flex; align-items: center; justify-content: center; gap: 8px; min-height: 40px; border: 0; border-radius: 12px; background: transparent; color: #686371; font-size: 13px; font-weight: 700; transition: background .15s, color .15s; }
+.tabs button svg { width: 20px; height: 20px; }
+.tabs button.activeTab { background: #8954a2; color: #fff; box-shadow: 0 3px 8px #60317d12; }
+.filters { margin: 12px 0 0; }
+.filters p { margin: 0 0 8px; color: #65616d; font-size: 12px; font-weight: 500; }
+.chips { display: flex; gap: 10px; padding: 3px 2px 8px; overflow-x: auto; scrollbar-width: thin; scrollbar-color: #ded1e7 transparent; }
+.chips button { display: flex; align-items: center; justify-content: center; gap: 6px; flex: 1 0 auto; min-height: 36px; padding: 7px 10px; border: 1px solid #e6e1ea; border-radius: 11px; background: white; color: #686371; font-size: 11px; font-weight: 650; white-space: nowrap; }
+.chips button:hover { background: #faf7fc; border-color: #c9b0da; }
+.chips button.selected { border-color: #9463aa; background: #f7f0fb; color: #8954a2; }
+.processing svg, .status.processing { color: #9a7b2c; }
+.delivered svg, .status.delivered { color: #2d806b; }
+.cancelled svg, .status.cancelled { color: #b05270; }
+.empty { display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; min-height: var(--order-results-height); padding: 48px 12px; }
+.emptyIcon { display: grid; place-items: center; width: 66px; height: 66px; border-radius: 22px; background: #e9d9f2; color: #a35829; margin-bottom: 15px; }
+.emptyIcon svg { width: 38px; height: 38px; }
+.wishlistHeart { display: grid; place-items: center; width: 44px; height: 44px; }
+.wishlistEmpty { justify-content: flex-start; min-height: calc(var(--order-results-height) + 58px); padding-top: 58px; }
+.wishlistList { grid-template-columns: minmax(0, 1fr) !important; align-content: start; min-height: calc(var(--order-results-height) + 58px); gap: 16px !important; padding: 24px 0 48px; }
+.wishlistList :global(.ca-product) { display: grid; grid-template-columns: 180px minmax(0, 1fr); }
+.wishlistList :global(.ca-product-art) { aspect-ratio: auto; min-height: 180px; }
+.wishlistList :global(.ca-product-copy) { display: flex; flex-direction: column; justify-content: center; }
+.wishlistList :global(.cl-test-card) { width: 100%; }
+/* Reserve the same space as the wishlist's Products/Labs tabs above its results. */
+.cartEmpty { min-height: calc(var(--order-results-height) + 106px); padding-top: 76px; }
+.cartEmpty .emptyIcon { width: 82px; height: 82px; border-radius: 27px; }
+.cartEmpty .emptyIcon svg { width: 46px; height: 46px; }
+.empty h2 { margin: 0 0 12px; font-size: 20px; font-weight: 600; letter-spacing: -.6px; line-height: 1.4; }
+.empty p { margin: 0 0 20px; max-width: 380px; font-size: 13px; line-height: 1.7; color: #797581; }
+.action { display: inline-flex; align-items: center; justify-content: center; gap: 12px; padding: 11px 21px; min-height: 44px; border: 0; border-radius: 999px; background: #f58339; color: #fff !important; font-size: 14px; font-weight: 600; transition: background .15s; }
+.action:hover { background: #e7762f; }
+.results { display: grid; grid-template-columns: minmax(0, 1fr); min-height: var(--order-results-height); }
+.list { display: grid; align-content: start; gap: 18px; min-height: var(--order-results-height); padding: 24px 0 48px; }
+.order { border: 1px solid #eae1ef; border-radius: 20px; padding: 22px; background: #fff; box-shadow: 0 4px 20px #60317d05; }
+.orderHeading { display: flex; align-items: center; gap: 12px; }
+.orderIcon { display: grid; place-items: center; width: 44px; height: 44px; flex-shrink: 0; border-radius: 13px; background: #f4edf9; color: #8954a2; }
+.orderHeading h2 { margin: 0 0 5px; font-size: 14px; }
+.orderHeading p { margin: 0; font-size: 11px; color: #797581; }
+.status { margin-left: auto; padding: 6px 9px; border-radius: 999px; background: #faf6ef; font-size: 10px; font-weight: 600; }
+.order ul { list-style: none; padding: 0; margin: 18px 0; border-top: 1px solid #eee8f2; }
+.order li { display: flex; align-items: center; justify-content: space-between; gap: 15px; padding: 14px 0; border-bottom: 1px solid #eee8f2; font-size: 12px; line-height: 1.5; }
+.order li small { display: block; margin-top: 4px; color: #797581; font-size: 10px; }
+.order li strong { flex-shrink: 0; }
+.orderFooter { display: flex; align-items: center; justify-content: space-between; gap: 16px; flex-wrap: wrap; font-size: 11px; color: #797581; }
+.orderFooter strong { color: var(--ca-ink); font-size: 13px; }
+@media (max-width: 700px) {
+  .main.main { height: calc(var(--order-results-height) + 206px); padding-top: 12px; padding-bottom: 20px; }
+  .main :global(.ca-profile-page) { padding: 0; }
+  .heading { margin-bottom: 18px; }
+  .chips button { flex: 0 0 auto; padding: 7px 10px; }
+  .empty { padding: 48px 5px; }
+  .wishlistEmpty { padding-top: 52px; }
+  .wishlistList { padding-top: 18px; }
+  .wishlistList :global(.ca-product) { grid-template-columns: 112px minmax(0, 1fr); }
+  .wishlistList :global(.ca-product-art) { min-height: 145px; }
+  .cartEmpty { padding-top: 66px; }
+  .cartEmpty .emptyIcon { width: 76px; height: 76px; border-radius: 25px; }
+  .cartEmpty .emptyIcon svg { width: 43px; height: 43px; }
+  .emptyIcon { width: 62px; height: 62px; border-radius: 21px; }
+  .empty h2 { font-size: 19px; }
+  .empty p { font-size: 13px; }
+  .order { padding: 17px; }
+  .orderHeading { flex-wrap: wrap; }
+}

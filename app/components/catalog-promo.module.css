@@ -1,0 +1,22 @@
+.promo.promo{position:relative;isolation:isolate;display:block;min-height:440px;padding:0;margin:24px 0 36px;overflow:hidden;border:1px solid #e9dff0;border-radius:28px;background:#f1e6f8;box-shadow:0 8px 24px #60317d08}
+.copy{position:relative;z-index:2;display:flex;flex-direction:column;align-items:flex-start;width:57%;min-height:440px;padding:44px 42px}
+.tag{display:block;margin-bottom:14px;color:#8855a3;font-size:10px;font-weight:700;letter-spacing:1.6px}
+.copy h2{max-width:420px;margin:0!important;font-size:clamp(30px,3.5vw,44px);line-height:1.16;letter-spacing:-.8px}
+.promo .copy p{max-width:350px;min-height:44px;margin:20px 0 24px;color:#766784;font-size:14px;line-height:1.7}
+.promo .action{display:flex;align-items:center;gap:12px;padding:11px 18px;border:0;border-radius:999px;background:#ee8041;color:#fff;font-size:12px;font-weight:600;cursor:pointer}
+.action:hover{background:#d96f34}
+.controls{display:flex;align-items:center;gap:6px;margin-top:auto;padding-top:20px}
+.controls button{display:grid;place-items:center;width:32px;height:32px;padding:0;border:0;border-radius:50%;background:#ffffffa8;color:#76538c;cursor:pointer}
+.controls button:hover{background:#fff}
+.dots{display:flex;align-items:center;gap:2px}
+.dots button{width:23px;background:transparent}
+.dots span{width:6px;height:6px;border-radius:50%;background:#bfa8cc}
+.dots .activeDot{width:18px;border-radius:999px;background:#ee8041}
+.controls .play{margin-left:8px}
+.visual{position:absolute;inset:0 0 0 auto;z-index:0;width:62%;overflow:hidden}
+.visual::after{content:"";position:absolute;inset:0;pointer-events:none;background:linear-gradient(90deg,#f1e6f8 0%,#f1e6f8e6 12%,#f1e6f880 28%,#f1e6f800 48%),linear-gradient(0deg,#e9d8f326,transparent 55%)}
+.promo .visual img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center;opacity:0;transition:opacity .7s ease}
+.promo .visual img.activeImage{opacity:1}
+@media(max-width:700px){.promo.promo{min-height:0;padding-bottom:240px;border-radius:24px}.copy{width:100%;min-height:320px;padding:28px}.copy h2{max-width:340px;font-size:32px}.promo .copy p{min-height:0;margin:16px 0 20px}.controls{padding-top:20px}.visual{inset:auto 0 0;width:100%;height:300px}.visual::after{background:linear-gradient(180deg,#f1e6f8 0%,#f1e6f8b3 15%,#f1e6f800 40%)}}
+@media(prefers-reduced-motion:reduce){.promo .visual img{transition:none}}
+.promo.promo{border-top-right-radius:0;border-bottom-right-radius:0}

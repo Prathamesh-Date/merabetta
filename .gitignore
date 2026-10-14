@@ -7,3 +7,8 @@ coverage/
 *.log
 .env*
 !.env.example
+
+# Local previews and generated verification output
+/artifacts/
+/output/
+/tmp/

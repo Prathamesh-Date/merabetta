@@ -1,0 +1,22 @@
+.main.main { min-height: calc(100svh - 125px); padding-top: 24px; padding-bottom: 50px; }
+.page { max-width: 700px; margin: 0 auto; }
+.heading.heading { gap: 16px; margin-bottom: 42px; }
+.card { display: flex; flex-direction: column; width: 100%; max-width: 420px; min-height: 300px; margin-inline: auto; padding: 30px 28px; border: 1px solid #eae5ef; border-radius: 26px; background: #fff; box-shadow: 0 2px 2px #35274206; }
+.badge { display: grid; place-items: center; flex-shrink: 0; width: 38px; height: 38px; margin-bottom: 22px; border-radius: 50%; background: #f5803d; color: #fff; }
+.badge svg { fill: currentColor; }
+.card h2 { margin: 0 0 15px; font-size: 21px; line-height: 1.4; font-weight: 700; letter-spacing: -.4px; }
+.card p { margin: 0 0 20px; color: #72737e; font-size: 14px; line-height: 1.7; }
+.explore, .cart { display: flex; align-items: center; justify-content: center; gap: 12px; width: 100%; min-height: 49px; padding: 13px 18px; border-radius: 999px; font-size: 14px; font-weight: 700; }
+.explore { margin-top: auto; background: #e9d8f3; color: #80549b; }
+.explore:hover { background: #dec5ed; }
+.cart { max-width: 420px; margin: 20px auto 0; background: #f5803d; color: #fff; }
+.cart:hover { background: #df7130; }
+@media (max-width: 700px) {
+  .main.main { min-height: calc(100svh - 100px); padding-top: 18px; padding-bottom: 40px; }
+  .heading.heading { gap: 12px; margin-bottom: 38px; }
+  .card { min-height: 280px; padding: 24px 20px; border-radius: 24px; }
+  .badge { width: 34px; height: 34px; }
+  .card h2 { font-size: 18px; }
+  .card p { font-size: 13px; }
+  .explore, .cart { font-size: 13px; }
+}

@@ -1,0 +1,56 @@
+.wizard { min-width: 0; }
+.steps { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 8px; margin: 0 0 24px; padding: 20px 12px; border-radius: 22px; background: #f6effa; list-style: none; }
+.steps li { display: grid; justify-items: center; gap: 9px; color: #72737e; font-size: 12px; }
+.steps li > span { display: grid; place-items: center; width: 36px; height: 36px; border-radius: 50%; background: #fff; color: #606371; font-size: 17px; font-weight: 600; }
+.steps strong { font-weight: 400; }
+.steps li.active > span { background: #8954a2; color: #fff; }
+.steps li[aria-current="step"] strong { color: #8954a2; font-weight: 600; }
+.stepHeading { margin-bottom: 23px; }
+.stepHeading > span { color: #8954a2; font-size: 11px; font-weight: 500; letter-spacing: 1.5px; }
+.stepHeading h2 { margin: 10px 0; font-size: 24px; font-weight: 600; line-height: 1.35; }
+.wizard.wizard section h2 { font-weight: 600; letter-spacing: -.2px; }
+.wizard.wizard button { font-weight: 500; }
+.wizard.wizard .primary { font-weight: 600; }
+.stepHeading p, .description.description { margin: 0 0 17px; font-size: 14px; color: #72737e; line-height: 1.65; }
+.tests { display: grid; gap: 16px; margin-bottom: 20px; }
+.test { display: flex; align-items: center; gap: 16px; min-width: 0; }
+.test img { flex: 0 0 auto; width: 70px; height: 70px; object-fit: contain; border-radius: 14px; background: #f6f0fb; }
+.test > div { min-width: 0; }
+.test h3, .member h3 { margin: 0 0 5px; font-size: 17px; font-weight: 500; line-height: 1.4; overflow-wrap: anywhere; }
+.test p, .member p { margin: 0 0 7px; color: #72737e; font-size: 13px; line-height: 1.6; overflow-wrap: anywhere; }
+.test strong { color: #8954a2; font-size: 16px; font-weight: 600; }
+.testTotal { display: flex; justify-content: space-between; gap: 14px; margin-top: 22px; font-size: 18px; }
+.testTotal strong { font-weight: 600; }
+.members { display: grid; gap: 12px; }
+.member { display: flex; align-items: center; gap: 14px; padding: 17px; border: 1px solid #e4deea; border-radius: 18px; cursor: pointer; }
+.member input { flex-shrink: 0; width: 18px; height: 18px; margin: 0; accent-color: #8954a2; }
+.member > div { min-width: 0; }
+.member.selected { border-color: #8954a2; }
+.cardActions, .navigation { display: grid; gap: 13px; margin-top: 18px; }
+.formActions { display: grid; gap: 14px; }
+.cardActions > button, .navigation > button, .formActions > button { min-width: 0; }
+.memberNote.memberNote { margin: 20px 0 0; color: #72737e; font-size: 13px; line-height: 1.7; }
+.memberForm { display: grid; gap: 14px; margin-top: 22px; }
+.memberForm fieldset { display: grid; gap: 18px; min-width: 0; margin: 0; padding: 0; border: 0; }
+.memberForm label { display: grid; gap: 9px; font-size: 13px; }
+.memberForm input { width: 100%; min-width: 0; min-height: 47px; padding: 13px 15px; border: 1px solid #e4deea; border-radius: 14px; background: #fff; font-size: 13px; }
+.choiceField { display: grid; gap: 10px; font-size: 13px; }
+.choiceField > div, .slots { display: flex; flex-wrap: wrap; gap: 10px; }
+.choiceField button, .slots button { min-height: 42px; padding: 10px 14px; border: 1px solid transparent; border-radius: 13px; background: #f6effa; color: #30303a; font-size: 13px; }
+.choiceField button[aria-pressed="true"], .slots button[aria-pressed="true"] { border-color: #8954a2; background: #e9d8f3; color: #75478f; }
+.visit, .review { display: grid; gap: 20px; }
+.dates { display: flex; gap: 12px; max-width: 100%; margin: 20px 0; padding-bottom: 8px; overflow-x: auto; }
+.dates button { display: grid; align-content: center; justify-items: center; gap: 8px; flex: 0 0 83px; min-height: 119px; padding: 13px 10px; border: 1px solid #e4deea; border-radius: 19px; background: #fff; color: #30303a; font-size: 13px; }
+.dates button strong { font-size: 26px; font-weight: 600; }
+.dates button.selectedDate { border-color: #8954a2; background: #8954a2; color: #fff; }
+.slotMessage.slotMessage { margin: 15px 0; color: #ac5269; font-size: 13px; line-height: 1.6; }
+.slots { margin: 0 0 18px; }
+.primary.primary { justify-content: center; gap: 10px; width: 100%; border-radius: 999px; }
+.reviewTest { display: flex; justify-content: space-between; gap: 16px; font-size: 14px; }
+.reviewTest span { min-width: 0; overflow-wrap: anywhere; }
+.reviewTest strong { flex-shrink: 0; font-weight: 600; }
+.review dl { margin: 0; }
+.review dl > div { display: grid; gap: 5px; margin-top: 15px; }
+.review dt { color: #72737e; font-size: 12px; }
+.review dd { margin: 0; font-size: 14px; line-height: 1.6; overflow-wrap: anywhere; }
+@media (max-width: 700px) { .stepHeading h2 { font-size: 21px; } .stepHeading p, .description.description { font-size: 13px; } .test { gap: 12px; } .test img { width: 60px; height: 60px; } .test h3, .member h3 { font-size: 16px; } .test p, .member p { font-size: 12px; } .member { padding: 15px; } }

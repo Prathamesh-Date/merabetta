@@ -1,0 +1,48 @@
+.content.content { width: 100%; margin: 0; padding-bottom: 0; }
+.backNavigation { width: min(calc(100% - clamp(32px, 5vw, 64px)), 1440px); margin: 12px auto 0; }
+@media (max-width: 700px) { .backNavigation { margin-top: 0; } }
+.banner { position: relative; height: clamp(300px, 30vw, 420px); margin: 0 64px; overflow: hidden; border-radius: 20px; clip-path: inset(0 round 20px); background: #d9c7e8; }
+.banner img { display: block; position: absolute; top: -5%; left: 0; width: 100%; height: 110%; object-fit: cover; }
+/* Keep an accessible heading while the page title sits beside the back arrow. */
+.banner h1, .screenReaderOnly { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; border: 0; }
+.contact { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); align-items: center; gap: 64px; margin: 96px 0 0; padding: 0 64px; }
+.eyebrow { margin: 0 0 12px; font: 400 16px/24px Inter, sans-serif; color: #99a1af; }
+.details h2 { margin: 0; color: #1e2939; font: 600 40px/1.18 Poppins, sans-serif; }
+.contactLink { display: flex; align-items: flex-start; gap: 16px; width: fit-content; margin-top: 24px; }
+.details h2 + .contactLink { margin-top: 40px; }
+.contactLink > img { flex-shrink: 0; width: 22px; height: 22px; }
+.contactLink strong, .contactLink span { display: block; margin: 0; }
+.contactLink strong { color: #1e2939; font: 600 16px/24px Inter, sans-serif; }
+.contactLink span { color: #6a7282; font: 400 14px/20px Inter, sans-serif; }
+.socials { display: flex; flex-wrap: wrap; gap: 24px; margin-top: 32px; }
+.socials a, .socials img { display: block; width: 22px; height: 22px; }
+.socials a:hover { opacity: .7; }
+.form { position: relative; display: flex; flex-direction: column; gap: 20px; padding: 40px; border-radius: 24px; background: #d9c7e8; overflow: hidden; }
+.form::before { content: ""; position: absolute; inset: 0; background: url("https://merabetta.com/images/Group-1.png") center/cover; opacity: .2; pointer-events: none; }
+.form > input, .form > textarea, .form > button, .form > .feedback { position: relative; z-index: 1; }
+.form input, .form textarea { box-sizing: border-box; width: 100%; padding: 12px 20px; border: 0; border-radius: 999px; background: #ffffff99; color: #1e2939; font: 400 16px/24px Inter, sans-serif; }
+.form input { height: 48px; }
+.form input::placeholder, .form textarea::placeholder { color: #6a7282; opacity: 1; }
+.form textarea { height: 140px; min-height: 140px; padding: 16px 20px; border-radius: 16px; resize: vertical; }
+.form input:focus-visible, .form textarea:focus-visible { outline: 2px solid #8453a7; outline-offset: 3px; }
+.form button { display: flex; align-items: center; justify-content: center; align-self: flex-start; gap: 8px; min-height: 48px; margin-top: 8px; padding: 12px 24px; border: 0; border-radius: 999px; background: #ee8041; color: white; font: 600 16px/24px Inter, sans-serif; box-shadow: 0 4px 6px -1px #0000001a, 0 2px 4px -2px #0000001a; cursor: pointer; }
+.form button:hover { background: #d96f34; }
+.form .feedback { margin: 0; color: #52445f; font: 400 14px/1.6 Inter, sans-serif; }
+.location { margin-top: 80px; }
+.location iframe { display: block; width: 100%; height: 370px; border: 0; background: #f2eaf7; }
+@media (max-width: 1023px) {
+  .banner { margin: 0 32px; }
+  .contact { gap: 32px; padding: 0 32px; }
+  .form { padding: 32px; }
+  .details h2 { font-size: 34px; }
+}
+@media (max-width: 767px) {
+  .banner { height: 260px; margin: 0 20px; border-radius: 14px; clip-path: inset(0 round 14px); }
+  .contact { grid-template-columns: 1fr; gap: 32px; margin-top: 48px; padding: 0 20px; }
+  .details h2 { font-size: 28px; }
+  .location { margin-top: 48px; }
+}
+@media (max-width: 639px) {
+  .form { padding: 20px; }
+  .headingBreak { display: none; }
+}
