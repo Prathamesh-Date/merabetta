@@ -1,5 +1,9 @@
 .sections { max-width: 620px; margin: 0 auto 24px; }
 .checkoutMain.checkoutMain.checkoutMain { height: auto; min-height: 60vh; overflow: visible; }
+.checkoutSignInPage { min-height: 55vh; }
+.headingSpacer { width: 35px; height: 35px; }
+.checkoutSignIn { width: min(100%, 520px); margin: 0 auto; }
+.checkoutSignIn > :global(.ca-panel) { margin: 0; }
 .cartMain.cartMain.cartMain:has(:global(.ca-cart-items)) { height: auto; min-height: 60vh; overflow: visible; }
 .emptyState.emptyState { min-height: var(--order-results-height); padding: 24px 12px; justify-content: center; }
 .checkoutHeading.checkoutHeading { display: flex; margin-bottom: 24px; }

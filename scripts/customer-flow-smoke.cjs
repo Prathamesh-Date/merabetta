@@ -33,6 +33,9 @@ const testItem = { id: 'redcliffe:fixture-test', packageCode: 'fixture-test', la
   try {
     await page.goto('http://localhost:3000/profile');
     const main = page.locator('main');
+    await main.getByRole('heading', { name: 'Welcome to Merabetta', exact: true }).waitFor();
+    assert.equal(await main.getByRole('button', { name: 'Family & Addresses', exact: true }).isDisabled(), true);
+    assert.equal(await main.getByRole('button', { name: 'Delete my account', exact: true }).isDisabled(), true);
     await main.getByRole('button', { name: 'Sign in', exact: true }).click();
     await main.getByLabel('Mobile number', { exact: true }).fill('9876543210');
     await main.getByRole('button', { name: 'Send OTP', exact: true }).click();
@@ -43,6 +46,8 @@ const testItem = { id: 'redcliffe:fixture-test', packageCode: 'fixture-test', la
     await main.getByLabel('OTP', { exact: true }).fill('123456');
     await main.getByRole('button', { name: 'Verify OTP', exact: true }).click();
     await main.getByRole('heading', { name: 'Test Customer', exact: true }).waitFor();
+    assert.equal(await main.getByRole('button', { name: 'Family & Addresses', exact: true }).isDisabled(), false);
+    assert.equal(await main.getByRole('button', { name: 'Delete my account', exact: true }).isDisabled(), false);
     await page.goto('http://localhost:3000/labtest');
     assert.equal(await main.locator('.cl-lab-card').count(), 6);
     assert.equal(await main.locator('a.cl-lab-card').count(), 1);
