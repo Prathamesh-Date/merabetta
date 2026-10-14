@@ -9,7 +9,7 @@ const account={user:{id:'guest-flow-user',name:'Guest Customer',firstName:'Guest
  try{
   for(const match of [true,false]){
    const context=await browser.newContext();const page=await context.newPage();let signedIn=false;let orderBody;const calls=[];
-   const live={id:'redcliffe:live-checkup',packageCode:'LIVE',labId:'redcliffe',labName:'Redcliffe Labs',name:match?'Complete Health Checkup':'Current Provider Checkup',price:799,mrp:1599,category:'Full Body',categories:['Full Body'],parameters:97,available:true};
+   const live={id:'redcliffe:live-checkup',packageCode:'LIVE',labId:'redcliffe',labName:'Redcliffe Labs',name:'Guest API Health Checkup',price:799,mrp:1599,category:'Full Body',categories:['Full Body'],parameters:97,available:true};
    await page.route('**/api/app/**',async route=>{
     const request=route.request();const path=new URL(request.url()).pathname.replace('/api/app','');calls.push({path,guest:!signedIn});let data;let status=200;
     if(path==='/auth/me'){data=signedIn?account:{error:'Login required'};status=signedIn?200:401;}
@@ -28,25 +28,24 @@ const account={user:{id:'guest-flow-user',name:'Guest Customer',firstName:'Guest
     await route.fulfill({status,contentType:'application/json',body:JSON.stringify(data)});
    });
    await page.goto('http://localhost:3000/labtest');const main=page.locator('main');assert.equal(await main.locator('.cl-lab-card').count(),6);
-   await main.locator('a.cl-lab-card').click();await main.getByRole('heading',{name:'Complete Health Checkup',exact:true}).waitFor();assert.equal(await main.getByLabel('Mobile number',{exact:true}).count(),0);
-   await main.getByRole('button',{name:'Add Complete Health Checkup from Redcliffe Labs to cart',exact:true}).click();
-   await page.waitForFunction(()=>localStorage.getItem('merabetta-web-v2')?.includes('"l1"'));
-   await page.goto('http://localhost:3000/cart');await main.getByRole('heading',{name:'Complete Health Checkup',exact:true}).waitFor();
-   await page.reload();await main.getByRole('heading',{name:'Complete Health Checkup',exact:true}).waitFor();assert.equal(await main.getByLabel('Mobile number',{exact:true}).count(),0);
-   assert.equal(calls.some(call=>call.guest&&call.path==='/redcliffe/catalog'),false);
+   await main.locator('a.cl-lab-card').click();await main.getByRole('heading',{name:'Guest API Health Checkup',exact:true}).waitFor();assert.equal(await main.getByLabel('Mobile number',{exact:true}).count(),0);
+   await main.getByRole('button',{name:'Add Guest API Health Checkup from Redcliffe Labs to cart',exact:true}).click();
+   await page.waitForFunction(()=>localStorage.getItem('merabetta-web-v2')?.includes('redcliffe:live-checkup'));
+   await page.goto('http://localhost:3000/cart');await main.getByRole('heading',{name:'Guest API Health Checkup',exact:true}).waitFor();
+   await page.reload();await main.getByRole('heading',{name:'Guest API Health Checkup',exact:true}).waitFor();assert.equal(await main.getByLabel('Mobile number',{exact:true}).count(),0);
+   assert.equal(calls.some(call=>call.guest&&call.path==='/redcliffe/catalog'),true);
    await main.getByRole('button',{name:/^Proceed to checkout - Rs\./}).click();
    await main.getByRole('heading',{name:'Sign in with your mobile',exact:true}).waitFor();
    await main.getByLabel('Mobile number',{exact:true}).fill('9876543210');await main.getByRole('button',{name:'Send OTP',exact:true}).click();await main.getByLabel('OTP',{exact:true}).fill('123456');await main.getByRole('button',{name:'Verify OTP',exact:true}).click();
    if(match){await main.getByRole('heading',{name:'Complete your profile',exact:true}).waitFor();await main.getByLabel('First name',{exact:true}).fill('Guest');await main.getByLabel('Last name',{exact:true}).fill('Customer');await main.getByLabel('Email',{exact:true}).fill('guest@example.com');await main.getByLabel('Date of birth',{exact:true}).fill('1990-01-01');await main.getByRole('button',{name:'Save profile',exact:true}).click();}
-   await main.getByRole('heading',{name:'Ordered by',exact:true}).waitFor();assert.ok(page.url().includes('/cart'));assert.equal(await main.getByLabel('Mobile number',{exact:true}).count(),0);
-   if(!match){await main.getByRole('heading',{name:'Confirm your current lab test',exact:true}).waitFor();assert.equal(await main.getByRole('button',{name:'Book lab collection',exact:true}).isDisabled(),true);await main.getByLabel('Choose current test for Complete Health Checkup',{exact:true}).selectOption(live.id);}
+   await main.getByRole('heading',{name:'Your selected tests',exact:true}).waitFor();assert.ok(page.url().includes('/cart'));assert.equal(await main.getByLabel('Mobile number',{exact:true}).count(),0);
    await page.waitForFunction(()=>localStorage.getItem('merabetta-web-v2')?.includes('redcliffe:live-checkup'));
-   await main.getByLabel('Collection date',{exact:true}).selectOption('2026-10-15');await main.getByLabel('Collection time',{exact:true}).selectOption('27');await main.getByRole('button',{name:'Book lab collection',exact:true}).click();await main.getByRole('heading',{name:/Booking status: Confirmed/}).waitFor();assert.equal(orderBody.items[0].id,live.id);assert.equal(orderBody.items[0].quantity,1);assert.equal(orderBody.total,undefined);
+   await main.getByRole('button',{name:'Continue to family member',exact:true}).click();await main.getByRole('button',{name:'Continue to address & slot',exact:true}).click();await main.getByRole('button',{name:'15 October 2026',exact:true}).click();await main.getByRole('button',{name:'9:00 AM',exact:true}).click();await main.getByRole('button',{name:'Review booking',exact:true}).click();await main.getByRole('button',{name:'Confirm booking',exact:true}).click();await main.getByRole('heading',{name:/Booking status: Confirmed/}).waitFor();assert.equal(orderBody.items[0].id,live.id);assert.equal(orderBody.items[0].quantity,1);assert.equal(orderBody.total,undefined);
    await page.evaluate(()=>localStorage.setItem('merabetta-web-v2',JSON.stringify({cart:{p1:1},wishlist:[],coupon:false})));
    signedIn=false;await page.goto('http://localhost:3000/cart');await main.getByRole('heading',{name:'Crocin Advance Tablet',exact:true}).waitFor();await main.getByRole('button',{name:/^Proceed to checkout - Rs\./}).click();await main.getByRole('heading',{name:'Sign in with your mobile',exact:true}).waitFor();
    fs.mkdirSync('artifacts/restored-styles',{recursive:true});await page.setViewportSize({width:390,height:1000});await page.screenshot({path:`artifacts/restored-styles/checkout-signin-${match}.png`,fullPage:true});
    await context.close();
   }
-  console.log('PASS: unauthenticated browsing/detail/add-to-cart, cart survives reload, auth only at Proceed to checkout with Sign in, new-account profile completion and existing login continue the same checkout, exact-match live remapping and explicit unmatched replacement, real-ID payload, product checkout login gate.');
+  console.log('PASS: unauthenticated browsing/detail/add-to-cart, cart survives reload, auth only at Proceed to checkout with Sign in, new-account profile completion and existing login continue the same checkout, public API-only browsing, current-ID payload, product checkout login gate.');
  }finally{await browser.close();}
 })().catch(e=>{console.error(e);process.exitCode=1});

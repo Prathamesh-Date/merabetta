@@ -44,7 +44,7 @@ function CheckoutForm({ appointment, checkout, setCheckout }: { appointment: boo
   useEffect(() => { if (!account) return; try { setReloadPending(Boolean(sessionStorage.getItem(pendingKey))); } catch { /* in-memory attempt remains available */ } }, [pendingKey, account?.user.id]);
   useEffect(() => { if (account) { setAddress(account.addresses[0] ?? blankAddress); setMemberId(account.members[0]?.id ?? ""); } }, [account?.user.id, account?.user.profileCompleted]);
   const cartIds = Object.keys(state.cart).join("|");
-  useEffect(() => { if (!account?.user.profileCompleted || !Object.keys(state.cart).some(id => id.startsWith("redcliffe:") || publicLabCatalog.some(test => test.id === id)) || catalog.length) return; const controller = new AbortController(); customerApi.catalog(controller.signal).then(r => setCatalog(r.data)).catch(e => { if (!controller.signal.aborted) setError(errorMessage(e)); }); return () => controller.abort(); }, [cartIds, catalog.length, setCatalog, account?.user.profileCompleted]);
+  useEffect(() => { if (!Object.keys(state.cart).some(id => id.startsWith("redcliffe:") || publicLabCatalog.some(test => test.id === id)) || catalog.length) return; const controller = new AbortController(); customerApi.catalog(controller.signal).then(r => setCatalog(r.data)).catch(e => { if (!controller.signal.aborted) setError(errorMessage(e)); }); return () => controller.abort(); }, [cartIds, catalog.length, setCatalog, account?.user.profileCompleted]);
   useEffect(() => {
     if (!account?.user.profileCompleted || !catalog.length) return;
     update(current => {
