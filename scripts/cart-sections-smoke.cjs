@@ -63,6 +63,11 @@ const lab = { id: 'redcliffe:cart-fixture', packageCode: 'CART', labId: 'redclif
     assert.equal(await main.getByRole('heading', { name: 'Crocin Advance Tablet', exact: true }).count(), 0);
     assert.equal(await main.locator('.ca-summary dl').textContent(), 'Item total₹999Product saving−₹200Coupon discount−₹0DeliveryFreeTotal amount₹799');
     assert.equal(await main.getByText('Book lab tests and purchase products separately. Lab payment is handled by Redcliffe.').count(), 0);
+    assert.equal(await main.getByLabel('Coupon code').isEnabled(), true);
+    await main.getByLabel('Coupon code').fill('MERA20');
+    await main.getByRole('button', { name: 'Apply', exact: true }).click();
+    await main.getByText('Lab coupons are not available yet. No discount applied.', { exact: true }).waitFor();
+    assert.equal(await main.locator('.ca-summary dl').textContent(), 'Item total₹999Product saving−₹200Coupon discount−₹0DeliveryFreeTotal amount₹799');
     fs.mkdirSync('artifacts/cart-sections', { recursive: true });
     for (const width of [1440, 390]) {
       await page.setViewportSize({ width, height: 1000 });

@@ -78,6 +78,7 @@
 .couponHint.couponHint { margin: 10px 0 0; color: var(--ca-muted); font-size: 11px; line-height: 1.5; }
 .couponHintHidden { visibility: hidden; }
 .couponHint strong { font-weight: 700; }
+.labCouponHint { min-height: 34px; }
 .appliedCoupon.appliedCoupon > div { align-items: center; border-color: #9ac9ad; background: #f0faf4; box-shadow: 0 0 0 2px #3e936010; }
 .appliedCoupon.appliedCoupon svg { flex-shrink: 0; margin-left: 12px; color: #338354; }
 .appliedCoupon.appliedCoupon input { background: transparent; color: #27694a; font-weight: 700; letter-spacing: .5px; }
