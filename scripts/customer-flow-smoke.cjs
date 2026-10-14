@@ -36,7 +36,10 @@ const testItem = { id: 'redcliffe:fixture-test', packageCode: 'fixture-test', la
     await main.getByRole('heading', { name: 'Welcome to Merabetta', exact: true }).waitFor();
     assert.equal(await main.getByRole('button', { name: 'Family & Addresses', exact: true }).isDisabled(), true);
     assert.equal(await main.getByRole('button', { name: 'Delete my account', exact: true }).isDisabled(), true);
-    await main.getByRole('button', { name: 'Sign in', exact: true }).click();
+    await main.getByRole('button', { name: 'My Orders', exact: true }).click();
+    await main.getByRole('heading', { name: 'My Orders', exact: true }).waitFor();
+    assert.equal(await page.getByRole('dialog', { name: 'Sign in', exact: true }).isVisible(), true);
+    assert.equal(await main.getByRole('heading', { name: 'Sign in with your mobile', exact: true }).count(), 1);
     await main.getByLabel('Mobile number', { exact: true }).fill('9876543210');
     await main.getByRole('button', { name: 'Send OTP', exact: true }).click();
     await main.getByLabel('OTP', { exact: true }).fill('000000');
@@ -45,6 +48,9 @@ const testItem = { id: 'redcliffe:fixture-test', packageCode: 'fixture-test', la
     assert.equal(await main.getByLabel('OTP', { exact: true }).isVisible(), true);
     await main.getByLabel('OTP', { exact: true }).fill('123456');
     await main.getByRole('button', { name: 'Verify OTP', exact: true }).click();
+    await page.getByRole('dialog', { name: 'Sign in', exact: true }).waitFor({ state: 'hidden' });
+    await main.getByRole('heading', { name: 'No product orders yet', exact: true }).waitFor();
+    await page.goto('http://localhost:3000/profile');
     await main.getByRole('heading', { name: 'Test Customer', exact: true }).waitFor();
     assert.equal(await main.getByRole('button', { name: 'Family & Addresses', exact: true }).isDisabled(), false);
     assert.equal(await main.getByRole('button', { name: 'Delete my account', exact: true }).isDisabled(), false);
