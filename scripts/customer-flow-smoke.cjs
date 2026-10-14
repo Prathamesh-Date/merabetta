@@ -40,6 +40,10 @@ const testItem = { id: 'redcliffe:fixture-test', packageCode: 'fixture-test', la
     await main.getByRole('heading', { name: 'My Orders', exact: true }).waitFor();
     assert.equal(await page.getByRole('dialog', { name: 'Sign in', exact: true }).isVisible(), true);
     assert.equal(await main.getByRole('heading', { name: 'Sign in with your mobile', exact: true }).count(), 1);
+    await page.getByRole('button', { name: 'Close login', exact: true }).click();
+    await page.waitForURL('http://localhost:3000/');
+    await page.goto('http://localhost:3000/profile?tab=orders');
+    await page.getByRole('dialog', { name: 'Sign in', exact: true }).waitFor();
     await main.getByLabel('Mobile number', { exact: true }).fill('9876543210');
     await main.getByRole('button', { name: 'Send OTP', exact: true }).click();
     await main.getByLabel('OTP', { exact: true }).fill('000000');
