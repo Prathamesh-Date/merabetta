@@ -9,7 +9,7 @@ import SiteFooter from "./site-footer";
 import HomeHeader from "./care-home-header";
 import MobileBottomNavigation from "./mobile-bottom-navigation";
 
-export default function CareShell({ children, focused = false, search, mainClassName = "", hideHeader = false }: { children: ReactNode; focused?: boolean; search?: ReactNode; mainClassName?: string; hideHeader?: boolean }) {
+export default function CareShell({ children, focused = false, search, mobileHeading, mainClassName = "", hideHeader = false }: { children: ReactNode; focused?: boolean; search?: ReactNode; mobileHeading?: ReactNode; mainClassName?: string; hideHeader?: boolean }) {
   const path = usePathname();
   const { notice } = useCare();
   function desktopLinks() {
@@ -18,7 +18,7 @@ export default function CareShell({ children, focused = false, search, mainClass
   }
   return <div className={`ca-app ${focused ? "ca-focused" : ""}`}>
     <a className="ca-skip" href="#main-content">Skip to content</a>
-    {!hideHeader && <HomeHeader navigation={desktopLinks()} showSearch={path === "/"} compact home={path === "/"} search={search}/>}
+    {!hideHeader && <HomeHeader navigation={desktopLinks()} showSearch={path === "/"} compact home={path === "/"} search={search} mobileHeading={mobileHeading}/>}
     <main id="main-content" className={`ca-main ${mainClassName}`}>{children}</main>
     <SiteFooter/>
     <MobileBottomNavigation/>

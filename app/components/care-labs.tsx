@@ -81,8 +81,10 @@ function DemoLabsScreen({ labId = "", testId = "", panel, initialQuery = "" }: {
   const back = panel ? labUrl(labId, testId, panel === "preview" ? "report" : undefined) : listing ? labUrl(labId) : lab ? "/labtest" : "/";
   const title = panel ? titles[panel] : listing ? "Test Details" : lab ? lab.name : "Labs";
 
-  return <CareShell focused mainClassName={!lab && !panel ? "ca-labs-directory" : lab && !listing && !panel ? "ca-lab-packages" : listing && !panel ? "ca-lab-details" : ""} search={!listing && !panel ? <Search value={query} change={setQuery} placeholder={lab ? "Search tests and health packages..." : "Search labs by name or city..."}/> : undefined}><div className={`cl-flow ${panel ? "cl-panel-page" : ""}`}>
-    <ScreenTitle title={title} back={back} listing={listing} quiet={!lab && !listing && !panel}/>
+  const heading = <ScreenTitle title={title} back={back} listing={listing} quiet={!lab && !listing && !panel}/>;
+  const mobileHeading = !listing && !panel ? heading : undefined;
+  return <CareShell mobileHeading={mobileHeading} focused mainClassName={!lab && !panel ? "ca-labs-directory" : lab && !listing && !panel ? "ca-lab-packages" : listing && !panel ? "ca-lab-details" : ""} search={!listing && !panel ? <Search value={query} change={setQuery} placeholder={lab ? "Search tests and health packages..." : "Search labs by name or city..."}/> : undefined}><div className={`cl-flow ${panel ? "cl-panel-page" : ""}`}>
+    <div className={mobileHeading ? "ca-desktop-page-heading" : undefined}>{heading}</div>
     {!lab ? <>
       <section className="cl-banner cl-lab-intro"><div className="cl-banner-inner"><span className="cl-banner-icon"><CareIcon name="lab" size={38}/></span><div><h2>Your health. Your choice.</h2><p>{chosenTest ? `Compare available labs for ${chosenTest.name}.` : "Compare trusted labs, health tests, packages and prices in one place."}</p></div></div></section>
       <div className="cl-section-title cl-lab-section-title"><div><h2>Choose your lab</h2><p>Select the partner that feels right for your care.</p></div><span>{visibleLabs.length} labs</span></div>

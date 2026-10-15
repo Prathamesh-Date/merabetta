@@ -356,7 +356,13 @@
 .ch-auth-tabs button.active{color:#784599;background:#fff;box-shadow:0 2px 6px #53376912}
 
 /* Compact mobile product cards while keeping names and actions fully visible. */
+.ca-desktop-page-heading { display: contents; }
 @media (width < 751px) {
+  .ca-desktop-page-heading { display: none; }
+  .ca-products-page { padding-top: 0; }
+  .ca-products-page .ca-catalog-category-grid { margin-top: 8px; }
+  .ca-mobile-page-heading .ca-catalog-heading,
+  .ca-mobile-page-heading .cl-screen-title { min-height: 44px; margin: 0; padding: 0; }
   :is(.ca-home-favorites,.ca-products-page,.ca-related-products) .ca-product-art { aspect-ratio: 1.7; }
   :is(.ca-home-favorites,.ca-products-page,.ca-related-products) .ca-product-copy { padding: 8px 10px; }
   :is(.ca-home-favorites,.ca-products-page,.ca-related-products) .ca-product h3 { min-height: 0; margin: 5px 0 4px; }

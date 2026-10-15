@@ -15,12 +15,12 @@ const options = [
   { label: "Blogs", href: "/blog" },
 ];
 
-export default function DesktopNavbar({ onSignIn, search }: { onSignIn: () => void; search?: ReactNode }) {
+export default function DesktopNavbar({ onSignIn, search, mobileHeading }: { onSignIn: () => void; search?: ReactNode; mobileHeading?: ReactNode }) {
   const path = usePathname();
   const { state, ready } = useCare();
   const count = Object.values(state.cart).reduce((total, quantity) => total + quantity, 0);
   const accountPage = path === "/cart" || path === "/profile";
-  const mobileSearch = search ?? (path === "/contact" ? <form className={styles.contactSearch} action="/products" role="search"><button type="submit" aria-label="Search products"><CareIcon name="search" size={21}/></button><input type="search" name="q" aria-label="Search products, brands, health solutions" placeholder="Search products, brands, health solutions..."/></form> : null);
+  const mobileSearch = search;
   const [scrolled, setScrolled] = useState(false);
   const [open, setOpen] = useState(false);
   const navbar = useRef<HTMLElement>(null);
@@ -70,10 +70,12 @@ export default function DesktopNavbar({ onSignIn, search }: { onSignIn: () => vo
     <span className={styles.shine} aria-hidden="true"/>
   </button>;
 
-  return <nav ref={navbar} data-desktop-navbar className={`${styles.navbar} ${accountPage ? styles.accountPage : ""} ${path !== "/" ? styles.mobilePage : ""} ${path !== "/" && !mobileSearch ? styles.mobileHidden : ""} ${scrolled ? styles.scrolled : ""} ${search ? styles.withSearch : ""}`} aria-label="Main navigation">
+  return <>
+    {mobileHeading && <div className={`ca-mobile-page-heading ${styles.mobileHeading}`}>{mobileHeading}</div>}
+    <nav ref={navbar} data-desktop-navbar className={`${styles.navbar} ${accountPage ? styles.accountPage : ""} ${path !== "/" ? styles.mobilePage : ""} ${path !== "/" && !mobileSearch ? styles.mobileHidden : ""} ${scrolled ? styles.scrolled : ""} ${search ? styles.withSearch : ""}`} aria-label="Main navigation">
     <div className={styles.brand}><Link href="/" aria-label="Merabetta home"><img src="/merabetta-reference.svg" alt="Merabetta Logo" width={110} height={64}/></Link></div>
     {path === "/" && <div className={styles.mobileWelcome}><strong>Welcome to Merabetta</strong><span>Wellness starts here <b>✦</b></span></div>}
-    {mobileSearch && <div className={`${styles.search} ${!search ? styles.mobileSearchFallback : ""}`}>{mobileSearch}</div>}
+    {mobileSearch && <div className={styles.search}>{mobileSearch}</div>}
     <ul className={styles.links}>{links()}</ul>
     <div className={styles.actions}>
       <div className={styles.desktopActions}>
@@ -86,5 +88,5 @@ export default function DesktopNavbar({ onSignIn, search }: { onSignIn: () => vo
       <button type="button" className={styles.menuButton} aria-label={open ? "Close menu" : "Open menu"} aria-expanded={open} aria-controls="desktop-nav-menu" onClick={() => setOpen(value => !value)}><span/><span/><span/></button>
     </div>
     {open && <div id="desktop-nav-menu" className={styles.menu}><ul>{links()}</ul></div>}
-  </nav>;
+  </nav></>;
 }
