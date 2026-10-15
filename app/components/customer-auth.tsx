@@ -3,6 +3,7 @@ import { useEffect, useRef, useState, type ReactNode } from "react";
 import { useRouter } from "next/navigation";
 import { customerApi, ApiError, errorMessage, type Challenge, type Profile, type Gender } from "../lib/customer-api";
 import { useCare } from "./care-store";
+import styles from "./customer-auth.module.css";
 
 export function OtpLogin({ onDone, redirectTo = "/profile" }: { onDone?: () => void; redirectTo?: string | null }) {
   const { setAccount } = useCare();
@@ -41,15 +42,15 @@ export function OtpLogin({ onDone, redirectTo = "/profile" }: { onDone?: () => v
     finally { lock.current = false; setBusy(false); }
   }
   const developmentOtp = process.env.NODE_ENV === "development" && challenge?.delivery === "development" && /^\d{6}$/.test(challenge.devCode ?? "") && now < expiresAt ? challenge.devCode : null;
-  return <div><h2>Sign in with your mobile</h2><p>Request a six digit OTP for your Indian mobile number.</p><form onSubmit={e => { e.preventDefault(); void (challenge ? verify() : send()); }}>
-    <label className="ca-field">Mobile number<input required type="tel" autoComplete="tel-national" inputMode="numeric" pattern="[6-9][0-9]{9}" maxLength={10} value={phone} disabled={!!challenge} onChange={e => setPhone(e.target.value)}/></label>
+  return <div className={styles.login}><header className={styles.intro}><h2>{challenge ? "Verify your mobile" : "Sign in to Merabetta"}</h2><p>{challenge ? `Enter the 6-digit OTP sent to +91 ${phone}.` : "Enter your mobile number. We’ll send you a 6-digit OTP to sign in."}</p></header><form className={styles.form} onSubmit={e => { e.preventDefault(); void (challenge ? verify() : send()); }}>
+    <label className={`ca-field ${styles.phoneField}`}>Mobile number<span className={styles.phoneControl}><span className={styles.prefix} aria-hidden="true">+91</span><input className={styles.phoneInput} aria-label="Mobile number" placeholder="10-digit mobile number" required type="tel" autoComplete="tel-national" inputMode="numeric" pattern="[6-9][0-9]{9}" maxLength={10} value={phone} disabled={!!challenge} onChange={e => setPhone(e.target.value.replace(/\D/g, ""))}/></span><span className={styles.hint}>Use your 10-digit Indian mobile number.</span></label>
     {challenge && <>{developmentOtp && <p role="status">Development OTP: <strong>{developmentOtp}</strong><br/>SMS is not sent in this test mode.</p>}<label className="ca-field">OTP<input required autoComplete="one-time-code" inputMode="numeric" pattern="[0-9]{6}" maxLength={6} value={code} onChange={e => setCode(e.target.value)}/></label><p>OTP entry expires in {Math.max(0, Math.ceil((expiresAt - now) / 1000))} seconds.</p></>}
     <ErrorText message={error}/><button className="ca-button" disabled={busy || (!challenge && now < resendAt) || (!!challenge && (now >= expiresAt || now < verifyAfter))}>{busy ? "Please wait…" : challenge ? now < verifyAfter ? `Retry verification in ${Math.ceil((verifyAfter - now) / 1000)}s` : "Verify OTP" : "Send OTP"}</button>
   </form>{challenge && <><button className="ca-text-button" disabled={busy || now < resendAt} onClick={() => void send()}>{now < resendAt ? `Resend in ${Math.ceil((resendAt - now) / 1000)}s` : "Resend OTP"}</button><button className="ca-text-button" disabled={busy} onClick={() => { setChallenge(null); setCode(""); setError(""); }}>Change mobile number</button></>}</div>;
 }
 export function ErrorText({ message }: { message: string }) { return message ? <p role="alert" className="ch-auth-error">{message}</p> : null; }
 export function SignInForm({ onDone, redirectTo = null }: { onDone?: () => void; redirectTo?: string | null }) {
-  return <div><div className="ch-auth-tabs" aria-label="Account access"><button type="button" aria-pressed="true" className="active">Sign in</button></div><OtpLogin onDone={onDone} redirectTo={redirectTo}/></div>;
+  return <div className={styles.signIn}><OtpLogin onDone={onDone} redirectTo={redirectTo}/></div>;
 }
 export function SessionGate({ children }: { children: ReactNode }) {
   const { account, sessionError, sessionLoading, restoreSession } = useCare();

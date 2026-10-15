@@ -9,7 +9,7 @@ import styles from "./public-pages.module.css";
 
 export default function PublicPageShell({ children, search, contentClassName = "", backNavigationClassName = "", hidePageNavigation = false, showBackButton = false, pageTitle, showBottomNavigation = false }: { children: ReactNode; search?: ReactNode; contentClassName?: string; backNavigationClassName?: string; hidePageNavigation?: boolean; showBackButton?: boolean; pageTitle?: string; showBottomNavigation?: boolean }) {
   const heading = showBackButton ? <div className={`${styles.backNavigation} ${backNavigationClassName}`}><Link href="/" className={navigationStyles.back} aria-label="Back to home"><CareIcon name="back" size={23}/></Link>{pageTitle && <span className={styles.backTitle}>{pageTitle}</span>}</div> : null;
-  const mobileHeading = pageTitle === "Contact Us" || pageTitle === "Services & Community" ? heading : undefined;
+  const mobileHeading = pageTitle === "Contact Us" || pageTitle === "Services & Community" || pageTitle === "Blog" ? heading : undefined;
   return <div className={`${styles.page} ${showBottomNavigation ? styles.withBottomNavigation : ""}`} data-local-content>
     <a className="ca-skip" href="#public-content">Skip to content</a>
     <HomeHeader navigation={null} compact showSearch={false} search={search} mobileHeading={mobileHeading}/>
