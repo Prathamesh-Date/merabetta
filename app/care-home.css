@@ -328,9 +328,9 @@
 /* Catalogue search uses the same navbar on products and labs. */
 .ch-mobile-catalog-search { display: none; }
 @media (width < 751px) {
-  [data-desktop-navbar] .ca-nav-search { min-height: 38px; padding: 0 8px; gap: 6px; border-radius: 10px; }
-  [data-desktop-navbar] .ca-nav-search input { padding: 8px 0; font-size: 12px; }
-  [data-desktop-navbar] .ca-nav-search > svg { width: 16px; height: 16px; }
+  [data-desktop-navbar] .ca-nav-search { width: 100%; min-height: 48px; margin: 0; padding: 0 14px; gap: 10px; border-radius: 12px; }
+  [data-desktop-navbar] .ca-nav-search input { padding: 12px 0; font-size: 14px; }
+  [data-desktop-navbar] .ca-nav-search > svg { width: 20px; height: 20px; }
 }
 
 /* Give popular and related products enough room at each breakpoint. */
@@ -354,3 +354,12 @@
 .ch-auth-tabs{display:grid;grid-template-columns:1fr;gap:5px;background:#f5eff9;border-radius:13px;padding:5px;margin:22px 0}
 .ch-auth-tabs button{border:0;border-radius:9px;padding:12px;background:none;color:#8a729c;font-size:14px;font-weight:600}
 .ch-auth-tabs button.active{color:#784599;background:#fff;box-shadow:0 2px 6px #53376912}
+
+/* Compact mobile product cards while keeping names and actions fully visible. */
+@media (width < 751px) {
+  :is(.ca-home-favorites,.ca-products-page,.ca-related-products) .ca-product-art { aspect-ratio: 1.7; }
+  :is(.ca-home-favorites,.ca-products-page,.ca-related-products) .ca-product-copy { padding: 8px 10px; }
+  :is(.ca-home-favorites,.ca-products-page,.ca-related-products) .ca-product h3 { min-height: 0; margin: 5px 0 4px; }
+  :is(.ca-home-favorites,.ca-products-page,.ca-related-products) .ca-product p { min-height: 0; margin-bottom: 6px; }
+  :is(.ca-home-favorites,.ca-products-page,.ca-related-products) .ca-product-bottom { padding-top: 7px; gap: 6px; }
+}

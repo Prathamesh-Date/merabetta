@@ -20,6 +20,7 @@ export default function DesktopNavbar({ onSignIn, search }: { onSignIn: () => vo
   const { state, ready } = useCare();
   const count = Object.values(state.cart).reduce((total, quantity) => total + quantity, 0);
   const accountPage = path === "/cart" || path === "/profile";
+  const mobileSearch = search ?? (path === "/contact" ? <form className={styles.contactSearch} action="/products" role="search"><button type="submit" aria-label="Search products"><CareIcon name="search" size={21}/></button><input type="search" name="q" aria-label="Search products, brands, health solutions" placeholder="Search products, brands, health solutions..."/></form> : null);
   const [scrolled, setScrolled] = useState(false);
   const [open, setOpen] = useState(false);
   const navbar = useRef<HTMLElement>(null);
@@ -69,10 +70,10 @@ export default function DesktopNavbar({ onSignIn, search }: { onSignIn: () => vo
     <span className={styles.shine} aria-hidden="true"/>
   </button>;
 
-  return <nav ref={navbar} data-desktop-navbar className={`${styles.navbar} ${accountPage ? styles.accountPage : ""} ${["/community", "/contact", "/blog"].includes(path) ? styles.plainMobilePage : ""} ${scrolled ? styles.scrolled : ""} ${search ? styles.withSearch : ""}`} aria-label="Main navigation">
+  return <nav ref={navbar} data-desktop-navbar className={`${styles.navbar} ${accountPage ? styles.accountPage : ""} ${path !== "/" ? styles.mobilePage : ""} ${path !== "/" && !mobileSearch ? styles.mobileHidden : ""} ${scrolled ? styles.scrolled : ""} ${search ? styles.withSearch : ""}`} aria-label="Main navigation">
     <div className={styles.brand}><Link href="/" aria-label="Merabetta home"><img src="/merabetta-reference.svg" alt="Merabetta Logo" width={110} height={64}/></Link></div>
     {path === "/" && <div className={styles.mobileWelcome}><strong>Welcome to Merabetta</strong><span>Wellness starts here <b>✦</b></span></div>}
-    {search && <div className={styles.search}>{search}</div>}
+    {mobileSearch && <div className={`${styles.search} ${!search ? styles.mobileSearchFallback : ""}`}>{mobileSearch}</div>}
     <ul className={styles.links}>{links()}</ul>
     <div className={styles.actions}>
       <div className={styles.desktopActions}>

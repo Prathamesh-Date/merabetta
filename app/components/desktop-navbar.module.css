@@ -126,12 +126,24 @@
 }
 @media (width < 751px) {
   .navbar { height: clamp(76px, 11.4vw, 86px); min-height: clamp(76px, 11.4vw, 86px); padding: 10px 12px; }
-  .navbar:not(.plainMobilePage) { border: 1px solid #eee6f3; box-shadow: 0 4px 18px #55336b0b; }
   .menuButton, .menu { display: none; }
-  .navbar.plainMobilePage { border-color: transparent; background: #fff; box-shadow: none; backdrop-filter: none; }
   .accountContact.accountContact { justify-content: center; gap: 6px; width: auto; height: 38px; min-width: 0; padding: 7px 10px; }
   .withSearch .accountContact.accountContact { padding: 7px 10px; }
   .accountLabel { display: inline; }
   .accountContact.accountContact .arrow { display: flex; width: 22px; height: 22px; background: #fff; color: #ee8041; }
   .accountContact .arrow svg { width: 20px; height: 20px; }
+}
+
+/* Mobile keeps the Home header; other pages use only their search control. */
+.mobileSearchFallback { display: none; }
+.contactSearch { display: flex; align-items: center; gap: 12px; width: 100%; min-width: 0; min-height: 48px; padding: 0 16px; border: 1px solid #e5d9ee; border-radius: 12px; background: #faf7fc; color: #8453a7; }
+.contactSearch input { flex: 1; width: 100%; min-width: 0; padding: 11px 0; border: 0; outline: none; background: transparent; color: #303742; font: inherit; font-size: 14px; }
+.contactSearch button { display: grid; place-items: center; flex-shrink: 0; padding: 4px; border: 0; background: none; color: inherit; cursor: pointer; }
+.contactSearch:focus-within { outline: 2px solid #ee8041; outline-offset: 2px; }
+@media (width < 751px) {
+  .navbar.navbar { position: relative; top: auto; border: 0; border-radius: 0; background: #fff; box-shadow: none; backdrop-filter: none; transition: none; }
+  .navbar.mobilePage { display: block; width: calc(100% - 32px); height: auto; min-height: 0; margin: 0 auto; padding: 16px 0; }
+  .mobilePage > .brand, .mobilePage > .links, .mobilePage > .actions { display: none; }
+  .mobilePage > .search { display: block; width: 100%; min-width: 0; margin: 0; }
+  .navbar.mobileHidden { display: none; }
 }
