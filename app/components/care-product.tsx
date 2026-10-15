@@ -29,7 +29,7 @@ export default function ProductScreen({ id }: { id: string }) {
   const [tab, setTab] = useState("description");
   const saved = state.wishlist.includes(id);
   // Form extensions may add fdprocessedid before hydration; tolerate it only on affected controls.
-  return <CareShell mainClassName="ca-product-page" search={<form action="/products" className="ca-nav-search" role="search"><button suppressHydrationWarning type="submit" aria-label="Search products"><CareIcon name="search" size={19}/></button><input suppressHydrationWarning type="search" name="q" aria-label="Search products" placeholder="Search products..."/></form>}>
+  return <CareShell mainClassName="ca-product-page">
     <HistoryBackButton className="ca-back" fallback="/products" ariaLabel="Back to products"><CareIcon name="back" size={18}/> Back to products</HistoryBackButton>
     <section className="cp-detail">
       <div className="cp-art"><img src={asset(product.image)} alt={product.name}/><button className={`ca-wish ${saved ? "saved" : ""}`} disabled={!ready} aria-label={saved ? "Remove product from wishlist" : "Save product to wishlist"} aria-pressed={saved} onClick={() => wish(id)}><CareIcon name="heart"/></button></div>

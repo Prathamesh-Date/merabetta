@@ -17,7 +17,10 @@ export default function ReferenceHomeHero() {
   return <section className={styles.hero} data-reference-hero aria-label="Healthcare at home" aria-roledescription="carousel" onMouseEnter={() => setHovered(true)} onMouseLeave={() => setHovered(false)} onFocusCapture={() => setFocused(true)} onBlurCapture={event => { if (!event.currentTarget.contains(event.relatedTarget as Node | null)) setFocused(false); }}>
     <div className={styles.row}>
       <div className={styles.visual}><div className={styles.circle} data-image={current.image}>
-        <img key={current.image} src={current.src} alt={current.alt} fetchPriority={slide === 0 ? "high" : "auto"}/>
+        <picture className={styles.picture} key={current.image}>
+          {current.image === "care-hero" && <source media="(width < 751px)" srcSet="/hero/care-rectangular.png"/>}
+          <img src={current.src} alt={current.alt} fetchPriority={slide === 0 ? "high" : "auto"}/>
+        </picture>
         <span className={styles.ring} aria-hidden="true"/>
       </div></div>
       <div className={styles.copy} aria-live={rotating ? "off" : "polite"} aria-atomic="true">

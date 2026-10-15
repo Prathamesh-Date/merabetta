@@ -1,4 +1,11 @@
 .ch-header{max-width:1236px;margin:auto;padding:20px 28px 0;background:#fff}
+.ch-mobile-home-search { display: none; }
+@media (width < 751px) {
+  .ch-mobile-home-search { display: flex; align-items: center; gap: 10px; width: calc(100% - 32px); min-height: 48px; margin: 4px 16px 12px; padding: 4px 6px 4px 14px; border: 1px solid #e5d9ee; border-radius: 14px; background: #faf7fc; color: #8453a7; }
+  .ch-mobile-home-search input { flex: 1; min-width: 0; padding: 8px 0; border: 0; outline: none; background: transparent; color: #303742; font-size: 13px; }
+  .ch-mobile-home-search button { display: grid; place-items: center; flex-shrink: 0; width: 28px; height: 36px; padding: 0; border: 0; border-radius: 8px; background: transparent; color: inherit; }
+  .ch-mobile-home-search:focus-within { outline: 2px solid #8453a7; outline-offset: 2px; }
+}
 .ca-app:has(.ch-header),.ca-app:has([data-desktop-navbar]){background:#fff}
 .ch-top{display:grid;grid-template-columns:145px minmax(0,1fr) 48px auto;align-items:center;gap:25px}
 .ch-logo{display:block;width:145px}.ch-logo img{width:100%;height:130px;object-fit:contain;display:block}
@@ -359,6 +366,7 @@
 .ca-desktop-page-heading { display: contents; }
 @media (width < 751px) {
   .ca-desktop-page-heading { display: none; }
+  .ca-main:has([data-reference-hero]) { padding-top: 0; }
   .ca-products-page { padding-top: 0; }
   .ca-products-page .ca-catalog-category-grid { margin-top: 8px; }
   .ca-mobile-page-heading .ca-catalog-heading,

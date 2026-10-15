@@ -17,6 +17,7 @@ export default function HomeHeader({ navigation, showSearch = true, compact = fa
       {showSearch && <form className="ch-search" action="/products" role="search"><button type="submit" aria-label="Search products"><CareIcon name="search" size={25}/></button><input name="q" aria-label="Search products, brands, health solutions" placeholder="Search products, brands, health solutions..." autoComplete="off"/></form>}
       <nav className="ch-navigation" aria-label="Main navigation">{navigation}</nav>
     </header>}
+    {compact && home && showSearch && <form className="ch-mobile-home-search" action="/products" role="search"><button type="submit" aria-label="Search products"><CareIcon name="search" size={21}/></button><input type="search" name="q" aria-label="Search products, brands, health solutions" placeholder="Search products, brands, health solutions..." autoComplete="off"/></form>}
 <dialog ref={dialog} className="ch-auth" aria-label="Sign in"><button className="ch-close" aria-label="Close login" onClick={() => dialog.current?.close()}><CareIcon name="close"/></button><img className="ch-auth-logo" src="/logo.png" alt="Merabetta"/><SignInForm onDone={() => dialog.current?.close()} redirectTo="/profile"/></dialog>
   </>;
 }
