@@ -71,3 +71,6 @@
   .order { padding: 17px; }
   .orderHeading { flex-wrap: wrap; }
 }
+@media (width < 751px) {
+  .main.main { height: auto; min-height: calc(var(--order-results-height) + 206px); overflow: visible; }
+}
