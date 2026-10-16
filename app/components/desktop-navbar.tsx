@@ -79,13 +79,15 @@ export default function DesktopNavbar({ onSignIn, search, mobileHeading }: { onS
     <ul className={styles.links}>{links()}</ul>
     <div className={styles.actions}>
       <div className={styles.desktopActions}>
+        {(path === "/products" || path === "/labtest") && <Link href="/profile?tab=wishlist" className={styles.iconLink} aria-label="View wishlist"><CareIcon name="heart" size={24}/></Link>}
         <Link href="/cart" className={`${styles.iconLink} ${path === "/cart" ? styles.active : ""}`} aria-label={`Cart${ready && count > 0 ? `, ${count} items` : ""}`} aria-current={path === "/cart" ? "page" : undefined}><CareIcon name="cart" size={24}/>{ready && count > 0 && <span className={styles.count}>{count}</span>}</Link>
         {state.profile
           ? <Link href="/profile?tab=orders" className={styles.iconLink} aria-label="My Orders" title="My Orders"><CareIcon name="bag" size={24}/></Link>
           : <Link href="/profile" className={`${styles.iconLink} ${path === "/profile" ? styles.active : ""}`} aria-label="Profile" aria-current={path === "/profile" ? "page" : undefined}><CareIcon name="profile" size={24}/></Link>}
       </div>
       <div className={styles.contactWrap}>{signIn}</div>
-      <button type="button" className={styles.menuButton} aria-label={open ? "Close menu" : "Open menu"} aria-expanded={open} aria-controls="desktop-nav-menu" onClick={() => setOpen(value => !value)}><span/><span/><span/></button>
+      {/* Form extensions may add fdprocessedid before hydration to this native button. */}
+      <button suppressHydrationWarning type="button" className={styles.menuButton} aria-label={open ? "Close menu" : "Open menu"} aria-expanded={open} aria-controls="desktop-nav-menu" onClick={() => setOpen(value => !value)}><span/><span/><span/></button>
     </div>
     {open && <div id="desktop-nav-menu" className={styles.menu}><ul>{links()}</ul></div>}
   </nav></>;

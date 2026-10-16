@@ -1,0 +1,4 @@
+.state { display: flex; align-items: center; gap: 12px; min-height: 64px; margin: 16px 0; padding: 16px 20px; border: 1px solid #e9e0ef; border-radius: 14px; background: #faf8fc; color: #685775; font: 400 14px/1.6 Inter, "Segoe UI", sans-serif; }
+.spinner { flex: none; width: 20px; height: 20px; border: 2px solid #e6d9ef; border-top-color: #8453a7; border-radius: 50%; animation: spin .8s linear infinite; }
+@keyframes spin { to { transform: rotate(360deg); } }
+@media (prefers-reduced-motion: reduce) { .spinner { animation: none; } }

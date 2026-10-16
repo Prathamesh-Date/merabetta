@@ -11,6 +11,16 @@ Checked on 16 October 2026 against http://localhost:3000, without a customer ses
 - Frontend mobile OTP request, verification, resend, error handling and account restoration are already implemented in `app/components/customer-auth.tsx`, `app/components/care-store.tsx` and `app/lib/customer-api.ts`.
 - Real SMS delivery and successful authenticated-session persistence are not yet verified. No real customer's number or OTP was used in this check.
 
+## Confirmed local sign-out blocker
+
+Anonymous `POST /api/app/auth/logout` probes through the local website proxy, with JSON `{}` and no customer cookie, returned HTTP 403 for both `Origin: http://localhost:3000` and `Origin: http://127.0.0.1:3000`:
+
+```json
+{ "error": "App origin is not allowed. Check API ALLOWED_ORIGINS configuration." }
+```
+
+Backend action: add these exact local origins to the running API's `ALLOWED_ORIGINS` configuration, preserve its other approved origins, and reload/restart the service. Retest authenticated logout: POST returns 204, browser cookie is cleared, and the following `/auth/me` request returns 401. The frontend intentionally retains the signed-in state when logout fails, rather than claiming the backend session was revoked. No real customer was signed out by these probes.
+
 ## Message to send the backend developer
 
 Please confirm and test the existing mobile OTP integration for our local web frontend at `http://localhost:3000`. Browser requests use the same-origin `/api/app` proxy and `credentials: include`; do not require a mobile-app bearer token for this website flow.

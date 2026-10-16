@@ -3,6 +3,7 @@ import "./globals.css";
 import "./care.css";
 import "./care-details.css";
 import "./care-home.css";
+import "./ui-polish.css";
 import { CareProvider } from "./components/care-store";
 
 export const metadata: Metadata = {

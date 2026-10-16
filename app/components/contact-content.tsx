@@ -34,13 +34,14 @@ export default function ContactContent() {
         <a className={styles.contactLink} href="tel:+918999188267"><img src="https://merabetta.com/images/contact-mobile.svg" alt="" width={22} height={22}/><div><strong>Phone</strong><span>+91 89991 88267</span></div></a>
         <nav className={styles.socials} aria-label="Follow Merabetta">{socialLinks.map(link => <a key={link.name} href={link.href} target="_blank" rel="noopener noreferrer" aria-label={link.name}><img src={`https://merabetta.com/images/${link.image}`} alt="" width={22} height={22}/></a>)}</nav>
       </div>
-      <form className={styles.form} onSubmit={prepareEnquiry} aria-label="Contact enquiry">
+      <form className={styles.form} onSubmit={prepareEnquiry} onChange={() => setPrepared(false)} aria-label="Contact enquiry">
+        <div className={styles.formHeading}><h2>How can we help?</h2><p>Share your question and our care team will help you with the next step.</p></div>
         {/* Form extensions can inject fdprocessedid before hydration; tolerate their attributes only on affected controls. */}
-        <label className={styles.screenReaderOnly} htmlFor="contact-name">Name</label><input suppressHydrationWarning id="contact-name" name="name" placeholder="Name*" autoComplete="name" required maxLength={80}/>
-        <label className={styles.screenReaderOnly} htmlFor="contact-email">Email</label><input suppressHydrationWarning id="contact-email" name="email" placeholder="Email*" type="email" autoComplete="email" required maxLength={160}/>
-        <label className={styles.screenReaderOnly} htmlFor="contact-phone">Phone</label><input suppressHydrationWarning id="contact-phone" name="phone" placeholder="Phone*" type="tel" autoComplete="tel" required minLength={7} maxLength={20}/>
-        <label className={styles.screenReaderOnly} htmlFor="contact-message">Message</label><textarea id="contact-message" name="message" placeholder="Message" maxLength={2000} rows={4}/>
-        <button suppressHydrationWarning type="submit" aria-describedby="enquiry-method">Submit <img src="https://merabetta.com/images/arrow-3.svg" alt="" width={24} height={24}/></button><small id="enquiry-method" className={styles.screenReaderOnly}>Opens your email app so you can review and send your message.</small>
+        <label className={styles.fieldLabel} htmlFor="contact-name">Full name <span aria-hidden="true">*</span></label><input suppressHydrationWarning id="contact-name" name="name" placeholder="Enter your name" autoComplete="name" required maxLength={80}/>
+        <label className={styles.fieldLabel} htmlFor="contact-email">Email address <span aria-hidden="true">*</span></label><input suppressHydrationWarning id="contact-email" name="email" placeholder="you@example.com" type="email" autoComplete="email" required maxLength={160}/>
+        <label className={styles.fieldLabel} htmlFor="contact-phone">Phone number <span aria-hidden="true">*</span></label><input suppressHydrationWarning id="contact-phone" name="phone" placeholder="Enter your phone number" type="tel" autoComplete="tel" required minLength={7} maxLength={20}/>
+        <label className={styles.fieldLabel} htmlFor="contact-message">Your message <span className={styles.optional}>(optional)</span></label><textarea id="contact-message" name="message" placeholder="Tell us how we can help" maxLength={2000} rows={4}/>
+        <button suppressHydrationWarning type="submit" aria-describedby="enquiry-method">Submit <img src="https://merabetta.com/images/arrow-3.svg" alt="" width={24} height={24}/></button><small id="enquiry-method" className={styles.methodNote}>Opens your email app to review and send. Fields marked * are required.</small>
         {prepared && <p className={styles.feedback} role="status">Your enquiry is ready in your email app. If it didn’t open, email us at support@merabetta.com or call us.</p>}
       </form>
     </section>

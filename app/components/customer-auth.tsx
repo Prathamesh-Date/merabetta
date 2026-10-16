@@ -4,6 +4,7 @@ import { useRouter } from "next/navigation";
 import { customerApi, ApiError, errorMessage, type Challenge, type Profile, type Gender } from "../lib/customer-api";
 import { useCare } from "./care-store";
 import styles from "./customer-auth.module.css";
+import LoadingState from "./loading-state";
 
 export function OtpLogin({ onDone, redirectTo = "/profile" }: { onDone?: () => void; redirectTo?: string | null }) {
   const { setAccount } = useCare();
@@ -54,7 +55,7 @@ export function SignInForm({ onDone, redirectTo = null }: { onDone?: () => void;
 }
 export function SessionGate({ children }: { children: ReactNode }) {
   const { account, sessionError, sessionLoading, restoreSession } = useCare();
-  if (sessionLoading) return <p role="status">Restoring your account…</p>;
+  if (sessionLoading) return <LoadingState>Restoring your account…</LoadingState>;
   if (sessionError) return <section className="ca-panel"><ErrorText message={sessionError}/><button className="ca-button" onClick={() => void restoreSession()}>Retry connection</button></section>;
   if (!account) return <section className="ca-panel"><SignInForm/></section>;
   if (!account.user.profileCompleted) return <ProfileForm/>;

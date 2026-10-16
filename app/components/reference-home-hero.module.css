@@ -99,10 +99,10 @@
   .explore > span { width: 20px; height: 20px; }
   .explore img { width: 18px; height: 18px; }
   .assurance { display: none; }
-  .controls { position: static; flex-shrink: 0; justify-content: center; gap: 0; height: 44px; padding: 4px 0; }
-  .controls button { width: 28px; height: 36px; }
+  .controls { position: static; flex-shrink: 0; justify-content: center; gap: 0; height: 52px; padding: 4px 0; }
+  .controls button { width: 28px; height: 44px; }
   .controls button svg { width: 16px; height: 16px; }
-  .controls .dots button { width: 20px; height: 36px; }
+  .controls .dots button { width: 20px; height: 44px; }
   .dots span { width: 5px; height: 5px; }
   .dots span.selected { width: 18px; }
 }

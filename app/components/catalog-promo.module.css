@@ -6,7 +6,7 @@
 .promo .action{display:flex;align-items:center;gap:12px;padding:11px 18px;border:0;border-radius:999px;background:#ee8041;color:#fff;font-size:12px;font-weight:600;cursor:pointer}
 .action:hover{background:#d96f34}
 .controls{display:flex;align-items:center;gap:6px;margin-top:auto;padding-top:20px}
-.controls button{display:grid;place-items:center;width:32px;height:32px;padding:0;border:0;border-radius:50%;background:#ffffffa8;color:#76538c;cursor:pointer}
+.controls button{display:grid;place-items:center;flex-shrink:0;width:40px;height:44px;padding:0;border:0;border-radius:50%;background:#ffffffa8;color:#76538c;cursor:pointer}
 .controls button:hover{background:#fff}
 .dots{display:flex;align-items:center;gap:2px}
 .dots button{width:23px;background:transparent}
