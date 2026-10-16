@@ -2,7 +2,7 @@
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { api, customerApi, ApiError, errorMessage, type Lab, type Test } from "../lib/customer-api";
-import { asset, labs as displayLabs, referenceLabIds, money } from "../data/catalog";
+import { asset, labs as displayLabs, money } from "../data/catalog";
 import type { LabPanel } from "../data/lab-flow";
 import CareShell from "./care-shell";
 import CareIcon from "./care-icon";
@@ -63,7 +63,10 @@ export default function CustomerLabs({ testId = "", labId = "", initialQuery = "
   const categories = ["All", "Tests", "Packages"];
   const typeMatches = (test: Test, label: "Tests" | "Packages") => test.parameters != null ? label === "Tests" ? test.parameters === 1 : test.parameters > 1 : [test.category, ...(test.categories ?? [])].some(value => label === "Tests" ? /^tests?$/i.test(value?.trim() ?? "") : /^packages?$/i.test(value?.trim() ?? ""));
   const visible = browseCatalog.filter(test => (category === "All" || typeMatches(test, category as "Tests" | "Packages")) && `${test.name} ${test.subtitle ?? ""}`.toLowerCase().includes(query.trim().toLowerCase()));
-  const visibleLabs = referenceLabIds.map(id => { const lab = displayLabs.find(item => item.id === id)!; return id === "redcliffe" && backendLab ? { ...lab, name: backendLab.name } : lab; }).filter(lab => `${lab.name} ${backendLab?.city || "Pune"}`.toLowerCase().includes(query.trim().toLowerCase()));
+  const visibleLabs = labs.filter(lab => lab.active && `${lab.name} ${lab.city}`.toLowerCase().includes(query.trim().toLowerCase())).map(lab => {
+    const appearance = displayLabs.find(item => item.id === lab.id) || brand;
+    return { ...lab, color: appearance.color, background: appearance.background };
+  });
   const back = panel ? liveLabUrl(testId || undefined, panel === "preview" ? "report" : undefined) : testId ? liveLabUrl() : directory ? "/" : "/labtest";
   const title = directory ? "Labs" : panel ? titles[panel] : testId ? "Test Details" : provider.name;
   // Form extensions can add fdprocessedid before hydration; tolerate it only on this native input.
@@ -77,10 +80,10 @@ export default function CustomerLabs({ testId = "", labId = "", initialQuery = "
       <section className="cl-banner cl-lab-intro"><div className="cl-banner-inner"><span className="cl-banner-icon"><CareIcon name="lab" size={38}/></span><div><h2>Your health. Your choice.</h2><p>Compare trusted labs, health tests, packages and prices in one place.</p></div></div></section>
       <div className="cl-section-title cl-lab-section-title"><div><h2>Choose your lab</h2><p>Select the partner that feels right for your care.</p></div><span>{visibleLabs.length} labs</span></div>
       <div className="cl-lab-grid">{visibleLabs.map(lab => {
-        const enabled = lab.id === "redcliffe"; const available = browseCatalog.filter(test => test.available);
-        const card = <><div className="cl-lab-card-top"><span className="cl-lab-image" style={{ background: lab.background }}><img src={asset("lab")} alt=""/></span><div><h3>{lab.name}</h3><p>{enabled ? backendLab?.city || "Pune" : "Pune"}</p><small>Home sample collection and digital reports</small></div><CareIcon name={enabled ? "chevron" : "lock"}/></div><div className="cl-lab-card-meta"><span className="cl-discount">{enabled ? available.length ? `${available.length} tests & packages` : "Explore tests & packages" : "Coming soon"}</span><strong style={{ color: lab.color }}>{enabled ? available.length ? `From ${money(Math.min(...available.map(test => test.price)))}` : "View packages" : "Unavailable"}</strong></div><small>{enabled ? "Home collection available" : "Booking is not available yet"}</small></>;
+        const enabled = lab.id === "redcliffe" || /redcliffe/i.test(lab.name); const available = browseCatalog.filter(test => test.available && (test.labId === lab.id || (enabled && test.labId === "redcliffe")));
+        const card = <><div className="cl-lab-card-top"><span className="cl-lab-image" style={{ background: lab.background }}><img src={asset("lab")} alt=""/></span><div><h3>{lab.name}</h3><p>{lab.city}</p><small>{lab.description || "Explore health tests and packages"}</small></div><CareIcon name={enabled ? "chevron" : "lock"}/></div><div className="cl-lab-card-meta"><span className="cl-discount">{enabled ? available.length ? `${available.length} tests & packages` : "Explore tests & packages" : "Coming soon"}</span><strong style={{ color: lab.color }}>{enabled ? available.length ? `From ${money(Math.min(...available.map(test => test.price)))}` : "View packages" : "Unavailable"}</strong></div><small>{enabled ? lab.homeCollection ? "Home collection available" : "Contact lab for collection options" : "Booking is not available yet"}</small></>;
         return enabled ? <Link className="cl-lab-card" key={lab.id} href={liveLabUrl()}>{card}</Link> : <button type="button" className="cl-lab-card" key={lab.id} disabled aria-disabled="true">{card}</button>;
-      })}</div>{!visibleLabs.length && <div className="ca-empty"><h2>No labs found</h2><p>Try a different lab name or city.</p><button className="ca-button" onClick={() => setQuery("")}>Clear search</button></div>}
+      })}</div>{loading && !visibleLabs.length && <p role="status">Loading labs…</p>}{!loading && !error && !visibleLabs.length && <div className="ca-empty"><h2>{query.trim() ? "No labs found" : "No labs available"}</h2><p>{query.trim() ? "Try a different lab name or city." : "Please check back later."}</p>{query.trim() && <button className="ca-button" onClick={() => setQuery("")}>Clear search</button>}</div>}
     </> : <>
       {loading && <p role="status">Loading labs and tests…</p>}
       {panel ? <LabInformation panel={panel} testId={testId} test={selected} groups={groups} parametersLoading={parametersLoading} tests={browseCatalog}/> : testId ? selected ? <TestDetails test={selected}/> : !loading && !error && <div className="ca-empty"><h2>Test unavailable</h2><p>Choose a test from the current catalog.</p><Link className="ca-button" href={liveLabUrl()}>Explore tests</Link></div> : <>

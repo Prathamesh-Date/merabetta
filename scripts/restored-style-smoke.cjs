@@ -25,7 +25,7 @@ const tests = Array.from({length:6},(_,i) => ({id:`redcliffe:style-${i}`, packag
  try{
   await page.goto('http://localhost:3000/labtest');
   await page.locator('main .cl-lab-card').first().waitFor();
-  assert.equal(await page.locator('main .cl-lab-card').count(),6);assert.equal(await page.locator('main a.cl-lab-card').count(),1);assert.equal(await page.locator('main button.cl-lab-card:disabled').count(),5);
+  assert.equal(await page.locator('main .cl-lab-card').count(),2);assert.equal(await page.locator('main a.cl-lab-card').count(),1);assert.equal(await page.locator('main button.cl-lab-card:disabled').count(),1);
   assert.equal(await page.locator('main a.cl-lab-card').getAttribute('href'),'/labtest?lab=redcliffe');
   for(const width of [390,1440]){
    await page.setViewportSize({width,height:1000});
@@ -45,6 +45,6 @@ const tests = Array.from({length:6},(_,i) => ({id:`redcliffe:style-${i}`, packag
    await page.goto('http://localhost:3000/cart');await page.locator('.ca-cart-item').waitFor();assert.equal(await page.locator('.ca-cart-layout .ca-summary').count(),1);assert.equal(await page.locator('.ca-cart-item img').count(),1);await screenshot('cart-items',width);
    await page.goto('http://localhost:3000/profile?tab=wishlist');await page.getByRole('heading',{name:'Nothing yet here',exact:true}).waitFor();await screenshot('wishlist',width);
   }
-  assert.deepEqual(errors,[]);console.log('PASS: original layout classes, exactly 6 lab cards / 1 link / 5 disabled (guest and authenticated), API catalog/cards/details/parameters, profile/shortcuts/menu, cart empty/items/summary, orders tabs/filters, wishlist and no overflow at 390/1440.');
+  assert.deepEqual(errors,[]);console.log('PASS: original layout classes, backend lab cards / 1 supported link / 1 unsupported provider disabled, API catalog/cards/details/parameters, profile/shortcuts/menu, cart empty/items/summary, orders tabs/filters, wishlist and no overflow at 390/1440.');
  }finally{await browser.close();}
 })().catch(e=>{console.error(e);process.exitCode=1});

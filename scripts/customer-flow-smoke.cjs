@@ -39,7 +39,7 @@ const testItem = { id: 'redcliffe:fixture-test', packageCode: 'fixture-test', la
     await main.getByRole('button', { name: 'My Orders', exact: true }).click();
     await main.getByRole('heading', { name: 'My Orders', exact: true }).waitFor();
     assert.equal(await page.getByRole('dialog', { name: 'Sign in', exact: true }).isVisible(), true);
-    assert.equal(await main.getByRole('heading', { name: 'Sign in with your mobile', exact: true }).count(), 1);
+    assert.equal(await main.getByRole('heading', { name: 'Sign in to Merabetta', exact: true }).count(), 1);
     await page.getByRole('button', { name: 'Close login', exact: true }).click();
     await page.waitForURL('http://localhost:3000/');
     await page.goto('http://localhost:3000/profile?tab=orders');
@@ -59,9 +59,10 @@ const testItem = { id: 'redcliffe:fixture-test', packageCode: 'fixture-test', la
     assert.equal(await main.getByRole('button', { name: 'Family & Addresses', exact: true }).isDisabled(), false);
     assert.equal(await main.getByRole('button', { name: 'Delete my account', exact: true }).isDisabled(), false);
     await page.goto('http://localhost:3000/labtest');
-    assert.equal(await main.locator('.cl-lab-card').count(), 6);
+    await main.locator('.cl-lab-card').first().waitFor();
+    assert.equal(await main.locator('.cl-lab-card').count(), 1);
     assert.equal(await main.locator('a.cl-lab-card').count(), 1);
-    assert.equal(await main.locator('button.cl-lab-card:disabled').count(), 5);
+    assert.equal(await main.locator('button.cl-lab-card:disabled').count(), 0);
     await main.locator('a.cl-lab-card').click();
     await main.getByText('Fixture Heart Package', { exact: true }).waitFor();
     await main.getByRole('button', { name: 'Packages', exact: true }).click();

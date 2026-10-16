@@ -27,7 +27,7 @@ const account={user:{id:'guest-flow-user',name:'Guest Customer',firstName:'Guest
     else {status=404;data={error:'Unmocked request'};}
     await route.fulfill({status,contentType:'application/json',body:JSON.stringify(data)});
    });
-   await page.goto('http://localhost:3000/labtest');const main=page.locator('main');assert.equal(await main.locator('.cl-lab-card').count(),6);
+   await page.goto('http://localhost:3000/labtest');const main=page.locator('main');await main.locator('.cl-lab-card').first().waitFor();assert.equal(await main.locator('.cl-lab-card').count(),1);
    await main.locator('a.cl-lab-card').click();await main.getByRole('heading',{name:'Guest API Health Checkup',exact:true}).waitFor();assert.equal(await main.getByLabel('Mobile number',{exact:true}).count(),0);
    await main.getByRole('button',{name:'Add Guest API Health Checkup from Redcliffe Labs to cart',exact:true}).click();
    await page.waitForFunction(()=>localStorage.getItem('merabetta-web-v2')?.includes('redcliffe:live-checkup'));
@@ -35,7 +35,7 @@ const account={user:{id:'guest-flow-user',name:'Guest Customer',firstName:'Guest
    await page.reload();await main.getByRole('heading',{name:'Guest API Health Checkup',exact:true}).waitFor();assert.equal(await main.getByLabel('Mobile number',{exact:true}).isVisible(),false);
    assert.equal(calls.some(call=>call.guest&&call.path==='/redcliffe/catalog'),true);
    await main.getByRole('button',{name:/^Proceed to checkout - Rs\./}).click();
-   await main.getByRole('heading',{name:'Sign in with your mobile',exact:true}).waitFor();
+   await main.getByRole('heading',{name:'Sign in to Merabetta',exact:true}).waitFor();
    assert.equal(await page.getByRole('dialog',{name:'Sign in',exact:true}).isVisible(),true);
    assert.equal(await main.getByRole('heading',{name:'My cart',exact:true}).count(),1);
    assert.equal(await main.getByRole('heading',{name:'Checkout',exact:true}).count(),0);
@@ -47,7 +47,7 @@ const account={user:{id:'guest-flow-user',name:'Guest Customer',firstName:'Guest
    await page.waitForFunction(()=>localStorage.getItem('merabetta-web-v2')?.includes('redcliffe:live-checkup'));
    await main.getByRole('button',{name:'Continue to family member',exact:true}).click();await main.getByRole('button',{name:'Continue to address & slot',exact:true}).click();await main.getByRole('button',{name:'15 October 2026',exact:true}).click();await main.getByRole('button',{name:'9:00 AM',exact:true}).click();await main.getByRole('button',{name:'Review booking',exact:true}).click();await main.getByRole('button',{name:'Confirm booking',exact:true}).click();await main.getByRole('heading',{name:/Booking status: Confirmed/}).waitFor();assert.equal(orderBody.items[0].id,live.id);assert.equal(orderBody.items[0].quantity,1);assert.equal(orderBody.total,undefined);
    await page.evaluate(()=>localStorage.setItem('merabetta-web-v2',JSON.stringify({cart:{p1:1},wishlist:[],coupon:false})));
-   signedIn=false;await page.goto('http://localhost:3000/cart');await main.getByRole('heading',{name:'Crocin Advance Tablet',exact:true}).waitFor();await main.getByRole('button',{name:/^Proceed to checkout - Rs\./}).click();await main.getByRole('heading',{name:'Sign in with your mobile',exact:true}).waitFor();
+   signedIn=false;await page.goto('http://localhost:3000/cart');await main.getByRole('heading',{name:'Crocin Advance Tablet',exact:true}).waitFor();await main.getByRole('button',{name:/^Proceed to checkout - Rs\./}).click();await main.getByRole('heading',{name:'Sign in to Merabetta',exact:true}).waitFor();
    assert.equal(await page.getByRole('dialog',{name:'Sign in',exact:true}).isVisible(),true);assert.equal(await main.getByRole('heading',{name:'My cart',exact:true}).count(),1);assert.equal(await main.getByRole('heading',{name:'Checkout',exact:true}).count(),0);assert.equal(await main.getByRole('heading',{name:'Primary summary',exact:true}).count(),1);assert.equal(await main.getByRole('button',{name:/^Continue to payment/}).count(),0);
    fs.mkdirSync('artifacts/restored-styles',{recursive:true});await page.setViewportSize({width:390,height:1000});await page.screenshot({path:`artifacts/restored-styles/checkout-signin-${match}.png`,fullPage:true});
    await context.close();
