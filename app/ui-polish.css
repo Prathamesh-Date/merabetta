@@ -72,3 +72,7 @@
   html { scroll-behavior: auto; }
   :is(.ca-app, [data-local-content]) *, :is(.ca-app, [data-local-content]) *::before, :is(.ca-app, [data-local-content]) *::after { scroll-behavior: auto !important; transition-duration: 0s !important; animation-duration: 0s !important; }
 }
+
+@media (width >= 1024px) {
+  .ca-section-with-actions h2, .cl-section-with-actions > :first-child { margin-right: auto; }
+}

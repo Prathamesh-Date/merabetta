@@ -14,6 +14,7 @@ import { ErrorText } from "./customer-auth";
 import { useCare } from "./care-store";
 import { publicLabCatalog, resolvePublicTest } from "../data/public-lab-catalog";
 import LoadingState from "./loading-state";
+import PageWishlistLink from "./page-wishlist-link";
 import navigationStyles from "./product-category-navigation.module.css";
 
 const titles: Record<LabPanel, string> = { included: "Included Tests", preparation: "Pre-test Instructions", report: "Report Format", trust: "Why Trust Us?", guidance: "Pre-test Expert Guidance", related: "Frequently Booked Together", preview: "Report Preview", support: "Customer Support" };
@@ -80,7 +81,7 @@ export default function CustomerLabs({ testId = "", labId = "", initialQuery = "
     <ErrorText message={error}/>{error && <button className="ca-text-button" onClick={() => setRetry(retry + 1)}>Retry loading</button>}
     {directory ? <>
       <section className="cl-banner cl-lab-intro"><div className="cl-banner-inner"><span className="cl-banner-icon"><CareIcon name="lab" size={38}/></span><div><h2>Your health. Your choice.</h2><p>Compare trusted labs, health tests, packages and prices in one place.</p></div></div></section>
-      <div className="cl-section-title cl-lab-section-title"><div><h2>Choose your lab</h2><p>Select the partner that feels right for your care.</p></div><span>{loading ? "Loading…" : `${visibleLabs.length} ${visibleLabs.length === 1 ? "lab" : "labs"}`}</span></div>
+      <div className="cl-section-title cl-lab-section-title cl-section-with-actions"><div><h2>Choose your lab</h2><p>Select the partner that feels right for your care.</p></div><span>{loading ? "Loading…" : `${visibleLabs.length} ${visibleLabs.length === 1 ? "lab" : "labs"}`}</span><PageWishlistLink/></div>
       <div className="cl-lab-grid">{visibleLabs.map(lab => {
         const enabled = lab.id === "redcliffe" || /redcliffe/i.test(lab.name); const available = browseCatalog.filter(test => test.available && (test.labId === lab.id || (enabled && test.labId === "redcliffe")));
         const card = <><div className="cl-lab-card-top"><span className="cl-lab-image" style={{ background: lab.background }}><img src={asset("lab")} alt=""/></span><div><h3>{lab.name}</h3><p>{lab.city}</p><small>{lab.description || "Explore health tests and packages"}</small></div><CareIcon name={enabled ? "chevron" : "lock"}/></div><div className="cl-lab-card-meta"><span className="cl-discount">{enabled ? available.length ? `${available.length} tests & packages` : "Explore tests & packages" : "Coming soon"}</span><strong style={{ color: lab.color }}>{enabled ? available.length ? `From ${money(Math.min(...available.map(test => test.price)))}` : "View packages" : "Unavailable"}</strong></div><small>{enabled ? lab.homeCollection ? "Home collection available" : "Contact lab for collection options" : "Booking is not available yet"}</small></>;
@@ -92,7 +93,7 @@ export default function CustomerLabs({ testId = "", labId = "", initialQuery = "
         <section className="cl-provider-banner" style={{ background: provider.background }}><div className="cl-banner-inner"><div><h2>Care that comes to you</h2><p>Explore {provider.name} tests and packages with home sample collection and clear digital reports.</p></div><Link className="cl-banner-action" href="/labtest">Change lab <CareIcon name="arrow"/></Link></div></section>
         <div className="cl-filters" aria-label="Filter lab tests">{categories.map(c => <button key={c} aria-pressed={category === c} className={category === c ? "active" : ""} onClick={() => setCategory(c)}>{c}</button>)}</div>
         <section className="cl-banner cl-choice"><div className="cl-banner-inner"><CareIcon name="lab" size={42}/><div><h2>A clearer view of your health.</h2><p>Book from home and receive simple digital reports with support when you need it.</p></div><Link className="cl-secondary" href={liveLabUrl(undefined, "trust")}>Why families choose Merabetta <CareIcon name="arrow"/></Link></div></section>
-        <div className="cl-section-title"><h2>Popular health packages</h2><span>{visible.length} available</span></div><div className="cl-test-grid">{visible.map(test => <LiveLabTestCard key={test.id} test={test}/>)}</div>
+        <div className="cl-section-title cl-section-with-actions"><h2>Popular health packages</h2><span>{visible.length} available</span><PageWishlistLink/></div><div className="cl-test-grid">{visible.map(test => <LiveLabTestCard key={test.id} test={test}/>)}</div>
         {!loading && !visible.length && !error && <div className="ca-empty"><h2>No matching tests</h2><p>Try another search or category.</p><button className="ca-button" onClick={() => { setQuery(""); setCategory("All"); }}>Clear filters</button></div>}
       </>}
     </>}

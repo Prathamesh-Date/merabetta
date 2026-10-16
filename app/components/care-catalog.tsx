@@ -1,7 +1,8 @@
 "use client";
 
 import Link from "next/link";
-import { useState } from "react";
+import { useState, type ReactNode } from "react";
+import PageWishlistLink from "./page-wishlist-link";
 import { asset, categories, labListings, money, products, tests, type Product } from "../data/catalog";
 import CareIcon from "./care-icon";
 import CareShell from "./care-shell";
@@ -19,8 +20,8 @@ export function ProductCard({ product, showBuyNow = false }: { product: Product;
   const saved = state.wishlist.includes(product.id);
   return <article className="ca-product"><div className="ca-product-art"><Link href={`/products/${product.id}`}><img src={asset(product.image)} alt={product.name} loading="lazy"/></Link><span className="ca-discount">{Math.round((1 - product.price / product.mrp) * 100)}% OFF</span><button className={`ca-wish ${saved ? "saved" : ""}`} aria-label={`${saved ? "Remove" : "Save"} ${product.name} ${saved ? "from" : "to"} wishlist`} aria-pressed={saved} onClick={() => wish(product.id)} disabled={!ready}><CareIcon name="heart" size={19}/></button></div><div className="ca-product-copy"><span className="ca-rating">★ {product.rating} <small>· Sample rating</small></span><Link href={`/products/${product.id}`}><h3>{product.name}</h3></Link><p>{product.subtitle}</p><div className="ca-product-bottom"><div><strong>{money(product.price)}</strong> <del>{money(product.mrp)}</del></div><div className="ca-product-actions">{showBuyNow ? <><button className="ca-buy-now" onClick={() => add(product.id)} disabled={!ready} aria-label={`Add ${product.name} to cart`}>Add to cart</button><button className="ca-wishlist-remove" onClick={() => wish(product.id)} disabled={!ready} aria-label={`Remove ${product.name} from wishlist`}>Remove</button></> : <button className="ca-add" onClick={() => add(product.id)} disabled={!ready} aria-label={`Add ${product.name} to cart`}>Add <span>+</span></button>}</div></div></div></article>;
 }
-function SectionTitle({ title, href, label = "View all" }: { title: string; href?: string; label?: string }) {
-  return <div className="ca-section-title"><h2>{title}</h2>{href && <Link href={href}>{label} <CareIcon name="arrow" size={17}/></Link>}</div>;
+function SectionTitle({ title, href, label = "View all", action }: { title: string; href?: string; label?: string; action?: ReactNode }) {
+  return <div className={`ca-section-title${action ? " ca-section-with-actions" : ""}`}><h2>{title}</h2>{action}{href && <Link href={href}>{label} <CareIcon name="arrow" size={17}/></Link>}</div>;
 }
 function CategoryGrid() {
   return <div className="ca-categories ca-category-tiles">{categories.map(category => <Link key={category.id} href={`/products?category=${category.id}&from=home`}><span><CareIcon name={category.icon} size={37}/></span><strong>{category.name}</strong></Link>)}<Link href="/products"><span><CareIcon name="grid" size={37}/></span><strong>More</strong></Link></div>;
@@ -57,7 +58,7 @@ export function ProductsScreen({ initialCategory = "", initialQuery = "", initia
     <h1>Categories</h1>
   </div><Link href="/profile?tab=wishlist" aria-label="View wishlist"><CareIcon name="heart" size={27}/></Link></header>;
   // Form extensions may add fdprocessedid before hydration; only tolerate it on native controls.
-  return <CareShell mainClassName="ca-products-page" mobileHeading={heading} search={<label className="ca-search ca-nav-search ca-catalog-search"><CareIcon name="search"/><input suppressHydrationWarning value={query} onChange={e => { setQuery(e.target.value); setShowCatalog(Boolean(e.target.value.trim())); }} placeholder="Search products" aria-label="Search products"/>{query && <button suppressHydrationWarning onClick={() => { setQuery(""); setShowCatalog(false); }} aria-label="Clear search"><CareIcon name="close" size={17}/></button>}</label>}><div className="ca-desktop-page-heading">{heading}</div>{browsingCategories ? <><div className="ca-catalog-category-grid">{categories.map(c => <button suppressHydrationWarning key={c.id} onClick={() => { setCategoryFromHome(false); setCategory(c.id); setShowCatalog(true); }}><span><CareIcon name={c.icon} size={37}/></span><strong>{c.name}</strong></button>)}<button suppressHydrationWarning onClick={() => setShowCatalog(true)}><span><CareIcon name="grid" size={37}/></span><strong>More</strong></button></div><CatalogPromo onBrowse={nextCategory => { setCategoryFromHome(false); setCategory(nextCategory); setShowCatalog(true); }}/><section className="ca-catalog-products"><SectionTitle title="Popular products" href="/products"/><div className="ca-product-grid">{visible.map(p => <ProductCard key={p.id} product={p}/>)}</div></section></> : <><div className="ca-catalog-controls">
+  return <CareShell mainClassName="ca-products-page" mobileHeading={heading} search={<label className="ca-search ca-nav-search ca-catalog-search"><CareIcon name="search"/><input suppressHydrationWarning value={query} onChange={e => { setQuery(e.target.value); setShowCatalog(Boolean(e.target.value.trim())); }} placeholder="Search products" aria-label="Search products"/>{query && <button suppressHydrationWarning onClick={() => { setQuery(""); setShowCatalog(false); }} aria-label="Clear search"><CareIcon name="close" size={17}/></button>}</label>}><div className="ca-desktop-page-heading">{heading}</div>{browsingCategories ? <><div className="ca-catalog-category-grid">{categories.map(c => <button suppressHydrationWarning key={c.id} onClick={() => { setCategoryFromHome(false); setCategory(c.id); setShowCatalog(true); }}><span><CareIcon name={c.icon} size={37}/></span><strong>{c.name}</strong></button>)}<button suppressHydrationWarning onClick={() => setShowCatalog(true)}><span><CareIcon name="grid" size={37}/></span><strong>More</strong></button></div><CatalogPromo onBrowse={nextCategory => { setCategoryFromHome(false); setCategory(nextCategory); setShowCatalog(true); }}/><section className="ca-catalog-products"><SectionTitle title="Popular products" href="/products" action={<PageWishlistLink/>}/><div className="ca-product-grid">{visible.map(p => <ProductCard key={p.id} product={p}/>)}</div></section></> : <><div className="ca-catalog-controls">
   <h2 className="ca-catalog-selection">{categories.find(item => item.id === category)?.name ?? "All products"}</h2>
   <div className="ca-chips" aria-label="Product categories">
     <button suppressHydrationWarning className={!category ? "active" : ""} aria-pressed={!category} onClick={() => { setQuery(""); setCategory(""); setShowCatalog(false); }}>All categories</button>
@@ -73,6 +74,7 @@ export function ProductsScreen({ initialCategory = "", initialQuery = "", initia
     </select>
     <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg>
   </label>
+  <PageWishlistLink/>
 </div><p className="ca-result-count">{visible.length} products · Sample catalog</p>{visible.length ? <div className="ca-product-grid">{visible.map(p => <ProductCard key={p.id} product={p}/>)}</div> : <div className="ca-empty"><h2>No products found</h2><p>Try another search or category.</p><button suppressHydrationWarning className="ca-button" onClick={() => { setQuery(""); setCategory(""); setShowCatalog(false); }}>Clear filters</button></div>}</>}</CareShell>;
 }
 

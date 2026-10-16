@@ -1,5 +1,6 @@
 import Link from "next/link";
 import CareIcon from "./care-icon";
+import PageWishlistLink from "./page-wishlist-link";
 import styles from "./care-your-way.module.css";
 
 const services = [
@@ -13,7 +14,7 @@ const services = [
 export default function CareYourWay() {
   return (
     <section className={`ca-section ${styles.section}`} aria-labelledby="care-your-way-title">
-      <div className="ca-section-title"><h2 id="care-your-way-title">Care, your way</h2></div>
+      <div className="ca-section-title"><h2 id="care-your-way-title">Care, your way</h2><PageWishlistLink/></div>
       <div className={styles.grid}>
         {services.map(service => {
           const content = <>
