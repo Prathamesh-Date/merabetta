@@ -16,6 +16,7 @@ import { LiveLabTestCard } from "./customer-labs";
 import orderStyles from "./care-orders.module.css";
 import familyStyles from "./family-addresses.module.css";
 import { publicLabCatalog } from "../data/public-lab-catalog";
+import LoadingState from "./loading-state";
 
 const blankMember: Omit<Member, "id"> = { name: "", relationship: "Other", dateOfBirth: "", gender: "Female", phone: "" };
 export default function CustomerProfile({ initialTab = "account", fromHome = false }: { initialTab?: string; fromHome?: boolean }) {
@@ -24,12 +25,18 @@ export default function CustomerProfile({ initialTab = "account", fromHome = fal
   const [error, setError] = useState(""); const [busy, setBusy] = useState(false); const [confirm, setConfirm] = useState(false); const [editProfile, setEditProfile] = useState(false);
   const [address, setAddress] = useState<Address>(blankAddress); const [member, setMember] = useState(blankMember); const [memberId, setMemberId] = useState("");
   const [addressEditing, setAddressEditing] = useState(false); const [memberEditing, setMemberEditing] = useState(false);
+  const [wishlistLoading, setWishlistLoading] = useState(false); const [wishlistRetry, setWishlistRetry] = useState(0);
   const go = (tab: string) => router.push(`/profile?tab=${tab}`);
   const back = () => { if (window.history.length > 1) router.back(); else router.replace(fromHome ? "/#care-your-way-title" : "/profile"); };
   const closeAuth = () => { authDialog.current?.close(); if (initialTab === "orders" && !account) router.replace("/"); };
   async function action(run: () => Promise<void>) { if (busy) return; setBusy(true); setError(""); try { await run(); } catch (e) { setError(errorMessage(e)); } finally { setBusy(false); } }
   async function logout(all = false) { try { await customerApi.logout(all); } catch (e) { if (!(e instanceof ApiError && e.status === 401)) throw e; } clearPrivate(); announce("Signed out of your profile"); }
-  useEffect(() => { if (initialTab !== "wishlist" || !account?.user.profileCompleted || catalog.length) return; const controller = new AbortController(); customerApi.catalog(controller.signal).then(r => setCatalog(r.data)).catch(e => { if (!controller.signal.aborted) setError(errorMessage(e)); }); return () => controller.abort(); }, [initialTab, account?.user.profileCompleted, catalog.length, setCatalog]);
+  useEffect(() => {
+    if (initialTab !== "wishlist" || catalog.length || !state.wishlist.some(id => !products.some(product => product.id === id))) { setWishlistLoading(false); return; }
+    const controller = new AbortController(); setWishlistLoading(true); setError("");
+    customerApi.catalog(controller.signal).then(r => { if (!controller.signal.aborted) { setWishlistLoading(false); setCatalog(r.data); } }).catch(e => { if (!controller.signal.aborted) { setError(errorMessage(e)); setWishlistLoading(false); } });
+    return () => controller.abort();
+  }, [initialTab, state.wishlist, catalog.length, setCatalog, wishlistRetry]);
   useEffect(() => { if (initialTab !== "orders" || sessionLoading || account || authDialog.current?.open) return; authDialog.current?.showModal(); }, [initialTab, sessionLoading, account]);
   const signedIn = Boolean(account); const profileName = state.profile?.name || "Your care profile";
   const savedProducts = products.filter(product => state.wishlist.includes(product.id));
@@ -38,7 +45,7 @@ export default function CustomerProfile({ initialTab = "account", fromHome = fal
   if (!ready) return <CareShell mainClassName={mainClassName}><div className="ca-profile-page"><p>Loading your profile…</p></div></CareShell>;
   return <CareShell mainClassName={mainClassName}><div className={`ca-profile-page ${initialTab === "people" ? familyStyles.page : ""}`}><ErrorText message={error}/><dialog ref={authDialog} className="ch-auth" aria-label="Sign in" onCancel={event => { if (initialTab !== "orders" || account) return; event.preventDefault(); closeAuth(); }}><button className="ch-close" aria-label="Close login" onClick={closeAuth}><CareIcon name="close"/></button><img className="ch-auth-logo" src="/logo.png" alt="Merabetta"/><SignInForm onDone={() => authDialog.current?.close()}/></dialog>
     {initialTab === "account" ? <>
-      <div className="ca-profile-heading"><Link href="/" aria-label="Back to home"><CareIcon name="back" size={27}/></Link><h1>Profile</h1><Link href="/profile?tab=wishlist" aria-label="View wishlist"><CareIcon name="heart" size={29}/></Link></div>
+      <div className="ca-profile-heading"><Link href="/" aria-label="Back to home"><CareIcon name="back" size={27}/></Link><h1 className="ca-profile-title">Profile</h1><Link href="/profile?tab=wishlist" aria-label="View wishlist"><CareIcon name="heart" size={29}/></Link></div>
       <section className="ca-profile-card">{signedIn ? <><span className="ca-avatar">{profileName.charAt(0).toUpperCase()}</span><div><h2>{profileName}</h2><p>{account!.user.email}</p><small>Your everyday wellness companion</small><button className="ca-profile-signin" type="button" onClick={() => setEditProfile(value => !value)}>{editProfile ? "Close details" : "Edit details"}</button></div></> : <><span className="ca-avatar"><CareIcon name="profile" size={35}/></span><div><h2>Welcome to Merabetta</h2><p>Sign in to keep your care details together.</p><button type="button" disabled={sessionLoading} onClick={() => authDialog.current?.showModal()} className="ca-profile-signin">{sessionLoading ? "Restoring account…" : "Sign in"}</button></div></>}</section>
       {sessionError && <><ErrorText message={sessionError}/><button className="ca-text-button" onClick={() => void restoreSession()}>Retry connection</button></>}
       {account && (!account.user.profileCompleted || editProfile) && <ProfileForm/>}
@@ -48,7 +55,7 @@ export default function CustomerProfile({ initialTab = "account", fromHome = fal
       {confirm && <div className="ca-profile-modal" role="dialog" aria-modal="true" aria-labelledby="delete-title"><div><h2 id="delete-title">Delete your account?</h2><p>Your account will be deleted and its sessions revoked. Private details on this device will be cleared.</p><button className="ca-button" disabled={busy} onClick={() => void action(async () => { await customerApi.deleteAccount(); clearPrivate(); setConfirm(false); })}>Delete account &amp; data <CareIcon name="arrow"/></button><button className="ca-profile-cancel" onClick={() => setConfirm(false)}>Keep my account <CareIcon name="arrow"/></button></div></div>}
     </> : initialTab === "orders" ? account ? <SessionGate><CustomerOrders onBack={back} fromHome={fromHome}/></SessionGate> : <OrdersPanel orders={[]} onBack={back} fromHome={fromHome}/> : initialTab === "wishlist" ? <section className={orderStyles.page}>
       <header className={`ca-profile-heading ${orderStyles.heading}`}><button type="button" onClick={back} aria-label="Back"><CareIcon name="back" size={27}/></button><h1>Wishlist</h1><span className={orderStyles.wishlistHeart} aria-hidden="true"><CareIcon name="heart" size={27}/></span></header>
-      {savedProducts.length || savedTests.length ? <div className={`${orderStyles.wishlistList} ca-product-grid cl-test-grid`}>{savedProducts.map(product => <ProductCard key={product.id} product={product} showBuyNow/>)}{savedTests.map(test => <LiveLabTestCard key={test.id} test={test}/>)}</div> : <WishlistEmpty/>}
+      {wishlistLoading ? <LoadingState>Loading your wishlist…</LoadingState> : savedProducts.length || savedTests.length ? <div className={`${orderStyles.wishlistList} ca-product-grid cl-test-grid`}>{savedProducts.map(product => <ProductCard key={product.id} product={product} showBuyNow/>)}{savedTests.map(test => <LiveLabTestCard key={test.id} test={test}/>)}</div> : state.wishlist.length ? <div className="ca-empty"><h2>{error ? "Wishlist temporarily unavailable" : "Saved items are unavailable"}</h2><p>Your saved items are still on this device. Try loading the current catalog again.</p><button className="ca-button" type="button" onClick={() => { setCatalog([]); setWishlistRetry(value => value + 1); }}>Retry loading wishlist</button></div> : <WishlistEmpty/>}
     </section> : <ProfileSubpage title={initialTab === "people" ? "Family & Addresses" : "FAQs"} back={back}>
       {initialTab === "faq" ? <Faqs/> : <SessionGate><div className={familyStyles.content}>
         <section className={familyStyles.groupCard}><h2>Saved people</h2><p className={familyStyles.description}>Your family members, saved separately from addresses.</p>

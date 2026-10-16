@@ -63,6 +63,8 @@
 @media(max-width:700px){.actions{gap:8px}.contact.contact{padding:7px 8px 7px 14px;font-size:13px;line-height:20px}.arrow{width:25px;height:25px}}
 
 .desktopActions { display: none; align-items: center; gap: 6px; }
+.wishlistLink { display: none; }
+@media (width >= 1024px) { .wishlistLink { display: flex; } }
 .mobileWelcome { display: none; }
 @media (max-width: 749px) {
   .navbar { display: grid; grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr); gap: 8px; }

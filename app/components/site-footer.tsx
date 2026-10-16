@@ -2,16 +2,13 @@ const socialLinks = [
   { label: "Facebook", href: "https://www.facebook.com/profile.php?id=61588919011600" },
   { label: "LinkedIn", href: "https://www.linkedin.com/company/vision55-megacare-private-limited/" },
   { label: "Instagram", href: "https://www.instagram.com/merabetta.com_?igsh=Ym9oYTF1NnJmaDZo&utm_source=qr" },
-  { label: "Twitter", href: "https://twitter.com/" },
 ];
 
 export default function SiteFooter() {
   return (
     <footer className="reference-footer" id="support">
-      <img
+      <div
         className="reference-footer-shape"
-        src="https://merabetta.com/images/Group-1.png"
-        alt=""
         aria-hidden="true"
       />
       <div className="reference-footer-grid">

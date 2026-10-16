@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useState } from "react";
+import { useState, type KeyboardEvent } from "react";
 import { asset, categories, money, products } from "../data/catalog";
 import CareShell from "./care-shell";
 import CareIcon from "./care-icon";
@@ -20,13 +20,24 @@ const details: Record<string, { description: string; features: string[] }> = {
   p10: { description: "A padded senior care recliner in beige, designed to offer a comfortable place to sit and relax at home.", features: ["Padded recliner", "Beige finish", "Confirm dimensions and delivery details before purchase"] },
 };
 
+const productTabs = ["description", "reviews"] as const;
+
 export default function ProductScreen({ id }: { id: string }) {
   const product = products.find(p => p.id === id)!;
   const category = categories.find(c => c.id === product.category)!;
   const content = details[id];
   const { add, ready, wish, state } = useCare();
   const [count, setCount] = useState(1);
-  const [tab, setTab] = useState("description");
+  const [tab, setTab] = useState<typeof productTabs[number]>("description");
+  function navigateTabs(event: KeyboardEvent<HTMLButtonElement>, index: number) {
+    let next: number;
+    if (event.key === "ArrowRight") next = (index + 1) % productTabs.length;
+    else if (event.key === "ArrowLeft") next = (index + productTabs.length - 1) % productTabs.length;
+    else if (event.key === "Home") next = 0;
+    else if (event.key === "End") next = productTabs.length - 1;
+    else return;
+    event.preventDefault(); setTab(productTabs[next]); document.getElementById(`product-tab-${productTabs[next]}`)?.focus();
+  }
   const saved = state.wishlist.includes(id);
   // Form extensions may add fdprocessedid before hydration; tolerate it only on affected controls.
   return <CareShell mainClassName="ca-product-page">
@@ -35,7 +46,7 @@ export default function ProductScreen({ id }: { id: string }) {
       <div className="cp-art"><img src={asset(product.image)} alt={product.name}/><button className={`ca-wish ${saved ? "saved" : ""}`} disabled={!ready} aria-label={saved ? "Remove product from wishlist" : "Save product to wishlist"} aria-pressed={saved} onClick={() => wish(id)}><CareIcon name="heart"/></button></div>
       <div className="cp-copy"><Link className="ca-eyebrow" href={`/products?category=${category.id}`}>{category.name}</Link><h1>{product.name}</h1><span className="cl-rating">★ {product.rating} · Sample rating</span><div className="cp-price"><strong>{money(product.price)}</strong><del>{money(product.mrp)}</del><span className="cl-discount">{Math.round((1 - product.price / product.mrp) * 100)}% OFF</span></div><p className="cp-delivery"><CareIcon name="truck"/>Delivery options shown at checkout</p><p>{content.description}</p><div className="cp-purchase"><Quantity value={count} onChange={setCount} name={product.name}/><button className="ca-button" disabled={!ready} onClick={() => add(id, count)}>Add to cart <CareIcon name="bag"/></button></div><Link className="cp-category" href={`/products?category=${category.id}`}>Category: {category.name}</Link><div className="cp-checkout-note"><CareIcon name="shield"/><div><strong>Checkout details</strong><small>Review delivery and payment options at checkout.</small></div></div></div>
     </section>
-    <section className="cp-information"><div className="cp-tabs" role="tablist" aria-label="Product information">{["description", "reviews"].map(name => <button suppressHydrationWarning key={name} id={`product-tab-${name}`} aria-controls="product-information" role="tab" aria-selected={tab === name} className={tab === name ? "active" : ""} onClick={() => setTab(name)}>{name === "description" ? "Description" : "Reviews (0)"}</button>)}</div><div role="tabpanel" id="product-information" aria-labelledby={`product-tab-${tab}`} className="cp-tab-content">{tab === "description" ? <><h2>About this product</h2><p>{content.description}</p><p>{product.subtitle}. Selected to make everyday healthcare shopping straightforward for you and your family.</p><ul>{content.features.map(feature => <li key={feature}>{feature}</li>)}</ul><small>Sample product information. Confirm specifications and availability before purchase.</small></> : <div className="cp-no-reviews"><span>☆</span><h2>No reviews yet</h2><p>Customer reviews will appear here when they are available.</p></div>}</div></section>
+    <section className="cp-information"><div className="cp-tabs" role="tablist" aria-label="Product information">{productTabs.map((name, index) => <button suppressHydrationWarning key={name} id={`product-tab-${name}`} aria-controls="product-information" role="tab" aria-selected={tab === name} tabIndex={tab === name ? 0 : -1} className={tab === name ? "active" : ""} onClick={() => setTab(name)} onKeyDown={event => navigateTabs(event, index)}>{name === "description" ? "Description" : "Reviews (0)"}</button>)}</div><div role="tabpanel" tabIndex={0} id="product-information" aria-labelledby={`product-tab-${tab}`} className="cp-tab-content">{tab === "description" ? <><h2>About this product</h2><p>{content.description}</p><p>{product.subtitle}. Selected to make everyday healthcare shopping straightforward for you and your family.</p><ul>{content.features.map(feature => <li key={feature}>{feature}</li>)}</ul><small>Sample product information. Confirm specifications and availability before purchase.</small></> : <div className="cp-no-reviews"><span>☆</span><h2>No reviews yet</h2><p>Customer reviews will appear here when they are available.</p></div>}</div></section>
     <section className="ca-section ca-related-products"><div className="ca-section-title"><div><span className="ca-eyebrow">You may also like</span><h2>Related products</h2></div><Link href="/products">View all <CareIcon name="arrow" size={18}/></Link></div><div className="ca-product-grid">{products.filter(p => p.id !== id).slice(0, 5).map(p => <ProductCard key={p.id} product={p}/>)}</div></section>
   </CareShell>;
 }

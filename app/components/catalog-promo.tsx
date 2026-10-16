@@ -5,8 +5,8 @@ import CareIcon from "./care-icon";
 import styles from "./catalog-promo.module.css";
 
 const slides = [
-  { tag: "CARE AT HOME", title: "Good health comes home.", text: "Thoughtful essentials for you and the people you love.", action: "Explore products", category: "", image: "/hero/care-rectangular.png", alt: "A caregiver supporting an older adult at home" },
-  { tag: "EVERYDAY WELLNESS", title: "A little care, every day.", text: "Discover nutrition and wellness essentials for your daily routine.", action: "Shop wellness", category: "category-5", image: "/hero/wellness-circle.png", alt: "Everyday wellness products arranged in a comfortable home" },
+  { tag: "CARE AT HOME", title: "Good health comes home.", text: "Thoughtful essentials for you and the people you love.", action: "Explore products", category: "", image: "/hero/care-rectangular.webp", alt: "A caregiver supporting an older adult at home" },
+  { tag: "EVERYDAY WELLNESS", title: "A little care, every day.", text: "Discover nutrition and wellness essentials for your daily routine.", action: "Shop wellness", category: "category-5", image: "/hero/wellness-circle.webp", alt: "Everyday wellness products arranged in a comfortable home" },
   { tag: "MOVE WITH CONFIDENCE", title: "Comfort in every step.", text: "Explore mobility aids and accessories for everyday independence.", action: "Shop mobility", category: "category-10", image: "/app/mobility.webp", alt: "Mobility aids and accessories for daily support" },
 ];
 

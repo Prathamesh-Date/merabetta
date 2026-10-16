@@ -79,7 +79,7 @@ export default function DesktopNavbar({ onSignIn, search, mobileHeading }: { onS
     <ul className={styles.links}>{links()}</ul>
     <div className={styles.actions}>
       <div className={styles.desktopActions}>
-        {(path === "/products" || path === "/labtest") && <Link href="/profile?tab=wishlist" className={styles.iconLink} aria-label="View wishlist"><CareIcon name="heart" size={24}/></Link>}
+        {(path === "/products" || path === "/labtest") && <Link href="/profile?tab=wishlist" className={`${styles.iconLink} ${styles.wishlistLink}`} aria-label="View wishlist"><CareIcon name="heart" size={24}/></Link>}
         <Link href="/cart" className={`${styles.iconLink} ${path === "/cart" ? styles.active : ""}`} aria-label={`Cart${ready && count > 0 ? `, ${count} items` : ""}`} aria-current={path === "/cart" ? "page" : undefined}><CareIcon name="cart" size={24}/>{ready && count > 0 && <span className={styles.count}>{count}</span>}</Link>
         {state.profile
           ? <Link href="/profile?tab=orders" className={styles.iconLink} aria-label="My Orders" title="My Orders"><CareIcon name="bag" size={24}/></Link>

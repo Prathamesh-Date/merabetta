@@ -7,8 +7,8 @@ import CareIcon from "./care-icon";
 
 const slides = [
   { tag: "YOUR EVERYDAY WELLNESS COMPANION", title: "A little care.", accent: "A healthier you.", text: "Medicines, everyday care and trusted lab tests. A little closer to you.", action: "Explore care essentials", href: "/products", image: "care-hero", src: "/hero/care-hero.webp", alt: "A healthcare professional supporting a senior with home care" },
-  { tag: "EVERYDAY WELLNESS", title: "Good health", accent: "comes home.", text: "Add a little care to your day. Explore the Merabetta collection for your everyday wellness.", action: "Shop essentials", href: "/products", image: "wellness-circle", src: "/hero/wellness-circle.png", alt: "Merabetta everyday wellness collection" },
-  { tag: "KNOW YOUR HEALTH", title: "Small checks.", accent: "Better care.", text: "Explore tests and compare labs. Keep family care close to home.", action: "Explore labs", href: "/labtest", image: "lab-circle", src: "/hero/lab-circle.png", alt: "A laboratory technician organizing sample tubes" },
+  { tag: "EVERYDAY WELLNESS", title: "Good health", accent: "comes home.", text: "Add a little care to your day. Explore the Merabetta collection for your everyday wellness.", action: "Shop essentials", href: "/products", image: "wellness-circle", src: "/hero/wellness-circle.webp", alt: "Merabetta everyday wellness collection" },
+  { tag: "KNOW YOUR HEALTH", title: "Small checks.", accent: "Better care.", text: "Explore tests and compare labs. Keep family care close to home.", action: "Explore labs", href: "/labtest", image: "lab-circle", src: "/hero/lab-circle.webp", alt: "A laboratory technician organizing sample tubes" },
 ];
 
 export default function ReferenceHomeHero() {
@@ -18,7 +18,7 @@ export default function ReferenceHomeHero() {
     <div className={styles.row}>
       <div className={styles.visual}><div className={styles.circle} data-image={current.image}>
         <picture className={styles.picture} key={current.image}>
-          {current.image === "care-hero" && <source media="(width < 751px)" srcSet="/hero/care-rectangular.png"/>}
+          {current.image === "care-hero" && <source media="(width < 751px)" srcSet="/hero/care-rectangular.webp"/>}
           <img src={current.src} alt={current.alt} fetchPriority={slide === 0 ? "high" : "auto"}/>
         </picture>
         <span className={styles.ring} aria-hidden="true"/>

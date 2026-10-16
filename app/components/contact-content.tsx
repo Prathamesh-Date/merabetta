@@ -8,7 +8,6 @@ const socialLinks = [
   { name: "Facebook", image: "facebook-icon.svg", href: "https://www.facebook.com/profile.php?id=61588919011600" },
   { name: "Instagram", image: "instagram-icon.svg", href: "https://www.instagram.com/merabetta.com_?igsh=Ym9oYTF1NnJmaDZo&utm_source=qr" },
   { name: "LinkedIn", image: "linkedin-icon.svg", href: "https://www.linkedin.com/company/vision55-megacare-private-limited/" },
-  { name: "Twitter", image: "twitter-icon.svg", href: "https://twitter.com/" },
 ];
 
 export default function ContactContent() {
@@ -25,7 +24,7 @@ export default function ContactContent() {
     setPrepared(true);
   }
   return <PublicPageShell showBottomNavigation showBackButton pageTitle="Contact Us" hidePageNavigation contentClassName={styles.content} backNavigationClassName={styles.backNavigation}>
-    <section className={styles.banner} aria-labelledby="contact-title"><img src="/app/contact-banner-no-text.png" alt="Two generations connecting at home"/><h1 id="contact-title">Contact Us</h1></section>
+    <section className={styles.banner} aria-labelledby="contact-title"><img src="/app/contact-banner-no-text.webp" alt="Two generations connecting at home"/><h1 id="contact-title">Contact Us</h1></section>
     <section className={styles.contact} aria-label="Contact Merabetta">
       <div className={styles.details}>
         <p className={styles.eyebrow}>Contact Us</p>

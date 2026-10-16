@@ -20,7 +20,7 @@ const sections = [
     description: "Discover practical wellness ideas, everyday care tips, and stories for every stage of life.",
     action: "Read our blogs",
     href: "/blog",
-    image: "/blog/merabetta-blog-hero.png",
+    image: "/blog/merabetta-blog-hero.webp",
     alt: "An older couple reading wellness information together at home",
   },
 ];
