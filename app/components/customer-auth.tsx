@@ -5,11 +5,14 @@ import { customerApi, ApiError, errorMessage, type Challenge, type Profile, type
 import { useCare } from "./care-store";
 import styles from "./customer-auth.module.css";
 import LoadingState from "./loading-state";
+import CareIcon from "./care-icon";
 
 export function OtpLogin({ onDone, redirectTo = "/profile" }: { onDone?: () => void; redirectTo?: string | null }) {
   const { setAccount } = useCare();
   const router = useRouter();
   const [phone, setPhone] = useState(""); const [code, setCode] = useState("");
+  const [method, setMethod] = useState<"phone" | "email">("phone");
+  const [email, setEmail] = useState("");
   const [challenge, setChallenge] = useState<Challenge | null>(null);
   const [resendAt, setResendAt] = useState(0); const [expiresAt, setExpiresAt] = useState(0); const [now, setNow] = useState(Date.now());
   const [busy, setBusy] = useState(false); const lock = useRef(false); const [error, setError] = useState("");
@@ -19,12 +22,12 @@ export function OtpLogin({ onDone, redirectTo = "/profile" }: { onDone?: () => v
     if (lock.current || Date.now() < resendAt) return;
     lock.current = true; setBusy(true); setError("");
     try {
-      const result = await customerApi.requestOtp(phone);
+      const result = await customerApi.requestOtp(method === "phone" ? phone : email, method);
       const requestedAt = Date.now();
       setResendAt(requestedAt + result.resendAfter * 1000);
       if (result.delivery === "development" && process.env.NODE_ENV !== "development") {
         setChallenge(null); setCode("");
-        setError("SMS delivery is not enabled. Please contact support to activate SMS sign-in.");
+        setError(`${method === "phone" ? "SMS" : "Email"} delivery is not enabled. Please contact support to activate ${method === "phone" ? "SMS" : "email"} sign-in.`);
         return;
       }
       // A local entry deadline does not change the backend challenge expiry.
@@ -43,11 +46,17 @@ export function OtpLogin({ onDone, redirectTo = "/profile" }: { onDone?: () => v
     finally { lock.current = false; setBusy(false); }
   }
   const developmentOtp = process.env.NODE_ENV === "development" && challenge?.delivery === "development" && /^\d{6}$/.test(challenge.devCode ?? "") && now < expiresAt ? challenge.devCode : null;
-  return <div className={styles.login}><header className={styles.intro}><h2>{challenge ? "Verify your mobile" : "Sign in to Merabetta"}</h2><p>{challenge ? `Enter the 6-digit OTP sent to +91 ${phone}.` : "Enter your mobile number. We’ll send you a 6-digit OTP to sign in."}</p></header><form className={styles.form} onSubmit={e => { e.preventDefault(); void (challenge ? verify() : send()); }}>
-    <label className={`ca-field ${styles.phoneField}`}>Mobile number<span className={styles.phoneControl}><span className={styles.prefix} aria-hidden="true">+91</span><input className={styles.phoneInput} aria-label="Mobile number" placeholder="10-digit mobile number" required type="tel" autoComplete="tel-national" inputMode="numeric" pattern="[6-9][0-9]{9}" maxLength={10} value={phone} disabled={!!challenge} onChange={e => setPhone(e.target.value.replace(/\D/g, ""))}/></span><span className={styles.hint}>Use your 10-digit Indian mobile number.</span></label>
-    {challenge && <>{developmentOtp && <p role="status">Development OTP: <strong>{developmentOtp}</strong><br/>SMS is not sent in this test mode.</p>}<label className="ca-field">OTP<input required autoComplete="one-time-code" inputMode="numeric" pattern="[0-9]{6}" maxLength={6} value={code} onChange={e => setCode(e.target.value)}/></label><p>OTP entry expires in {Math.max(0, Math.ceil((expiresAt - now) / 1000))} seconds.</p></>}
-    <ErrorText message={error}/><button className="ca-button" disabled={busy || (!challenge && now < resendAt) || (!!challenge && (now >= expiresAt || now < verifyAfter))}>{busy ? "Please wait…" : challenge ? now < verifyAfter ? `Retry verification in ${Math.ceil((verifyAfter - now) / 1000)}s` : "Verify OTP" : "Send OTP"}</button>
-  </form>{challenge && <><button className="ca-text-button" disabled={busy || now < resendAt} onClick={() => void send()}>{now < resendAt ? `Resend in ${Math.ceil((resendAt - now) / 1000)}s` : "Resend OTP"}</button><button className="ca-text-button" disabled={busy} onClick={() => { setChallenge(null); setCode(""); setError(""); }}>Change mobile number</button></>}</div>;
+  function changeMethod(nextMethod: "phone" | "email") {
+    if (lock.current || nextMethod === method) return;
+    setMethod(nextMethod); setChallenge(null); setCode(""); setError(""); setVerifyAfter(0); setExpiresAt(0);
+  }
+  return <div className={`${styles.login} ${challenge ? styles.verification : ""}`}><header className={styles.intro}><h2>{challenge ? method === "phone" ? "Verify your mobile" : "Verify your email" : "Sign in to Merabetta"}</h2><p>{challenge ? `Enter the 6-digit OTP sent to ${method === "phone" ? `+91 ${phone}` : email.trim()}.` : "Choose how you would like to receive your OTP."}</p></header>
+  <div className={styles.methodTabs} role="group" aria-label="Sign-in method"><button type="button" aria-pressed={method === "phone"} disabled={busy} onClick={() => changeMethod("phone")}><CareIcon name="phone" size={20}/>Phone</button><button type="button" aria-pressed={method === "email"} disabled={busy} onClick={() => changeMethod("email")}><CareIcon name="mail" size={20}/>Email</button></div>
+  <form className={styles.form} onSubmit={e => { e.preventDefault(); void (challenge ? verify() : send()); }}>
+    {method === "phone" ? <label className={`ca-field ${styles.phoneField}`}>Mobile number<span className={styles.phoneControl}><span className={styles.prefix} aria-hidden="true">+91</span><input className={styles.phoneInput} aria-label="Mobile number" placeholder="10-digit mobile number" required type="tel" autoComplete="tel-national" inputMode="numeric" pattern="[6-9][0-9]{9}" maxLength={10} value={phone} disabled={busy || !!challenge} onChange={e => setPhone(e.target.value.replace(/\D/g, ""))}/></span><span className={styles.hint}>We will send a 6-digit OTP to your mobile.</span></label> : <label className={`ca-field ${styles.phoneField}`}>Email address<span className={styles.phoneControl}><span className={styles.prefix} aria-hidden="true"><CareIcon name="mail" size={20}/></span><input className={styles.phoneInput} aria-label="Email address" placeholder="you@example.com" required type="email" autoComplete="email" inputMode="email" maxLength={254} value={email} disabled={busy || !!challenge} onChange={e => setEmail(e.target.value)}/></span><span className={styles.hint}>We will send a 6-digit OTP to your email.</span></label>}
+    {challenge && <>{developmentOtp && <p role="status">Development OTP: <strong>{developmentOtp}</strong><br/>{method === "phone" ? "SMS" : "Email"} is not sent in this test mode.</p>}<label className="ca-field">OTP<input required autoComplete="one-time-code" inputMode="numeric" pattern="[0-9]{6}" maxLength={6} value={code} disabled={busy} onChange={e => setCode(e.target.value)}/></label><p>OTP entry expires in {Math.max(0, Math.ceil((expiresAt - now) / 1000))} seconds.</p></>}
+    <ErrorText message={error}/><button className="ca-button" disabled={busy || (!challenge && now < resendAt) || (!!challenge && (now >= expiresAt || now < verifyAfter))}>{busy ? "Please wait…" : challenge ? now < verifyAfter ? `Retry verification in ${Math.ceil((verifyAfter - now) / 1000)}s` : "Verify OTP" : now < resendAt ? `Send OTP in ${Math.ceil((resendAt - now) / 1000)}s` : "Send OTP"}{!challenge && !busy && now >= resendAt && <CareIcon name="arrow" size={20}/>}</button>
+  </form>{challenge ? <><button className="ca-text-button" disabled={busy || now < resendAt} onClick={() => void send()}>{now < resendAt ? `Resend in ${Math.ceil((resendAt - now) / 1000)}s` : "Resend OTP"}</button><button className="ca-text-button" disabled={busy} onClick={() => { setChallenge(null); setCode(""); setError(""); setVerifyAfter(0); }}>Change {method === "phone" ? "mobile number" : "email address"}</button></> : <p className={styles.securityNote}>Secure sign-in with OTP. No password needed.</p>}</div>;
 }
 export function ErrorText({ message }: { message: string }) { return message ? <p role="alert" className="ch-auth-error">{message}</p> : null; }
 export function SignInForm({ onDone, redirectTo = null }: { onDone?: () => void; redirectTo?: string | null }) {

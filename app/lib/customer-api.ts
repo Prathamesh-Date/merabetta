@@ -11,6 +11,8 @@ export type Order = { id: string; requestKey?: string; kind: "labs" | "products"
 export type Checkout = { requestKey: string; items: { id: string; quantity: number }[]; address: Address; notes?: string; coupon?: boolean };
 export type Booking = Omit<Checkout, "coupon"> & { memberId: string; collectionDate: string; slotId: string };
 export type Challenge = { challengeId: string; expiresIn: number; resendAfter: number; delivery: string; devCode?: string };
+export type ContactEnquiry = { name: string; email: string; phone: string; message: string };
+export type ContactConfirmation = { enquiryId: string; message: string };
 
 const configuredOrigin = process.env.NEXT_PUBLIC_CUSTOMER_API_URL?.trim() ?? "";
 export const apiConfigured = Boolean(configuredOrigin);
@@ -40,7 +42,7 @@ export async function request<T>(path: string, method = "GET", body?: unknown, s
       headers: { Accept: "application/json", ...(mutation ? { "Content-Type": "application/json" } : {}) },
       ...(mutation ? { body: JSON.stringify(body ?? {}) } : {}),
     });
-    if (response.status === 401 && !path.startsWith("/auth/otp/")) window.dispatchEvent(new Event("merabetta-session-expired"));
+    if (response.status === 401 && !path.startsWith("/auth/otp/") && path !== "/contact-enquiries") window.dispatchEvent(new Event("merabetta-session-expired"));
     if (response.status === 204) return { data: undefined as T, status: 204 };
     const raw = await response.text();
     let data;
@@ -53,15 +55,20 @@ export async function request<T>(path: string, method = "GET", body?: unknown, s
   } catch (error) {
     if (error instanceof ApiError) throw error;
     if (signal?.aborted) throw error;
-    throw new Error(mutation ? "Connection interrupted. The request may still be processing. Check your orders before retrying checkout." : "Could not reach the care service. Please retry.");
+    throw new Error(path === "/contact-enquiries" ? "Connection interrupted. Your enquiry may have been received. Please contact support before submitting again." : mutation ? "Connection interrupted. The request may still be processing. Check your orders before retrying checkout." : "Could not reach the care service. Please retry.");
   } finally { clearTimeout(timer); signal?.removeEventListener("abort", abort); }
 }
 function retrySeconds(value: string | null) { if (!value) return 0; return /^\d+$/.test(value) ? Number(value) : Math.max(0, Math.ceil((Date.parse(value) - Date.now()) / 1000)) || 0; }
 export async function api<T>(path: string, method = "GET", body?: unknown, signal?: AbortSignal) { return (await request<T>(path, method, body, signal)).data; }
 const id = encodeURIComponent;
 export const customerApi = {
+  contactEnquiry: async (enquiry: ContactEnquiry) => {
+    const result = await api<ContactConfirmation>("/contact-enquiries", "POST", enquiry);
+    if (!result || typeof result.enquiryId !== "string" || !result.enquiryId.trim()) throw new Error("Your enquiry may have been received, but its confirmation could not be loaded. Please contact support before submitting again.");
+    return result;
+  },
   me: (signal?: AbortSignal) => api<Account>("/auth/me", "GET", undefined, signal),
-  requestOtp: (contact: string) => api<Challenge>("/auth/otp/request", "POST", { method: "phone", contact }),
+  requestOtp: (contact: string, method: "phone" | "email" = "phone") => api<Challenge>("/auth/otp/request", "POST", { method, contact: contact.trim() }),
   verifyOtp: (challengeId: string, code: string) => api<Account>("/auth/otp/verify", "POST", { challengeId, code, deviceInfo: { platform: "web" } }),
   logout: (all = false) => api<void>(all ? "/auth/logout-all" : "/auth/logout", "POST"),
   profile: (profile: Profile) => api<Account>("/customers/me/profile", "PUT", profile),

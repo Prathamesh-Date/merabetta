@@ -24,6 +24,15 @@ test('204 logout succeeds without trying to parse JSON', async () => {
   const c = client(async () => new Response(null, { status: 204 }));
   assert.equal(await c.customerApi.logout(), undefined);
 });
+
+test('email OTP sends the selected method and trimmed email with browser cookies', async () => {
+  let sent;
+  const c = client(async (url, options) => { sent = { url, ...options }; return new Response(JSON.stringify({ challengeId: 'email-c1', expiresIn: 600, resendAfter: 30, delivery: 'email' })); });
+  const result = await c.customerApi.requestOtp(' demo@example.com ', 'email');
+  assert.deepEqual(JSON.parse(sent.body), { method: 'email', contact: 'demo@example.com' });
+  assert.equal(sent.credentials, 'include');
+  assert.equal(result.delivery, 'email');
+});
 test('incorrect OTP keeps the session flow; protected 401 expires it', async () => {
   const c = client(async () => new Response(JSON.stringify({ error: 'Expired' }), { status: 401 }));
   await assert.rejects(c.customerApi.verifyOtp('c1', '123456'), e => e.status === 401);
@@ -67,4 +76,32 @@ test('same-origin mode uses only the fixed website customer API prefix', async (
   let requested;
   const c = client(async url => { requested = url; return new Response(JSON.stringify({ data: [] })); }, '/');
   await c.customerApi.faqs(); assert.equal(requested, '/api/app/faqs');
+});
+test('public contact enquiry posts the four fields and returns its confirmation', async () => {
+  let sent;
+  const c = client(async (url, options) => {
+    sent = { url, ...options };
+    return new Response(JSON.stringify({ enquiryId: 'enquiry-test-1', message: 'Enquiry received' }), { status: 201 });
+  }, '/');
+  const enquiry = { name: 'Integration Test', email: 'test@example.com', phone: '9000000000', message: 'Automated test' };
+  const result = await c.customerApi.contactEnquiry(enquiry);
+  assert.equal(sent.url, '/api/app/contact-enquiries');
+  assert.equal(sent.method, 'POST');
+  assert.equal(sent.headers.Authorization, undefined);
+  assert.deepEqual(JSON.parse(sent.body), enquiry);
+  assert.equal(result.enquiryId, 'enquiry-test-1');
+  assert.equal(result.message, 'Enquiry received');
+});
+test('contact validation and rate limits retain backend details without expiring a session', async () => {
+  const c = client(async () => new Response(JSON.stringify({ error: 'Too many enquiries', details: [{ path: 'phone', message: 'Invalid phone' }] }), { status: 429, headers: { 'Retry-After': '45' } }));
+  await assert.rejects(c.customerApi.contactEnquiry({}), e => e.status === 429 && e.retryAfter === 45 && e.details[0].path === 'phone');
+  const unauthorized = client(async () => new Response(JSON.stringify({ error: 'Origin rejected' }), { status: 401 }));
+  await assert.rejects(unauthorized.customerApi.contactEnquiry({}), e => e.status === 401);
+  assert.equal(unauthorized.events.length, 0);
+});
+test('contact network failures and missing enquiry IDs do not claim confirmed delivery', async () => {
+  const offline = client(async () => { throw new TypeError('Failed to fetch'); });
+  await assert.rejects(offline.customerApi.contactEnquiry({}), /enquiry may have been received/);
+  const malformed = client(async () => new Response(JSON.stringify({ message: 'Received' })));
+  await assert.rejects(malformed.customerApi.contactEnquiry({}), /confirmation could not be loaded/);
 });

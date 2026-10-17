@@ -17,11 +17,16 @@ import orderStyles from "./care-orders.module.css";
 import familyStyles from "./family-addresses.module.css";
 import { publicLabCatalog } from "../data/public-lab-catalog";
 import LoadingState from "./loading-state";
+import logoutStyles from "./logout-feedback.module.css";
 
 const blankMember: Omit<Member, "id"> = { name: "", relationship: "Other", dateOfBirth: "", gender: "Female", phone: "" };
 export default function CustomerProfile({ initialTab = "account", fromHome = false }: { initialTab?: string; fromHome?: boolean }) {
   const { account, setAccount, clearPrivate, state, catalog, setCatalog, ready, announce, sessionError, sessionLoading, restoreSession } = useCare();
   const router = useRouter(); const authDialog = useRef<HTMLDialogElement>(null);
+  const logoutDialog = useRef<HTMLDialogElement>(null);
+  const guestSignIn = useRef<HTMLButtonElement>(null);
+  const logoutLock = useRef(false);
+  const [signingOut, setSigningOut] = useState(false);
   const [error, setError] = useState(""); const [busy, setBusy] = useState(false); const [confirm, setConfirm] = useState(false); const [editProfile, setEditProfile] = useState(false);
   const [address, setAddress] = useState<Address>(blankAddress); const [member, setMember] = useState(blankMember); const [memberId, setMemberId] = useState("");
   const [addressEditing, setAddressEditing] = useState(false); const [memberEditing, setMemberEditing] = useState(false);
@@ -30,7 +35,15 @@ export default function CustomerProfile({ initialTab = "account", fromHome = fal
   const back = () => { if (window.history.length > 1) router.back(); else router.replace(fromHome ? "/#care-your-way-title" : "/profile"); };
   const closeAuth = () => { authDialog.current?.close(); if (initialTab === "orders" && !account) router.replace("/"); };
   async function action(run: () => Promise<void>) { if (busy) return; setBusy(true); setError(""); try { await run(); } catch (e) { setError(errorMessage(e)); } finally { setBusy(false); } }
-  async function logout(all = false) { try { await customerApi.logout(all); } catch (e) { if (!(e instanceof ApiError && e.status === 401)) throw e; } clearPrivate(); announce("Signed out of your profile"); }
+  async function logout() {
+    if (logoutLock.current) return;
+    logoutLock.current = true; setSigningOut(true);
+    try {
+      try { await customerApi.logout(); } catch (e) { if (!(e instanceof ApiError && e.status === 401)) throw e; }
+      clearPrivate(); setEditProfile(false); announce("Signed out of your profile");
+      logoutDialog.current?.showModal();
+    } finally { logoutLock.current = false; setSigningOut(false); }
+  }
   useEffect(() => {
     if (initialTab !== "wishlist" || catalog.length || !state.wishlist.some(id => !products.some(product => product.id === id))) { setWishlistLoading(false); return; }
     const controller = new AbortController(); setWishlistLoading(true); setError("");
@@ -44,14 +57,22 @@ export default function CustomerProfile({ initialTab = "account", fromHome = fal
   const mainClassName = initialTab === "wishlist" ? `${orderStyles.main} ${savedProducts.length || savedTests.length ? orderStyles.contentMain : ""}` : initialTab === "orders" ? orderStyles.main : "";
   if (!ready) return <CareShell mainClassName={mainClassName}><div className="ca-profile-page"><p>Loading your profile…</p></div></CareShell>;
   return <CareShell mainClassName={mainClassName}><div className={`ca-profile-page ${initialTab === "people" ? familyStyles.page : ""}`}><ErrorText message={error}/><dialog ref={authDialog} className="ch-auth" aria-label="Sign in" onCancel={event => { if (initialTab !== "orders" || account) return; event.preventDefault(); closeAuth(); }}><button className="ch-close" aria-label="Close login" onClick={closeAuth}><CareIcon name="close"/></button><img className="ch-auth-logo" src="/logo.png" alt="Merabetta"/><SignInForm onDone={() => authDialog.current?.close()}/></dialog>
+    <dialog ref={logoutDialog} className={logoutStyles.dialog} aria-labelledby="logout-success-title" aria-describedby="logout-success-description" onClose={() => { if (!authDialog.current?.open) guestSignIn.current?.focus(); }}>
+      <button type="button" className={logoutStyles.close} aria-label="Close sign-out message" onClick={() => logoutDialog.current?.close()}><CareIcon name="close"/></button>
+      <div className={logoutStyles.check} aria-hidden="true"><CareIcon name="check" size={44}/></div>
+      <h2 id="logout-success-title">Signed out successfully</h2>
+      <p id="logout-success-description">You can sign in again anytime.</p>
+      <button type="button" className={logoutStyles.signIn} onClick={() => { logoutDialog.current?.close(); authDialog.current?.showModal(); }}>Sign in again</button>
+      <button type="button" className={logoutStyles.continue} onClick={() => { logoutDialog.current?.close(); router.push("/"); }}>Continue browsing</button>
+    </dialog>
     {initialTab === "account" ? <>
       <div className="ca-profile-heading"><Link href="/" aria-label="Back to home"><CareIcon name="back" size={27}/></Link><h1 className="ca-profile-title">Profile</h1><Link href="/profile?tab=wishlist" aria-label="View wishlist"><CareIcon name="heart" size={29}/></Link></div>
-      <section className="ca-profile-card">{signedIn ? <><span className="ca-avatar">{profileName.charAt(0).toUpperCase()}</span><div><h2>{profileName}</h2><p>{account!.user.email}</p><small>Your everyday wellness companion</small><button className="ca-profile-signin" type="button" onClick={() => setEditProfile(value => !value)}>{editProfile ? "Close details" : "Edit details"}</button></div></> : <><span className="ca-avatar"><CareIcon name="profile" size={35}/></span><div><h2>Welcome to Merabetta</h2><p>Sign in to keep your care details together.</p><button type="button" disabled={sessionLoading} onClick={() => authDialog.current?.showModal()} className="ca-profile-signin">{sessionLoading ? "Restoring account…" : "Sign in"}</button></div></>}</section>
+      <section className="ca-profile-card">{signedIn ? <><span className="ca-avatar">{profileName.charAt(0).toUpperCase()}</span><div><h2>{profileName}</h2><p>{account!.user.email}</p><small>Your everyday wellness companion</small><button className="ca-profile-signin" type="button" onClick={() => setEditProfile(value => !value)}>{editProfile ? "Close details" : "Edit details"}</button></div></> : <><span className="ca-avatar"><CareIcon name="profile" size={35}/></span><div><h2>Welcome to Merabetta</h2><p>Sign in to keep your care details together.</p><button ref={guestSignIn} type="button" disabled={sessionLoading} onClick={() => authDialog.current?.showModal()} className="ca-profile-signin">{sessionLoading ? "Restoring account…" : "Sign in"}</button></div></>}</section>
       {sessionError && <><ErrorText message={sessionError}/><button className="ca-text-button" onClick={() => void restoreSession()}>Retry connection</button></>}
       {account && (!account.user.profileCompleted || editProfile) && <ProfileForm/>}
       <div className="ca-profile-shortcuts"><button onClick={() => go("orders")}><CareIcon name="bag" size={29}/><span>My Orders</span></button><button onClick={() => go("wishlist")}><CareIcon name="heart" size={29}/><span>Wishlist</span></button><button onClick={() => go("offers")}><CareIcon name="ticket" size={29}/><span>Offers</span></button></div>
       <section className="ca-profile-menu">{[["people", "Family & Addresses"], ["faq", "FAQs"], ["returns", "Return & Refund Policy"], ["privacy", "Privacy Policy"], ["terms", "Terms & Conditions"], ["support", "Customer Support"]].map(([tab,label]) => <button key={tab} disabled={tab === "people" && !signedIn} onClick={() => go(tab)}>{label}<CareIcon name="chevron"/></button>)}<button disabled={!signedIn} onClick={() => setConfirm(true)}>Delete my account <CareIcon name="chevron"/></button></section>
-      <button className="ca-profile-signout" disabled={!signedIn || busy} onClick={() => void action(() => logout())}>Sign out <CareIcon name="arrow"/></button>
+      <button className={`ca-profile-signout ${logoutStyles.signOut}`} disabled={!signedIn || busy} aria-busy={signingOut} onClick={() => void action(() => logout())}>{signingOut ? <><span className={logoutStyles.spinner} aria-hidden="true"/>Signing out…</> : <>Sign out <CareIcon name="arrow"/></>}</button>
       {confirm && <div className="ca-profile-modal" role="dialog" aria-modal="true" aria-labelledby="delete-title"><div><h2 id="delete-title">Delete your account?</h2><p>Your account will be deleted and its sessions revoked. Private details on this device will be cleared.</p><button className="ca-button" disabled={busy} onClick={() => void action(async () => { await customerApi.deleteAccount(); clearPrivate(); setConfirm(false); })}>Delete account &amp; data <CareIcon name="arrow"/></button><button className="ca-profile-cancel" onClick={() => setConfirm(false)}>Keep my account <CareIcon name="arrow"/></button></div></div>}
     </> : initialTab === "orders" ? account ? <SessionGate><CustomerOrders onBack={back} fromHome={fromHome}/></SessionGate> : <OrdersPanel orders={[]} onBack={back} fromHome={fromHome}/> : initialTab === "wishlist" ? <section className={orderStyles.page}>
       <header className={`ca-profile-heading ${orderStyles.heading}`}><button type="button" onClick={back} aria-label="Back"><CareIcon name="back" size={27}/></button><h1>Wishlist</h1><span className={orderStyles.wishlistHeart} aria-hidden="true"><CareIcon name="heart" size={27}/></span></header>
